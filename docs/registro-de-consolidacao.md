@@ -269,3 +269,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T010 | 184 passaram / 0 falharam | 95.42 / 93.35 / 99.12 / 96.35 | 97.53 / 95.92 / 99.01 / 98.50 | RED com quatro falhas esperadas antes da integração. Cenários de leitura, cópia e reset passam em T016. |
 | T019 | 189 passaram / 0 falharam | 95.67 / 93.69 / 99.15 / 96.4 | 97.80 / 96.31 / 99.05 / 98.53 | Testes da API e determinismo correspondentes passaram, com cobertura medida. |
 | T017 | 189 passaram / 0 falharam | 95.67 / 93.69 / 99.15 / 96.4 | 97.80 / 96.31 / 99.05 / 98.53 | RED confirmado antes do código, com a base em 184 testes. Cenários verdes com T019. |
+| T020 | 195 passaram / 0 falharam | 95.72 / 93.69 / 99.17 / 96.45 | 97.83 / 96.31 / 99.07 / 98.55 | Testes da API e determinismo correspondentes passaram, com cobertura medida. |

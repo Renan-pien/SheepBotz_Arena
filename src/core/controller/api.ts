@@ -1,4 +1,5 @@
 import type { Command, RobotState, SimEvent, World } from '../types';
+import { createControllerRandom } from './random';
 import type { ControllerBindings } from './runtime';
 
 export interface ControllerFrame {
@@ -12,6 +13,7 @@ export interface ControllerFrame {
 export function createControllerScope(world: World, index: number) {
   const config = world.robots[index]!;
   const { id } = config;
+  const draw = createControllerRandom(world.seed, index);
   let current: ControllerFrame | undefined;
   const limit = { acceptedCount: 0, warningEmitted: false };
 
@@ -22,6 +24,10 @@ export function createControllerScope(world: World, index: number) {
   }
 
   const bindings: ControllerBindings = {
+    random() {
+      frame();
+      return draw();
+    },
     readLaser: () => [...frame().robot.laser],
     readBumper: () => frame().robot.bumper,
     readOdometry: () => ({ ...frame().robot.odometry }),
