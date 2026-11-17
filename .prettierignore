@@ -9,3 +9,6 @@ docs/cobertura/
 .DS_Store
 *.tmp
 *.swp
+
+# Fixture propositalmente inválida.
+tests/fixtures/worlds/invalido-json.json
