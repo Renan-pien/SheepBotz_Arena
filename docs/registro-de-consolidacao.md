@@ -105,3 +105,79 @@ quickstart e os ensaios de regeneração pertencem às etapas de implementação
    critérios de aceite mapeados. As âncoras, os pré-requisitos do Spec Kit e `git diff --check`
    também passaram. A execução do workflow e dos testes da aplicação pertence às tarefas de
    implementação da S1.
+
+## 2026-11-17 · Implementação sequencial da S1
+
+A implementação seguiu a ordem de T001 a T049 na branch `001-nucleo-simulacao`.
+Cada checkpoint executou a suíte e a cobertura assim que o Vitest esteve disponível.
+Durante o TDD, as falhas e a cobertura intermediária foram medidas com os testes da fase
+ainda dependentes da próxima implementação. Os itens foram marcados após passar pelo
+checkpoint integrado.
+
+| Tarefa | Testes passando | Linhas / instruções / funções / ramos (%) | Resultado no checkpoint |
+|---|---:|---|---|
+| T001 | — | — | Build e TypeScript passaram. O Vitest entra na T002. |
+| T002 | 0 | 0 / 0 / 0 / 100 | aguarda o primeiro teste (T003) |
+| T003 | 1 | 100 / 100 / 100 / 100 | ok |
+| T004 | 1 | 100 / 100 / 100 / 100 | ok |
+| T005 | 1 | 100 / 100 / 100 / 100 | ok |
+| T006 | 3 | 95.23 / 95.23 / 100 / 87.5 | ok |
+| T007 | 3 | 95.23 / 95.23 / 100 / 87.5 | ok |
+| T008 | 3 | 95.23 / 95.23 / 100 / 87.5 | ok |
+| T009 | 3 | 95.23 / 95.23 / 100 / 87.5 | ok |
+| T010 | 3 | 95.23 / 95.23 / 100 / 87.5 | TDD em andamento em angle.test.ts |
+| T011 | 11 | 96.42 / 96.42 / 100 / 91.66 | ok |
+| T012 | 11 | 96.42 / 96.42 / 100 / 91.66 | TDD em andamento em geometry.test.ts |
+| T013 | 16 | 96.87 / 96.87 / 100 / 91.66 | ok |
+| T014 | 16 | 96.87 / 96.87 / 100 / 91.66 | ok |
+| T015 | 16 | 96.87 / 96.87 / 100 / 91.66 | ok |
+| T016 | 16 | 96.87 / 96.87 / 100 / 91.66 | TDD em andamento em us1-world-validation.test.ts |
+| T017 | 16 | 96.87 / 96.87 / 100 / 91.66 | TDD em andamento em us1-world-validation.test.ts |
+| T018 | 16 | 96.87 / 96.87 / 100 / 91.66 | TDD em andamento em validate.test.ts, us1-world-validation.test.ts |
+| T019 | 16 | 60.78 / 60.78 / 37.03 / 91.66 | TDD em andamento em validate.test.ts, us1-world-validation.test.ts |
+| T020 | 16 | 54.38 / 54.38 / 37.03 / 91.66 | TDD em andamento em validate.test.ts, us1-world-validation.test.ts |
+| T021 | 16 | 26.49 / 25.83 / 27.02 / 13.58 | TDD em andamento em validate.test.ts, us1-world-validation.test.ts |
+| T022 | 16 | 19.25 / 18.12 / 24.39 / 7.53 | TDD em andamento em validate.test.ts, us1-world-validation.test.ts |
+| T023 | 62 | 99.41 / 98.35 / 100 / 96.66 | ok |
+| T024 | 62 | 99.41 / 98.35 / 100 / 96.66 | TDD em andamento em us2-kinematics.test.ts |
+| T025 | 62 | 99.41 / 98.35 / 100 / 96.66 | TDD em andamento em kinematics.test.ts, us2-kinematics.test.ts |
+| T026 | 64 | 99.41 / 98.36 / 100 / 96.66 | TDD em andamento em us2-kinematics.test.ts |
+| T027 | 64 | 98.27 / 97.31 / 95.65 / 96.66 | TDD em andamento em us2-kinematics.test.ts |
+| T028 | 64 | 90.95 / 90.5 / 83.01 / 95.39 | TDD em andamento em us2-kinematics.test.ts |
+| T029 | 64 | 83.41 / 82.27 / 73.33 / 87.87 | TDD em andamento em us2-kinematics.test.ts |
+| T030 | 64 | 83.41 / 82.27 / 73.33 / 87.87 | TDD em andamento em run-headless.test.ts, us2-kinematics.test.ts |
+| T031 | 81 | 97.73 / 96.66 / 96.87 / 95.53 | ok |
+| T032 | 86 | 99.54 / 98.75 / 100 / 97.2 | ok |
+| T033 | 86 | 99.54 / 98.75 / 100 / 97.2 | ok |
+| T034 | 86 | 99.54 / 98.75 / 100 / 97.2 | TDD em andamento em run-cli.test.ts |
+| T035 | 100 | 99.59 / 98.88 / 100 / 97.47 | ok |
+| T036 | 102 | 99.59 / 98.88 / 100 / 97.47 | TDD em andamento em us4-collisions.test.ts |
+| T037 | 102 | 99.59 / 98.88 / 100 / 97.47 | TDD em andamento em obstacles.test.ts, us4-collisions.test.ts |
+| T038 | 111 | 99.63 / 98.97 / 100 / 97.6 | TDD em andamento em us4-collisions.test.ts |
+| T039 | 114 | 99.63 / 98.98 / 100 / 97.6 | ok |
+| T040 | 115 | 99.63 / 98.98 / 100 / 97.6 | TDD em andamento em us5-push.test.ts |
+| T041 | 115 | 99.63 / 98.98 / 100 / 97.6 | TDD em andamento em contacts.test.ts, us5-push.test.ts |
+| T042 | 120 | 99.65 / 99.04 / 100 / 97.65 | TDD em andamento em us5-push.test.ts |
+| T043 | 124 | 99.65 / 99.06 / 100 / 97.67 | ok |
+| T044 | 124 | 99.65 / 99.06 / 100 / 97.67 | TDD em andamento em us6-odometry.test.ts |
+| T045 | 127 | 99.66 / 99.06 / 100 / 97.67 | ok |
+| T046 | 127 | 96.71 / 95.79 / 100 / 95.02 | ok |
+| T047 | 128 | 96.72 / 95.79 / 100 / 95.02 | ok |
+| T048 | 129 | 96.72 / 95.79 / 100 / 95.02 | ok |
+| T049 | 129 | 96.72 / 95.79 / 100 / 95.02 | ok |
+
+### Evidências para o PR da Spec 001
+
+- **SC-001 e SC-002.** 129 testes passaram. Os 36 critérios têm testes identificados. A
+  comparação exata dos históricos e os dois modos de reset passaram.
+- **Cobertura de linhas.** 96.72% no projeto e 100.00% no núcleo.
+  O Vitest também confirmou os limites de instruções, funções e ramos. [Relatório](cobertura/resumo.md)
+- **SC-003.** 3.000 ticks com dois robôs em 5.47 ms na execução limpa com
+  Node 24.22.3, Linux x64 e Intel Core i5-1334U. A meta é menos de 1 segundo.
+- **Quickstart.** Instalação limpa, lint, tipos, suíte com cobertura, geração das métricas,
+  build, simulação por terminal, respostas de erro e servidor Vite verificados.
+  [Quickstart](../specs/001-nucleo-simulacao/quickstart.md)
+- **CI.** Os scripts de validação foram executados localmente com dados de push e pull
+  request. Ambos rejeitaram um commit inválido e métricas desatualizadas.
+- **Publicação.** T050 aguarda acesso autenticado ao GitHub para registrar estas evidências
+  no PR que inclui as tarefas restantes da implementação.
