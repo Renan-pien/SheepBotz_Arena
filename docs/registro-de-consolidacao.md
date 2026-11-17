@@ -244,3 +244,11 @@ As correções seguiram a ordem da spec, plano e contratos, modelo e tasks.
 A alteração manteve 36 requisitos funcionais, 48 cenários e 42 tarefas. U01, sobre a ordem
 de conversão dos logs excedentes, continua como achado médio da revisão.
 [ADR-016](decisoes.md#adr-016--fronteira-síncrona-dos-controladores-da-spec-002)
+
+## Execução da Spec 002
+
+Confirmação do usuário registrada para executar com o checklist de clarificação no estado atual. Cobertura na ordem instruções, ramos, funções e linhas.
+
+| Tarefa | Testes | Projeto (%) | Núcleo (%) | Evidência |
+|---|---|---|---|---|
+| T001 | 129 passaram / 0 falharam | 95.79 / 95.02 / 100 / 96.72 | 99.27 / 97.87 / 100.00 / 100.00 | Node 24.22.3. npm ci, lint, tipos e cobertura passaram. Gatilhos de push e pull_request conferidos. |
