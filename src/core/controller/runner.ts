@@ -1,0 +1,40 @@
+import type { Command, SimEvent, SimState, World } from '../types';
+import { createControllerScope, type ControllerFrame } from './api';
+import type { LoadedController } from './runtime';
+
+export function createControllerRunner(world: World) {
+  const scopes = new Map<string, ReturnType<typeof createControllerScope>>();
+
+  function scope(id: string) {
+    let controller = scopes.get(id);
+    if (!controller) {
+      controller = createControllerScope(id);
+      scopes.set(id, controller);
+    }
+    return controller;
+  }
+
+  return {
+    bindingsFor: (id: string) => scope(id).bindings,
+    run(
+      state: SimState,
+      commands: Readonly<Record<string, Command>>,
+      scripts: ReadonlyMap<string, LoadedController>,
+    ) {
+      const events: SimEvent[] = [];
+      const requested = Object.entries(commands);
+      for (const [index, { id }] of world.robots.entries()) {
+        const script = scripts.get(id);
+        if (!script) continue;
+        const robot = state.robots[index]!;
+        const frame: ControllerFrame = { robot, tick: state.tick + 1, events };
+        const controller = scope(id);
+        if (state.tick === 0 && script.setup)
+          controller.invoke(frame, script.setup);
+        controller.invoke(frame, script.loop);
+        if (frame.command) requested.push([id, frame.command]);
+      }
+      return { commands: Object.fromEntries(requested), events };
+    },
+  };
+}
