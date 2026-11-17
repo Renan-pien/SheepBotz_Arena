@@ -16,8 +16,12 @@ export interface ControllerEngine {
 }
 
 export function errorDetail(error: unknown): string {
-  if (error && typeof error === 'object' && 'message' in error) {
-    return String(error.message);
+  try {
+    if (error && typeof error === 'object' && 'message' in error) {
+      return String(error.message);
+    }
+    return String(error);
+  } catch {
+    return 'O controlador lançou um valor sem mensagem.';
   }
-  return String(error);
 }

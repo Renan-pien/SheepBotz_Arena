@@ -1,6 +1,6 @@
 import type { Command, RobotState, SimEvent, World } from '../types';
 import { createControllerRandom } from './random';
-import type { ControllerBindings } from './runtime';
+import { errorDetail, type ControllerBindings } from './runtime';
 
 export interface ControllerFrame {
   readonly robot: RobotState;
@@ -8,6 +8,7 @@ export interface ControllerFrame {
   readonly observedTime: number;
   readonly events: SimEvent[];
   command?: Command;
+  failure?: string;
 }
 
 export function createControllerScope(world: World, index: number) {
@@ -53,7 +54,8 @@ export function createControllerScope(world: World, index: number) {
         !Number.isFinite(v) ||
         !Number.isFinite(w)
       ) {
-        throw new TypeError('setSpeed exige dois números finitos.');
+        active.failure ??= 'setSpeed exige dois números finitos.';
+        throw new TypeError(active.failure);
       }
       active.command = { v, w };
     },
@@ -91,6 +93,8 @@ export function createControllerScope(world: World, index: number) {
       current = active;
       try {
         callback();
+      } catch (error) {
+        active.failure ??= errorDetail(error);
       } finally {
         current = undefined;
       }
