@@ -156,11 +156,16 @@ function addDuplicateErrors(
 }
 
 export function validateDocument(
-  document: Record<string, unknown>,
+  worldData: Record<string, unknown>,
   issues: ValidationError[],
 ): PartialWorld {
   // O schema mantém os índices e devolve undefined para campos inválidos.
-  const data = validateValue(worldSchema, document, '', issues) as PartialWorld;
+  const data = validateValue(
+    worldSchema,
+    worldData,
+    '',
+    issues,
+  ) as PartialWorld;
   addDuplicateErrors(data.obstacles, 'obstacles', issues);
   addDuplicateErrors(data.robots, 'robots', issues);
   return data;

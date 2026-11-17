@@ -4,17 +4,18 @@ import { checkWorldGeometry } from './geometry-checks';
 import { isObject, normalizeWorld, validateDocument } from './validate';
 
 export function loadWorld(text: string): LoadWorldResult {
-  let document: unknown;
+  let worldData: unknown;
   try {
-    document = JSON.parse(text);
+    worldData = JSON.parse(text);
   } catch (cause) {
     return { ok: false, errors: [errors.invalidJson(cause)] };
   }
-  if (!isObject(document)) return { ok: false, errors: [errors.invalidRoot()] };
+  if (!isObject(worldData))
+    return { ok: false, errors: [errors.invalidRoot()] };
 
   const issues: ValidationError[] = [];
-  const validated = validateDocument(document, issues);
-  checkWorldGeometry(validated, Object.hasOwn(document, 'arena'), issues);
+  const validated = validateDocument(worldData, issues);
+  checkWorldGeometry(validated, Object.hasOwn(worldData, 'arena'), issues);
   if (issues.length) return { ok: false, errors: issues };
   return { ok: true, world: normalizeWorld(validated) };
 }
