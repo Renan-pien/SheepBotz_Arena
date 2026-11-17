@@ -100,7 +100,7 @@ description: "Tarefas de implementação dos sensores, controladores e regras de
 
 ### Testes
 
-- [ ] T026 [P] [US4] Escrever `S2-US4-AC3`, `S2-US4-AC4` e `S2-US4-AC5` para exceção em `loop()`, velocidade inválida e falha de `setup()`. Cobrir o descarte do comando pendente, inclusive se a exceção de `setSpeed` for capturada, e a preservação dos logs emitidos — `tests/core/acceptance/s2/us4-falha-em-tick.test.ts` — S2-FR-019, S2-FR-025, S2-FR-026, S2-SC-004. **Dep.** T025. **Pronto** Três critérios verdes com T028 e T029.
+- [X] T026 [P] [US4] Escrever `S2-US4-AC3`, `S2-US4-AC4` e `S2-US4-AC5` para exceção em `loop()`, velocidade inválida e falha de `setup()`. Cobrir o descarte do comando pendente, inclusive se a exceção de `setSpeed` for capturada, e a preservação dos logs emitidos — `tests/core/acceptance/s2/us4-falha-em-tick.test.ts` — S2-FR-019, S2-FR-025, S2-FR-026, S2-SC-004. **Dep.** T025. **Pronto** Três critérios verdes com T028 e T029.
 - [ ] T027 [P] [US4] Escrever `S2-US4-AC6` com os dois controladores do cenário, desativação antes do movimento e empurrão até a posição e tick especificados — `tests/core/acceptance/s2/us4-desativado-sumo.test.ts` — S2-FR-025 a S2-FR-027, S2-FR-031. **Dep.** T025. **Pronto** Cenário verde com T029.
 
 ### Implementação
