@@ -282,3 +282,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T027 | 215 passaram / 0 falharam | 96.31 / 94.71 / 99.18 / 97.03 | 98.39 / 97.27 / 99.09 / 99.10 | RED anterior. Desativação no tick 1, comando zero, empurrão e derrota no tick 34 verificados. |
 | T032 | 216 passaram / 0 falharam | 96.31 / 94.71 / 99.18 / 97.03 | 98.39 / 97.27 / 99.09 / 99.10 | Arquivos de exemplo e execução pelos contratos públicos validados. |
 | T030 | 216 passaram / 0 falharam | 96.31 / 94.71 / 99.18 / 97.03 | 98.39 / 97.27 / 99.09 / 99.10 | RED anterior pela ausência dos arquivos, com base de 215 testes medida. Exemplos validados após T032. |
+| T033 | 223 passaram / 0 falharam | 96.48 / 94.96 / 99.18 / 97.03 | 98.59 / 97.58 / 99.09 / 99.10 | Arquivos de exemplo e execução pelos contratos públicos validados. |

@@ -16,6 +16,27 @@ export default defineConfig(
   js.configs.recommended,
   tseslint.configs.recommended,
   {
+    files: ['examples/controllers/*.js'],
+    languageOptions: {
+      sourceType: 'script',
+      globals: {
+        getInfo: 'readonly',
+        log: 'readonly',
+        random: 'readonly',
+        readBumper: 'readonly',
+        readLaser: 'readonly',
+        readOdometry: 'readonly',
+        setSpeed: 'readonly',
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { varsIgnorePattern: '^(setup|loop)$' },
+      ],
+    },
+  },
+  {
     files: ['src/ui/**/*.{ts,tsx}'],
     extends: [reactHooks.configs.flat.recommended],
   },

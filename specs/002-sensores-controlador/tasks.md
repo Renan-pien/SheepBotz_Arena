@@ -122,7 +122,7 @@ description: "Tarefas de implementação dos sensores, controladores e regras de
 ### Implementação
 
 - [X] T032 [US5] Adicionar o JSON de Sala com obstáculos conforme o Anexo C e reaproveitar o Duelo padrão da S1 no catálogo de exemplos. Usar o contrato de mundo v1 — `examples/worlds/sala-com-obstaculos.json` — S2-FR-001, S2-FR-033, S2-FR-035. **Dep.** T030 (RED), T031 (RED). **Pronto** Ambos os mundos passam pelo validador existente. Campos [`World.name`, `World.seed`, `World.dt`, `World.map`, `World.arena`, `World.match`, `World.obstacles`, `World.robots`, `RobotConfig.laser`](data-model.md#configuração-e-entrada).
-- [ ] T033 [US5] Adicionar Parado, Avança, Girador, Caçador e Desviador conforme o Anexo D e carregar os arquivos pela fachada nos cenários US5 — `examples/controllers/parado.js`, `examples/controllers/avanca.js`, `examples/controllers/girador.js`, `examples/controllers/cacador.js`, `examples/controllers/desviador.js` — S2-FR-009, S2-FR-012, S2-FR-036. **Dep.** T031 (RED), T032. **Pronto** Os três critérios da US5 passam. Campos [`Entrada de controlador.ID do robô`, `Entrada de controlador.texto JS`](data-model.md#configuração-e-entrada).
+- [X] T033 [US5] Adicionar Parado, Avança, Girador, Caçador e Desviador conforme o Anexo D e carregar os arquivos pela fachada nos cenários US5 — `examples/controllers/parado.js`, `examples/controllers/avanca.js`, `examples/controllers/girador.js`, `examples/controllers/cacador.js`, `examples/controllers/desviador.js` — S2-FR-009, S2-FR-012, S2-FR-036. **Dep.** T031 (RED), T032. **Pronto** Os três critérios da US5 passam. Campos [`Entrada de controlador.ID do robô`, `Entrada de controlador.texto JS`](data-model.md#configuração-e-entrada).
 
 ## Fase 8 · Acabamento e validação
 
