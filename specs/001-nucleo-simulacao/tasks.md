@@ -88,7 +88,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 - [X] T028 [US2] Implementar `step` com as etapas 2, 3, 4 e 8 do FR-017; etapas 1, 5, 6, 7 e 9 como funções nomeadas sem efeito, documentadas, a serem preenchidas nas próximas user stories — `src/core/sim/step.ts` — S1-FR-017, S1-FR-021, S1-FR-023
 - [X] T029 [US2] Implementar a fachada `createSimulation` (`getState`, `step`, `stepN` com `RangeError`, `reset`, `getHistory`). No reset com histórico habilitado, substituir a lista anterior por outra contendo apenas o estado do tick 0. Com histórico desabilitado, retornar lista vazia na consulta — `src/core/sim/simulation.ts` — S1-FR-015, S1-FR-038, S1-FR-039
   Campos do modelo [`SimState.tick`](data-model.md#estado-da-simulação) e [`SimulationOptions.history`](data-model.md#transições).
-- [ ] T030 [P] [US2] Escrever testes unitários de `runHeadless`: `ROBO_INEXISTENTE`, `COMANDO_INVALIDO`, acúmulo de erros, ticks inválidos (`RangeError`) e histórico — `tests/core/unit/run-headless.test.ts` — S1-FR-033, S1-FR-035
+- [X] T030 [P] [US2] Escrever testes unitários de `runHeadless`: `ROBO_INEXISTENTE`, `COMANDO_INVALIDO`, acúmulo de erros, ticks inválidos (`RangeError`) e histórico — `tests/core/unit/run-headless.test.ts` — S1-FR-033, S1-FR-035
 - [ ] T031 [US2] Implementar `runHeadless` e exportar `createInitialState`, `step`, `createSimulation` e `runHeadless` — `src/core/api/run-headless.ts`, `src/core/index.ts` — S1-FR-032 a S1-FR-035
   Campos do modelo [`HeadlessInput.world`, `HeadlessInput.commands`, `HeadlessInput.ticks`, `HeadlessInput.history`, `HeadlessResult.ok`, `HeadlessResult.state`, `HeadlessResult.history` e `HeadlessResult.errors`](data-model.md#execução-sem-interface).
 
