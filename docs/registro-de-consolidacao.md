@@ -267,3 +267,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T004 | 184 passaram / 0 falharam | 95.42 / 93.35 / 99.12 / 96.35 | 97.53 / 95.92 / 99.01 / 98.50 | RED da preparação por interfaces ausentes. Unidade ficou verde em T008 e os casos públicos passaram em T016. |
 | T005 | 184 passaram / 0 falharam | 95.42 / 93.35 / 99.12 / 96.35 | 97.53 / 95.92 / 99.01 / 98.50 | RED anterior, ciclo unitário verde em T015 e comparações públicas de comandos, reset e paridade verdes em T016. |
 | T010 | 184 passaram / 0 falharam | 95.42 / 93.35 / 99.12 / 96.35 | 97.53 / 95.92 / 99.01 / 98.50 | RED com quatro falhas esperadas antes da integração. Cenários de leitura, cópia e reset passam em T016. |
+| T019 | 189 passaram / 0 falharam | 95.67 / 93.69 / 99.15 / 96.4 | 97.80 / 96.31 / 99.05 / 98.53 | Testes da API e determinismo correspondentes passaram, com cobertura medida. |

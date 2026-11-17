@@ -8,7 +8,8 @@ export function createControllerRunner(world: World) {
   function scope(id: string) {
     let controller = scopes.get(id);
     if (!controller) {
-      controller = createControllerScope(id);
+      const index = world.robots.findIndex((robot) => robot.id === id);
+      controller = createControllerScope(world, index);
       scopes.set(id, controller);
     }
     return controller;
@@ -27,7 +28,12 @@ export function createControllerRunner(world: World) {
         const script = scripts.get(id);
         if (!script) continue;
         const robot = state.robots[index]!;
-        const frame: ControllerFrame = { robot, tick: state.tick + 1, events };
+        const frame: ControllerFrame = {
+          robot,
+          tick: state.tick + 1,
+          observedTime: state.time,
+          events,
+        };
         const controller = scope(id);
         if (state.tick === 0 && script.setup)
           controller.invoke(frame, script.setup);

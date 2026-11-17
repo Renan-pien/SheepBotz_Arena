@@ -1,14 +1,17 @@
-import type { Command, RobotState, SimEvent } from '../types';
+import type { Command, RobotState, SimEvent, World } from '../types';
 import type { ControllerBindings } from './runtime';
 
 export interface ControllerFrame {
   readonly robot: RobotState;
   readonly tick: number;
+  readonly observedTime: number;
   readonly events: SimEvent[];
   command?: Command;
 }
 
-export function createControllerScope(id: string) {
+export function createControllerScope(world: World, index: number) {
+  const config = world.robots[index]!;
+  const { id } = config;
   let current: ControllerFrame | undefined;
   const limit = { acceptedCount: 0, warningEmitted: false };
 
@@ -20,6 +23,22 @@ export function createControllerScope(id: string) {
 
   const bindings: ControllerBindings = {
     readLaser: () => [...frame().robot.laser],
+    readBumper: () => frame().robot.bumper,
+    readOdometry: () => ({ ...frame().robot.odometry }),
+    getInfo() {
+      const active = frame();
+      return {
+        id,
+        tick: active.tick - 1,
+        time: active.observedTime,
+        dt: world.dt,
+        radius: config.radius,
+        maxLinearSpeed: config.maxLinearSpeed,
+        maxAngularSpeed: config.maxAngularSpeed,
+        arenaRadius: world.arena?.radius ?? null,
+        laser: config.laser ? { ...config.laser } : null,
+      };
+    },
     setSpeed(v, w) {
       const active = frame();
       if (
