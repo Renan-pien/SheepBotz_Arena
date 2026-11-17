@@ -51,10 +51,9 @@ quickstart e os ensaios de regeneração pertencem às etapas de implementação
   aberta quanto ao formato aceito pelo professor. A proposta na pergunta põe o HTML completo no
   repositório, enquanto a pesquisa R10 e o plan tratam o HTML como artefato de CI e versionam
   o resumo e o JSON.
-- **Leituras de laser da S2.** S2-FR-007 calcula a leitura no estado do início do tick e S2-FR-008
-  pede que as leituras no estado correspondam àquele estado. A revisão da S2 deve explicitar
-  quais leituras aparecem no estado publicado e no tick 0, preservando o contrato do controlador
-  e o consumo pela cena da S3.
+- **Leituras de laser da S2.** A Q-010 foi resolvida no ADR-009. O controlador observa o início do
+  passo e cada estado publicado guarda as leituras das próprias poses. A Spec 002 registra a regra
+  e os casos de aceite.
 - **Origem dos requisitos.** A revisão da S1 completou as referências exigidas pelo Princípio VI.
   A revisão da S2 ainda deve tratar casos como S2-FR-006.
   A [matriz](rastreabilidade.md) ainda é um esqueleto do dossiê, inclusive para a S1, que já tem
@@ -182,3 +181,66 @@ checkpoint integrado.
 - **Publicação.** A descrição do [PR #2](https://github.com/Renan-pien/SheepBotz_Arena/pull/2)
   foi conferida no GitHub e contém os resultados do quickstart e do benchmark. A conferência
   confirmou que o PR compara `001-nucleo-simulacao` com `main`. T050 concluída.
+
+## 2026-11-17 · Clarificação da S2
+
+A [Spec 002](../specs/002-sensores-controlador/spec.md#clarifications) registra cinco
+respostas confirmadas, da Q-010 à Q-014. Os [ADRs](decisoes.md) documentam a leitura do laser,
+o carregamento dos controladores, o limite do histórico, a devolução conjunta das falhas de
+carregamento e a associação do evento de fim da luta. Os cenários de aceitação cobrem cada
+decisão. A próxima etapa do AGENTS.md §4 é o checklist da spec, seguido do planejamento.
+
+## 2026-11-17 · Checklist da S2
+
+A revisão documental conferiu os 36 requisitos funcionais e os 44 cenários de aceite da
+Spec 002. As cinco decisões da clarificação estão refletidas nos requisitos e nos cenários.
+O checklist registra sete verificações conformes, seis pendências documentais e uma dependência
+externa. A Q-015 registra a lacuna no contrato de erros para entradas incompatíveis. O
+procedimento de benchmark e a premissa da Q-001 foram encaminhados ao plano.
+[Checklist da Spec 002](../specs/002-sensores-controlador/checklists/clarificacao.md)
+
+### Revalidação após aprovação da Q-015
+
+- O ADR-014 registra o contrato de erros e a lista conjunta de falhas. A Spec 002 inclui
+  os cenários para ID ausente, comando concorrente e combinação com falha de carregamento.
+- A Spec 002 cobre os limites do sumô, o deslocamento por empurrão do robô desativado, a janela
+  de execução em modo livre, o benchmark de 3 000 ticks e a origem dos 36 requisitos.
+- O núcleo da S1 confirmou os centros a 0,5000 m e 0,5625 m nos ticks 1 e 2 do cenário de
+  borda, o empurrão para 0,390 m no tick 34 e as posições fixas dos centros na referência de
+  3 000 ticks. A medição de desempenho da S2 fica para a implementação.
+- A revalidação reuniu 48 cenários e 14 verificações, com 13 conformes e a Q-001 registrada
+  como premissa. A próxima etapa é `$speckit-plan`.
+  [Avaliação do checklist](../specs/002-sensores-controlador/checklists/clarificacao.md#avaliação-documental)
+
+## 2026-11-17 · Planejamento da S2
+
+O plano, a pesquisa, o modelo de dados, os contratos e o quickstart registram o desenho de
+laser, controladores e sumô. O Constitution Check foi conferido com o mapa dos 36 requisitos
+e a avaliação dos 14 itens do checklist. Q-001 permanece como premissa externa.
+O ensaio isolado avaliou o runtime em Node 24.22.3 e em Chrome com Vite. A suíte de
+regressão da S1 passou com 129 testes em Node 24.22.3.
+O ADR-015 registra a proposta técnica e seus consumidores. A etapa seguinte é gerar as tasks.
+[Plano da Spec 002](../specs/002-sensores-controlador/plan.md)
+
+## 2026-11-17 · Tarefas da S2
+
+Foram organizadas 42 tarefas em oito fases, com dependências, arquivos, critérios de conclusão
+e rastreabilidade. A fundação antecipa testes dos 7 cenários da US2 e dos 8 cenários da US4 que
+exercitam o código compartilhado pela primeira fatia. A validação documental confirmou o formato,
+a cobertura dos 36 requisitos e dos 48 cenários, as referências ao modelo e a ausência de
+dependências para tarefas posteriores. A próxima etapa é `$speckit-analyze`.
+[Tarefas da Spec 002](../specs/002-sensores-controlador/tasks.md)
+
+### Correções da análise da S2
+
+As correções seguiram a ordem da spec, plano e contratos, modelo e tasks.
+
+| Achados | Alteração |
+|---|---|
+| C01 e C02 | ADR-016, requisitos FR-009, FR-012 e FR-024 e perfil síncrono no plano. Presença de `Promise` e `Array.fromAsync` verificada como indisponível em ensaios isolados em Node 24.22.3 e Chrome com Vite. Os ensaios deram a mesma sequência em lote e passo a passo. |
+| A01 e R01 | `SimState.resultado` explícito em cada snapshot, com `null` durante a execução. Modelo e tasks usam `ControllerLogLimit.acceptedCount`, `ControllerLogLimit.warningEmitted` e `ControllerRandom.state`. |
+| V01 e O01 | S2-US1-AC2 e Anexo A agora usam mapa de 4 × 2 m com vetor rotacionado distinto. T011 prepara os vetores unitários de `laser.ts`, T013 os verifica e T014 valida os cenários públicos do tick 0. |
+
+A alteração manteve 36 requisitos funcionais, 48 cenários e 42 tarefas. U01, sobre a ordem
+de conversão dos logs excedentes, continua como achado médio da revisão.
+[ADR-016](decisoes.md#adr-016--fronteira-síncrona-dos-controladores-da-spec-002)
