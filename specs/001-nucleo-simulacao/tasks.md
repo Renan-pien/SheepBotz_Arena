@@ -37,7 +37,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 
 ## Fase 2 — Fundação (bloqueia todas as user stories)
 
-- [ ] T008 [P] Declarar os tipos públicos conforme `data-model.md` — `src/core/types.ts` — S1-FR-034
+- [X] T008 [P] Declarar os tipos públicos conforme `data-model.md` — `src/core/types.ts` — S1-FR-034
 - [ ] T009 [P] Criar os helpers de teste: `expectClose` (±0.001), `expectAngleClose` (por `angleDiff`), `expectPoseClose`; e o construtor do mundo-base de teste (mapa 4 × 4, modo livre, `dt` 0.1, robôs de raio 0.1, `maxLinearSpeed` 1.0, `maxAngularSpeed` 6.0), que gera o texto JSON com sobrescritas — `tests/helpers/tolerance.ts`, `tests/helpers/world-builder.ts` — S1-FR-040
 - [ ] T010 Escrever testes de ângulo: `normalizeAngle(7) ≈ 0.716815`, `normalizeAngle(3.5) ≈ −2.783185`, `normalizeAngle(−π) = π`, `normalizeAngle(π) = π`, `normalizeAngle(0) = 0`, `angleDiff(π, −π) = 0` — `tests/core/unit/angle.test.ts` — S1-FR-012, S1-FR-040
 - [ ] T011 Implementar `normalizeAngle` e `angleDiff` (research R5) — `src/core/math/angle.ts` — S1-FR-012
