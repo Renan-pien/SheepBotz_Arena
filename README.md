@@ -1,9 +1,8 @@
 # SheepBotz Arena
 
-**3 testes · 95% de cobertura**
+**129 testes · 96% de cobertura**
 
-Este é o valor inicial do projeto, anterior à implementação. A task `S1-T006` prevê a geração
-dessa linha a partir dos relatórios de testes e cobertura.
+Métricas geradas a partir dos relatórios com `npm run stats`.
 
 Simulador genérico de robôs móveis no navegador para a equipe **Univille SheepBotz**, com lógica 2D,
 visualização 3D e sumô como modalidade de demonstração. O projeto usa GitHub Spec Kit. O usuário
@@ -17,9 +16,21 @@ descreve o mundo em JSON, define controladores em JavaScript e acompanha a simul
 | [002](specs/002-sensores-controlador/spec.md) | Sensores, controlador e regras do sumô | Spec |
 | [003](specs/003-visualizacao-operacao/spec.md) | Visualização 3D e operação | Spec |
 
-O repositório está na fase documental, com a estrutura inicial de `src/`, `tests/`, `examples/`
-e `scripts/`. Os comandos planejados para executar e validar o núcleo estão no
-[quickstart da Spec 001](specs/001-nucleo-simulacao/quickstart.md).
+A Spec 001 fornece a biblioteca e a CLI de simulação. A interface exibe a tela inicial
+da prova de conceito. Sensores de alcance e visualização 3D pertencem às etapas seguintes.
+
+## Como rodar
+
+Com Node 24, instale as dependências e execute o exemplo headless.
+
+```bash
+npm ci
+npm run --silent sim -- --world examples/worlds/duelo-padrao.json --ticks 10 --command vermelho=1,0 --pretty
+```
+
+Para abrir a tela inicial, use `npm run dev`. Para validar a implementação, rode
+`npm run lint`, `npm run typecheck` e `npm run test:coverage`.
+[Quickstart da Spec 001](specs/001-nucleo-simulacao/quickstart.md)
 
 ## Documentação
 

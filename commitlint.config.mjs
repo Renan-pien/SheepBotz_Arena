@@ -13,7 +13,8 @@ export default {
           'Use tipo(escopo): descrição com o escopo de uma tarefa ou artefato SDD.',
         ],
         'sheepbotz-requirements': (parsed) => [
-          !task.test(parsed.header ?? '') || /^Requisitos: \S.+$/m.test(parsed.raw),
+          !task.test(parsed.header ?? '') ||
+            /^Requisitos: \S.+$/m.test(parsed.raw),
           'Commits de tarefa devem incluir a linha Requisitos: .',
         ],
       },

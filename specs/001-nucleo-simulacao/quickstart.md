@@ -34,6 +34,8 @@ npm run stats
 
 ## 5. Execução sem interface
 
+Use `npm run --silent sim -- ...` para capturar apenas o JSON, sem o cabeçalho do npm.
+
 **Movimento simples:**
 
 ```bash

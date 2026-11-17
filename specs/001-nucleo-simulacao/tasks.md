@@ -56,18 +56,18 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** carregar arquivos de mundo e devolver o mundo normalizado ou todos os erros.
 **Teste independente:** `loadWorld` com os arquivos da spec, sem executar ticks.
 
-- [ ] T016 [US1] Escrever os testes de aceitação S1-US1-AC1 a S1-US1-AC11, incluindo as duas variantes de posição do centro na arena — `tests/core/acceptance/s1/us1-world-validation.test.ts` — S1-FR-001 a S1-FR-012
-- [ ] T017 [P] [US1] Criar fixtures de mundos inválidos: um por código do Anexo C da spec (de `ARQUIVO_INVALIDO` a `REGRA_DA_MODALIDADE`) e `invalido-tres-erros.json` (`dt` 0.5, `seed` −1, `robots[0].radius` 0) — `tests/fixtures/worlds/*.json` — S1-SC-004
-- [ ] T018 [P] [US1] Escrever testes unitários por código de erro usando as fixtures (código, caminho e mensagem contendo o caminho) — `tests/core/unit/validate.test.ts` — S1-FR-003 a S1-FR-005, S1-SC-004
-- [ ] T019 [US1] Implementar códigos, criador de erro e mensagens de `contracts/errors.md` — `src/core/world/errors.ts` — S1-FR-003, S1-FR-004
+- [X] T016 [US1] Escrever os testes de aceitação S1-US1-AC1 a S1-US1-AC11, incluindo as duas variantes de posição do centro na arena — `tests/core/acceptance/s1/us1-world-validation.test.ts` — S1-FR-001 a S1-FR-012
+- [X] T017 [P] [US1] Criar fixtures de mundos inválidos: um por código do Anexo C da spec (de `ARQUIVO_INVALIDO` a `REGRA_DA_MODALIDADE`) e `invalido-tres-erros.json` (`dt` 0.5, `seed` −1, `robots[0].radius` 0) — `tests/fixtures/worlds/*.json` — S1-SC-004
+- [X] T018 [P] [US1] Escrever testes unitários por código de erro usando as fixtures (código, caminho e mensagem contendo o caminho) — `tests/core/unit/validate.test.ts` — S1-FR-003 a S1-FR-005, S1-SC-004
+- [X] T019 [US1] Implementar códigos, criador de erro e mensagens de `contracts/errors.md` — `src/core/world/errors.ts` — S1-FR-003, S1-FR-004
   Campos do modelo [`ValidationError.code`, `ValidationError.path` e `ValidationError.message`](data-model.md#erros).
-- [ ] T020 [US1] Implementar a descrição declarativa dos campos do Anexo B (tipo, obrigatório, padrão, intervalo, inteiro, formato, limites de lista) — `src/core/world/schema.ts` — S1-FR-001, S1-FR-006
+- [X] T020 [US1] Implementar a descrição declarativa dos campos do Anexo B (tipo, obrigatório, padrão, intervalo, inteiro, formato, limites de lista) — `src/core/world/schema.ts` — S1-FR-001, S1-FR-006
   Campos do modelo [`World.name`, `World.seed`, `World.dt`, `World.map`, `World.map.width`, `World.map.height`, `World.arena.radius`, `World.match.mode`, `World.match.maxTicks`, `World.obstacles`, `World.robots`, `Obstacle.id`, `Obstacle.x`, `Obstacle.y`, `Obstacle.width`, `Obstacle.height`, `RobotConfig.id`, `RobotConfig.initialPose`, `RobotConfig.radius`, `RobotConfig.maxLinearSpeed`, `RobotConfig.maxAngularSpeed`, `RobotConfig.color`, `LaserConfig.rays`, `LaserConfig.fov` e `LaserConfig.maxRange`](data-model.md#mundo-normalizado).
-- [ ] T021 [US1] Implementar a validação estrutural: `JSON.parse`, percorredor acumulando erros, campos desconhecidos, padrões, normalização de `theta`, cores padrão e `ID_DUPLICADO` — `src/core/world/validate.ts` — S1-FR-001 a S1-FR-007, S1-FR-012
+- [X] T021 [US1] Implementar a validação estrutural: `JSON.parse`, percorredor acumulando erros, campos desconhecidos, padrões, normalização de `theta`, cores padrão e `ID_DUPLICADO` — `src/core/world/validate.ts` — S1-FR-001 a S1-FR-007, S1-FR-012
   Campos do modelo [`World.arena`, `World.match`, `Obstacle.id`, `RobotConfig.id`, `RobotConfig.initialPose`, `RobotConfig.color` e `RobotConfig.laser`](data-model.md#mundo-normalizado) e [`Pose.theta`](data-model.md#tipos-básicos). Arena e laser ausentes são normalizados para `null`.
-- [ ] T022 [US1] Implementar as verificações geométricas sobre itens válidos conforme `contracts/world.md`. No modo sumô, comparar a distância do centro inicial de cada robô ao raio da arena, com igualdade permitida. A validação das paredes do mapa considera o corpo inteiro — `src/core/world/geometry-checks.ts` — S1-FR-007 a S1-FR-011, S1-FR-013, S1-FR-014
+- [X] T022 [US1] Implementar as verificações geométricas sobre itens válidos conforme `contracts/world.md`. No modo sumô, comparar a distância do centro inicial de cada robô ao raio da arena, com igualdade permitida. A validação das paredes do mapa considera o corpo inteiro — `src/core/world/geometry-checks.ts` — S1-FR-007 a S1-FR-011, S1-FR-013, S1-FR-014
   Campos do modelo [`World.dt`, `World.map.width`, `World.map.height`, `World.arena`, `World.arena.radius`, `World.match.mode`, `World.obstacles`, `World.robots`, `RobotConfig.initialPose`, `RobotConfig.radius` e `RobotConfig.maxLinearSpeed`](data-model.md#mundo-normalizado).
-- [ ] T023 [US1] Implementar `loadWorld` e exportá-la — `src/core/world/load-world.ts`, `src/core/index.ts` — S1-FR-002
+- [X] T023 [US1] Implementar `loadWorld` e exportá-la — `src/core/world/load-world.ts`, `src/core/index.ts` — S1-FR-002
   Campos do modelo [`LoadWorldResult.ok`, `LoadWorldResult.world` e `LoadWorldResult.errors`](data-model.md#erros).
 
 **Checkpoint:** S1-US1 passa por completo.
@@ -79,17 +79,17 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** robôs se movem por comandos constantes, com execução sem interface.
 **Teste independente:** `runHeadless` com um robô e comando constante.
 
-- [ ] T024 [US2] Escrever os testes de aceitação S1-US2-AC1 a S1-US2-AC8, via `runHeadless` — `tests/core/acceptance/s1/us2-kinematics.test.ts` — S1-FR-018 a S1-FR-020, S1-FR-032
-- [ ] T025 [P] [US2] Escrever testes unitários de `saturate` e `integratePose` (um passo; θ normalizado) — `tests/core/unit/kinematics.test.ts` — S1-FR-019, S1-FR-020
-- [ ] T026 [US2] Implementar `saturate` e `integratePose` (fórmulas do FR-019 e FR-020) — `src/core/sim/kinematics.ts` — S1-FR-019, S1-FR-020, S1-FR-022
+- [X] T024 [US2] Escrever os testes de aceitação S1-US2-AC1 a S1-US2-AC8, via `runHeadless` — `tests/core/acceptance/s1/us2-kinematics.test.ts` — S1-FR-018 a S1-FR-020, S1-FR-032
+- [X] T025 [P] [US2] Escrever testes unitários de `saturate` e `integratePose` (um passo; θ normalizado) — `tests/core/unit/kinematics.test.ts` — S1-FR-019, S1-FR-020
+- [X] T026 [US2] Implementar `saturate` e `integratePose` (fórmulas do FR-019 e FR-020) — `src/core/sim/kinematics.ts` — S1-FR-019, S1-FR-020, S1-FR-022
   Campos do modelo [`Pose.x`, `Pose.y`, `Pose.theta`, `Command.v` e `Command.w`](data-model.md#tipos-básicos) e [`RobotConfig.maxLinearSpeed` e `RobotConfig.maxAngularSpeed`](data-model.md#mundo-normalizado).
-- [ ] T027 [US2] Implementar `createInitialState` (tick 0, tempo 0, comando (0, 0), bumper falso, odometria igual à pose inicial) — `src/core/sim/state.ts` — S1-FR-015, S1-FR-018, S1-FR-034
+- [X] T027 [US2] Implementar `createInitialState` (tick 0, tempo 0, comando (0, 0), bumper falso, odometria igual à pose inicial) — `src/core/sim/state.ts` — S1-FR-015, S1-FR-018, S1-FR-034
   Campos do modelo [`SimState.tick`, `SimState.time`, `SimState.robots`, `RobotState.id`, `RobotState.pose`, `RobotState.command`, `RobotState.bumper` e `RobotState.odometry`](data-model.md#estado-da-simulação).
-- [ ] T028 [US2] Implementar `step` com as etapas 2, 3, 4 e 8 do FR-017; etapas 1, 5, 6, 7 e 9 como funções nomeadas sem efeito, documentadas, a serem preenchidas nas próximas user stories — `src/core/sim/step.ts` — S1-FR-017, S1-FR-021, S1-FR-023
-- [ ] T029 [US2] Implementar a fachada `createSimulation` (`getState`, `step`, `stepN` com `RangeError`, `reset`, `getHistory`). No reset com histórico habilitado, substituir a lista anterior por outra contendo apenas o estado do tick 0. Com histórico desabilitado, retornar lista vazia na consulta — `src/core/sim/simulation.ts` — S1-FR-015, S1-FR-038, S1-FR-039
+- [X] T028 [US2] Implementar `step` com as etapas 2, 3, 4 e 8 do FR-017; etapas 1, 5, 6, 7 e 9 como funções nomeadas sem efeito, documentadas, a serem preenchidas nas próximas user stories — `src/core/sim/step.ts` — S1-FR-017, S1-FR-021, S1-FR-023
+- [X] T029 [US2] Implementar a fachada `createSimulation` (`getState`, `step`, `stepN` com `RangeError`, `reset`, `getHistory`). No reset com histórico habilitado, substituir a lista anterior por outra contendo apenas o estado do tick 0. Com histórico desabilitado, retornar lista vazia na consulta — `src/core/sim/simulation.ts` — S1-FR-015, S1-FR-038, S1-FR-039
   Campos do modelo [`SimState.tick`](data-model.md#estado-da-simulação) e [`SimulationOptions.history`](data-model.md#transições).
-- [ ] T030 [P] [US2] Escrever testes unitários de `runHeadless`: `ROBO_INEXISTENTE`, `COMANDO_INVALIDO`, acúmulo de erros, ticks inválidos (`RangeError`) e histórico — `tests/core/unit/run-headless.test.ts` — S1-FR-033, S1-FR-035
-- [ ] T031 [US2] Implementar `runHeadless` e exportar `createInitialState`, `step`, `createSimulation` e `runHeadless` — `src/core/api/run-headless.ts`, `src/core/index.ts` — S1-FR-032 a S1-FR-035
+- [X] T030 [P] [US2] Escrever testes unitários de `runHeadless`: `ROBO_INEXISTENTE`, `COMANDO_INVALIDO`, acúmulo de erros, ticks inválidos (`RangeError`) e histórico — `tests/core/unit/run-headless.test.ts` — S1-FR-033, S1-FR-035
+- [X] T031 [US2] Implementar `runHeadless` e exportar `createInitialState`, `step`, `createSimulation` e `runHeadless` — `src/core/api/run-headless.ts`, `src/core/index.ts` — S1-FR-032 a S1-FR-035
   Campos do modelo [`HeadlessInput.world`, `HeadlessInput.commands`, `HeadlessInput.ticks`, `HeadlessInput.history`, `HeadlessResult.ok`, `HeadlessResult.state`, `HeadlessResult.history` e `HeadlessResult.errors`](data-model.md#execução-sem-interface).
 
 **Checkpoint:** S1-US1 e S1-US2 passam.
@@ -101,10 +101,10 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** mesmas entradas, mesmos estados; reinício confiável; execução por terminal.
 **Teste independente:** duas execuções comparadas estado a estado.
 
-- [ ] T032 [US3] Escrever os testes de aceitação S1-US3-AC1 a S1-US3-AC4. Comparar todos os estados por igualdade exata. Verificar o histórico imediatamente após o reset nos dois modos e comparar os 121 estados da repetição com os da execução original — `tests/core/acceptance/s1/us3-determinism.test.ts` — S1-FR-015, S1-FR-016, S1-FR-036, S1-FR-038
-- [ ] T033 [US3] Garantir tempo = tick × dt e recriar o estado inicial e o histórico conforme T029. Corrigir divergências detectadas em T032 — `src/core/sim/step.ts`, `src/core/sim/simulation.ts` — S1-FR-016, S1-FR-036, S1-FR-038
-- [ ] T034 [P] [US3] Escrever testes do comando de terminal: uso correto, `--command` repetido, `--history`, `--pretty`, mundo inválido (saída 1), argumento ausente ou arquivo inexistente (saída 2) — `tests/cli/run-cli.test.ts` — S1-FR-032, S1-FR-033
-- [ ] T035 [US3] Implementar `runCli(argv, io)` e o ponto de entrada; script `sim` com `tsx` (contracts/cli.md) — `src/cli/run-cli.ts`, `src/cli/index.ts`, `package.json` — S1-FR-032, S1-FR-033, RB-43
+- [X] T032 [US3] Escrever os testes de aceitação S1-US3-AC1 a S1-US3-AC4. Comparar todos os estados por igualdade exata. Verificar o histórico imediatamente após o reset nos dois modos e comparar os 121 estados da repetição com os da execução original — `tests/core/acceptance/s1/us3-determinism.test.ts` — S1-FR-015, S1-FR-016, S1-FR-036, S1-FR-038
+- [X] T033 [US3] Garantir tempo = tick × dt e recriar o estado inicial e o histórico conforme T029. Corrigir divergências detectadas em T032 — `src/core/sim/step.ts`, `src/core/sim/simulation.ts` — S1-FR-016, S1-FR-036, S1-FR-038
+- [X] T034 [P] [US3] Escrever testes do comando de terminal: uso correto, `--command` repetido, `--history`, `--pretty`, mundo inválido (saída 1), argumento ausente ou arquivo inexistente (saída 2) — `tests/cli/run-cli.test.ts` — S1-FR-032, S1-FR-033
+- [X] T035 [US3] Implementar `runCli(argv, io)` e o ponto de entrada; script `sim` com `tsx` (contracts/cli.md) — `src/cli/run-cli.ts`, `src/cli/index.ts`, `package.json` — S1-FR-032, S1-FR-033, RB-43
 
 **Checkpoint:** MVP completo (US1 a US3): mundo validado, movimento, determinismo e execução por terminal.
 
@@ -115,10 +115,10 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** robôs não atravessam paredes e obstáculos; bumper indica contato.
 **Teste independente:** robô contra parede e contra obstáculo.
 
-- [ ] T036 [US4] Escrever os testes de aceitação S1-US4-AC1 a S1-US4-AC5 — `tests/core/acceptance/s1/us4-collisions.test.ts` — S1-FR-027 a S1-FR-030
-- [ ] T037 [P] [US4] Escrever testes unitários: caso `0 < d < r`; caso `d = 0` para cada lado e desempate esquerdo, direito, inferior, superior; limitação às paredes; contato registrado; orientação inalterada — `tests/core/unit/obstacles.test.ts` — S1-FR-021, S1-FR-027 a S1-FR-029
-- [ ] T038 [US4] Implementar `resolveObstaclesAndWalls` — `src/core/sim/obstacles.ts` — S1-FR-027 a S1-FR-029
-- [ ] T039 [US4] Preencher a etapa 6 e o bumper da etapa 7 em `step` — `src/core/sim/step.ts` — S1-FR-017, S1-FR-030
+- [X] T036 [US4] Escrever os testes de aceitação S1-US4-AC1 a S1-US4-AC5 — `tests/core/acceptance/s1/us4-collisions.test.ts` — S1-FR-027 a S1-FR-030
+- [X] T037 [P] [US4] Escrever testes unitários: caso `0 < d < r`; caso `d = 0` para cada lado e desempate esquerdo, direito, inferior, superior; limitação às paredes; contato registrado; orientação inalterada — `tests/core/unit/obstacles.test.ts` — S1-FR-021, S1-FR-027 a S1-FR-029
+- [X] T038 [US4] Implementar `resolveObstaclesAndWalls` — `src/core/sim/obstacles.ts` — S1-FR-027 a S1-FR-029
+- [X] T039 [US4] Preencher a etapa 6 e o bumper da etapa 7 em `step` — `src/core/sim/step.ts` — S1-FR-017, S1-FR-030
 
 **Checkpoint:** S1-US1 a S1-US4 passam.
 
@@ -129,10 +129,10 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** robôs se empurram conforme a regra do FR-025.
 **Teste independente:** dois robôs em contato com comandos constantes.
 
-- [ ] T040 [US5] Escrever os testes de aceitação S1-US5-AC1 a S1-US5-AC5 — `tests/core/acceptance/s1/us5-push.test.ts` — S1-FR-024 a S1-FR-026
-- [ ] T041 [P] [US5] Escrever testes unitários: direção pela posição do início do tick; centros coincidentes (`n = (1, 0)`); candidatos que se cruzam; ordem dos pares com 3 robôs; contato apenas com distância estritamente menor — `tests/core/unit/contacts.test.ts` — S1-FR-024, S1-FR-025
-- [ ] T042 [US5] Implementar `resolveRobotContacts` — `src/core/sim/contacts.ts` — S1-FR-024 a S1-FR-026
-- [ ] T043 [US5] Preencher a etapa 5 em `step`, antes da etapa 6, e incluir o contato entre robôs no bumper — `src/core/sim/step.ts` — S1-FR-017, S1-FR-030
+- [X] T040 [US5] Escrever os testes de aceitação S1-US5-AC1 a S1-US5-AC5 — `tests/core/acceptance/s1/us5-push.test.ts` — S1-FR-024 a S1-FR-026
+- [X] T041 [P] [US5] Escrever testes unitários: direção pela posição do início do tick; centros coincidentes (`n = (1, 0)`); candidatos que se cruzam; ordem dos pares com 3 robôs; contato apenas com distância estritamente menor — `tests/core/unit/contacts.test.ts` — S1-FR-024, S1-FR-025
+- [X] T042 [US5] Implementar `resolveRobotContacts` — `src/core/sim/contacts.ts` — S1-FR-024 a S1-FR-026
+- [X] T043 [US5] Preencher a etapa 5 em `step`, antes da etapa 6, e incluir o contato entre robôs no bumper — `src/core/sim/step.ts` — S1-FR-017, S1-FR-030
 
 **Checkpoint:** S1-US1 a S1-US5 passam.
 
@@ -143,8 +143,8 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** pose estimada que ignora colisões e empurrões.
 **Teste independente:** comparar pose real e odometria em movimento livre, na parede e no empurrão.
 
-- [ ] T044 [US6] Escrever os testes de aceitação S1-US6-AC1 a S1-US6-AC3 — `tests/core/acceptance/s1/us6-odometry.test.ts` — S1-FR-031
-- [ ] T045 [US6] Atualizar a odometria na etapa 7 de `step` com `integratePose` sobre a própria odometria e o comando efetivo — `src/core/sim/step.ts` — S1-FR-031
+- [X] T044 [US6] Escrever os testes de aceitação S1-US6-AC1 a S1-US6-AC3 — `tests/core/acceptance/s1/us6-odometry.test.ts` — S1-FR-031
+- [X] T045 [US6] Atualizar a odometria na etapa 7 de `step` com `integratePose` sobre a própria odometria e o comando efetivo — `src/core/sim/step.ts` — S1-FR-031
 
 **Checkpoint:** toda a Spec 001 passa.
 
@@ -152,11 +152,11 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 
 ## Fase 9 — Acabamento
 
-- [ ] T046 [P] Criar o benchmark de 3 000 ticks com 2 robôs (fora da suíte de testes) — `scripts/bench.ts`, `package.json` — S1-SC-003
-- [ ] T047 [P] Criar teste de pureza que varre `src/core` e falha se encontrar `Math.random`, `Date`, `window`, `document` ou imports de `ui`/`cli` (redundância das regras de lint) — `tests/core/unit/purity.test.ts` — S1-FR-037
-- [ ] T048 Executar o `quickstart.md` do zero e corrigir divergências — vários — todos os FRs
-- [ ] T049 Atualizar o README (seção "Como rodar"), a seção S1 de `docs/rastreabilidade.md` e executar `npm run stats` — `README.md`, `docs/rastreabilidade.md`, `docs/cobertura/*` — RB-09, RB-12
-- [ ] T050 Registrar no pull request de fechamento o resultado do benchmark e do quickstart — PR — S1-SC-001 a S1-SC-003
+- [X] T046 [P] Criar o benchmark de 3 000 ticks com 2 robôs (fora da suíte de testes) — `scripts/bench.ts`, `package.json` — S1-SC-003
+- [X] T047 [P] Criar teste de pureza que varre `src/core` e falha se encontrar `Math.random`, `Date`, `window`, `document` ou imports de `ui`/`cli` (redundância das regras de lint) — `tests/core/unit/purity.test.ts` — S1-FR-037
+- [X] T048 Executar o `quickstart.md` do zero e corrigir divergências — vários — todos os FRs
+- [X] T049 Atualizar o README (seção "Como rodar"), a seção S1 de `docs/rastreabilidade.md` e executar `npm run stats` — `README.md`, `docs/rastreabilidade.md`, `docs/cobertura/*` — RB-09, RB-12
+- [X] T050 Registrar no pull request de fechamento o resultado do benchmark e do quickstart — [PR #2](https://github.com/Renan-pien/SheepBotz_Arena/pull/2) — S1-SC-001 a S1-SC-003
 
 ---
 

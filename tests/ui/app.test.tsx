@@ -4,5 +4,7 @@ import { App } from '../../src/ui/App';
 
 it('exibe o título do simulador no navegador', () => {
   render(<App />);
-  expect(screen.getByRole('heading', { name: 'SheepBotz Arena — em construção' })).toBeTruthy();
+  expect(
+    screen.getByRole('heading', { name: 'SheepBotz Arena — em construção' }),
+  ).toBeTruthy();
 });
