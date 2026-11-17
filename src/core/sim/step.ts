@@ -6,6 +6,7 @@ import type {
   SimState,
   World,
 } from '../types';
+import { resolveRobotContacts } from './contacts';
 import { integratePose, saturate } from './kinematics';
 import { resolveObstaclesAndWalls } from './obstacles';
 
@@ -22,24 +23,32 @@ function readSensors(state: SimState): SimState {
   return state;
 }
 
-// A etapa de contato entre robôs será integrada na US5.
 function resolveContacts(robots: readonly TickRobot[]): readonly TickRobot[] {
-  return robots;
+  const contacts = resolveRobotContacts(
+    robots.map(({ previous }) => previous.pose),
+    robots.map(({ pose }) => pose),
+    robots.map(({ config }) => config.radius),
+  );
+  return robots.map((robot, index) => ({ ...robot, ...contacts[index]! }));
 }
 
 function resolveEnvironment(
   robots: readonly TickRobot[],
   world: World,
 ): readonly TickRobot[] {
-  return robots.map((robot) => ({
-    ...robot,
-    ...resolveObstaclesAndWalls(
+  return robots.map((robot) => {
+    const resolved = resolveObstaclesAndWalls(
       robot.pose,
       robot.config.radius,
       world.obstacles,
       world.map,
-    ),
-  }));
+    );
+    return {
+      ...robot,
+      pose: resolved.pose,
+      contacted: robot.contacted || resolved.contacted,
+    };
+  });
 }
 
 function updateMeasurements(robot: TickRobot): RobotState {
