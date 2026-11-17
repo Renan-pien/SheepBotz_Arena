@@ -179,5 +179,6 @@ checkpoint integrado.
   [Quickstart](../specs/001-nucleo-simulacao/quickstart.md)
 - **CI.** Os scripts de validação foram executados localmente com dados de push e pull
   request. Ambos rejeitaram um commit inválido e métricas desatualizadas.
-- **Publicação.** T050 aguarda acesso autenticado ao GitHub para registrar estas evidências
-  no PR que inclui as tarefas restantes da implementação.
+- **Publicação.** A descrição do [PR #2](https://github.com/Renan-pien/SheepBotz_Arena/pull/2)
+  foi conferida no GitHub e contém os resultados do quickstart e do benchmark. A conferência
+  confirmou que o PR compara `001-nucleo-simulacao` com `main`. T050 concluída.
