@@ -67,7 +67,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
   Campos do modelo [`World.arena`, `World.match`, `Obstacle.id`, `RobotConfig.id`, `RobotConfig.initialPose`, `RobotConfig.color` e `RobotConfig.laser`](data-model.md#mundo-normalizado) e [`Pose.theta`](data-model.md#tipos-básicos). Arena e laser ausentes são normalizados para `null`.
 - [X] T022 [US1] Implementar as verificações geométricas sobre itens válidos conforme `contracts/world.md`. No modo sumô, comparar a distância do centro inicial de cada robô ao raio da arena, com igualdade permitida. A validação das paredes do mapa considera o corpo inteiro — `src/core/world/geometry-checks.ts` — S1-FR-007 a S1-FR-011, S1-FR-013, S1-FR-014
   Campos do modelo [`World.dt`, `World.map.width`, `World.map.height`, `World.arena`, `World.arena.radius`, `World.match.mode`, `World.obstacles`, `World.robots`, `RobotConfig.initialPose`, `RobotConfig.radius` e `RobotConfig.maxLinearSpeed`](data-model.md#mundo-normalizado).
-- [ ] T023 [US1] Implementar `loadWorld` e exportá-la — `src/core/world/load-world.ts`, `src/core/index.ts` — S1-FR-002
+- [X] T023 [US1] Implementar `loadWorld` e exportá-la — `src/core/world/load-world.ts`, `src/core/index.ts` — S1-FR-002
   Campos do modelo [`LoadWorldResult.ok`, `LoadWorldResult.world` e `LoadWorldResult.errors`](data-model.md#erros).
 
 **Checkpoint:** S1-US1 passa por completo.
