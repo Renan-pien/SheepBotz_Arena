@@ -19,7 +19,7 @@
 - [x] CHK006 Os 40 requisitos têm origem e comportamento verificável. As regras de movimento e contato indicam ordem, condições e limites.
 - [x] CHK007 Os cinco critérios de sucesso definem valores ou condições verificáveis.
 - [x] CHK008 Os critérios de sucesso independem de linguagem, biblioteca ou ferramenta.
-- [x] CHK009 As seis histórias têm prioridade, teste independente e 35 cenários identificados em Dado, Quando e Então.
+- [x] CHK009 As seis histórias têm prioridade, teste independente e 36 cenários identificados em Dado, Quando e Então.
 - [x] CHK010 Os casos de borda cobrem estados iniciais, limites geométricos, entradas inválidas e a ordem de resolução de contatos.
 - [x] CHK011 O escopo identifica as funções da S1 e as dependências de S2 e S3.
 - [x] CHK012 As premissas registram unidades, tolerâncias, formato do mundo e as perguntas externas que ainda se aplicam.
@@ -34,4 +34,5 @@
 ## Notas
 
 - Revisão documental concluída. Os itens marcados atestam a qualidade da especificação. A execução dos testes e a medição de desempenho fazem parte da implementação e do fechamento.
-- O plan e as tasks existentes continuam como insumos. A clarificação da S1 pode revisar ambiguidades remanescentes. A análise entre artefatos deve verificar as divergências registradas antes da implementação. [Registro de consolidação](../../../docs/registro-de-consolidacao.md)
+- A revisão cruzada da S1 conferiu a regra da arena, o reset com e sem histórico, as referências
+  de campos nas tarefas e as checagens de CI em push e pull request. [Registro de consolidação](../../../docs/registro-de-consolidacao.md)

@@ -35,4 +35,6 @@ O formato do arquivo é definido na spec (Anexo B). Este contrato define como ca
   - Robô sobre obstáculo: distância do centro ao ponto mais próximo do retângulo `< r`.
   - Robô sobre robô anterior: distância entre centros `< r_i + r_j`.
   - Deslocamento: `maxLinearSpeed × dt > radius` é erro.
-  - Modo `sumo`: `robots.length !== 2` (caminho `robots`); `arena` ausente (caminho `arena`); `√(x² + y²) > arena.radius` (caminho `robots[i]`).
+  - No modo `sumo`, `REGRA_DA_MODALIDADE` aponta para `robots` se a lista não tiver 2 itens, para
+    `arena` se a arena estiver ausente ou para `robots[i]` se o centro inicial do robô tiver
+    `√(x² + y²) > arena.radius`. O centro sobre a borda é aceito e o corpo pode ultrapassá-la.

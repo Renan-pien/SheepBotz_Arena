@@ -43,10 +43,13 @@ export interface Simulation {
   getState(): SimState;
   step(): SimState;                 // avança 1 tick
   stepN(n: number): SimState;       // avança n ticks (n inteiro ≥ 0)
-  reset(): SimState;                // volta ao tick 0; limpa o histórico
+  reset(): SimState;                // volta ao tick 0 e reinicia o histórico
   getHistory(): readonly SimState[]; // estados do tick 0 ao atual; lista vazia se history = false
 }
 ```
+
+Se `history` estiver habilitado, após `reset()` a lista de `getHistory()` contém somente o estado
+retornado por `reset()`. Se estiver desabilitado, `getHistory()` continua retornando uma lista vazia.
 
 ## Pré-condições e erros de uso
 
