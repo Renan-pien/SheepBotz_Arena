@@ -128,4 +128,20 @@ export const errors = {
       `O comando em '${path}' deve ter v e w numéricos e finitos.`,
     );
   },
+  conflictingInput(id: string) {
+    const path = `controllers.${id}`;
+    return error(
+      'ENTRADA_CONFLITANTE',
+      path,
+      `O campo '${path}' não pode ser combinado com 'commands.${id}'.`,
+    );
+  },
+  invalidController(id: string, detail: string) {
+    const path = `controllers.${id}`;
+    return error(
+      'CONTROLADOR_INVALIDO',
+      path,
+      `Controlador inválido em '${path}': ${detail}`,
+    );
+  },
 };

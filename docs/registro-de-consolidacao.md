@@ -256,3 +256,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T006 | 129 passaram / 0 falharam | 95.79 / 95.02 / 100 / 96.72 | 99.27 / 97.87 / 100.00 / 100.00 | Janela fixa e travessia de arena preservadas em modo livre. T003 a T005 em RED por interfaces ainda ausentes, com a base verde medida separadamente. |
 | T007 | 138 passaram / 0 falharam | 95.49 / 93.46 / 100 / 96.24 | 98.91 / 97.41 / 100.00 / 99.60 | Validação sintática e perfil SES passaram nos testes isolados, incluindo carga e preservação da mensagem. |
 | T003 | 138 passaram / 0 falharam | 95.49 / 93.46 / 100 / 96.24 | 98.91 / 97.41 / 100.00 / 99.60 | RED inicial por motor ausente, com 129 testes da base e 96.72% de linhas. Nove testes do motor verdes após T007. |
+| T008 | 140 passaram / 0 falharam | 95.37 / 93.3 / 98.86 / 96.25 | 98.39 / 96.77 / 98.67 / 99.29 | Testes unitários passaram para ordem, mensagens, acúmulo e elegibilidade. Testes públicos da T004 aguardam T016. |

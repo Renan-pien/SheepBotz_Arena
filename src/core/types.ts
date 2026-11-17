@@ -1,3 +1,5 @@
+import type { ControllerEngine } from './controller/runtime';
+
 export interface Pose {
   readonly x: number; // metros
   readonly y: number; // metros
@@ -73,7 +75,9 @@ export type ErrorCode =
   | 'DESLOCAMENTO_EXCESSIVO'
   | 'REGRA_DA_MODALIDADE'
   | 'ROBO_INEXISTENTE'
-  | 'COMANDO_INVALIDO';
+  | 'COMANDO_INVALIDO'
+  | 'ENTRADA_CONFLITANTE'
+  | 'CONTROLADOR_INVALIDO';
 
 export interface ValidationError {
   readonly code: ErrorCode;
@@ -84,6 +88,13 @@ export interface ValidationError {
 export type LoadWorldResult =
   | { readonly ok: true; readonly world: World }
   | { readonly ok: false; readonly errors: readonly ValidationError[] };
+
+export type ControllerOptions =
+  | { readonly controllers?: undefined; readonly controllerEngine?: undefined }
+  | {
+      readonly controllers: Readonly<Record<string, string>>;
+      readonly controllerEngine: ControllerEngine;
+    };
 
 export interface HeadlessInput {
   readonly world: string; // texto do arquivo de mundo
