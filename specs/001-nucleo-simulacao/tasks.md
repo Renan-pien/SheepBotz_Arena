@@ -154,7 +154,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 
 - [X] T046 [P] Criar o benchmark de 3 000 ticks com 2 robôs (fora da suíte de testes) — `scripts/bench.ts`, `package.json` — S1-SC-003
 - [X] T047 [P] Criar teste de pureza que varre `src/core` e falha se encontrar `Math.random`, `Date`, `window`, `document` ou imports de `ui`/`cli` (redundância das regras de lint) — `tests/core/unit/purity.test.ts` — S1-FR-037
-- [ ] T048 Executar o `quickstart.md` do zero e corrigir divergências — vários — todos os FRs
+- [X] T048 Executar o `quickstart.md` do zero e corrigir divergências — vários — todos os FRs
 - [ ] T049 Atualizar o README (seção "Como rodar"), a seção S1 de `docs/rastreabilidade.md` e executar `npm run stats` — `README.md`, `docs/rastreabilidade.md`, `docs/cobertura/*` — RB-09, RB-12
 - [ ] T050 Registrar no pull request de fechamento o resultado do benchmark e do quickstart — PR — S1-SC-001 a S1-SC-003
 

@@ -50,3 +50,20 @@ it('S1-US4-AC5: libera o bumper no primeiro tick em que se afasta da parede', ()
   expectPoseClose(robot.pose, { x: 0.8, y: 0, theta: 0 });
   expect(robot.bumper).toBe(false);
 });
+
+it('atravessa a borda da arena sem tratar o círculo como parede do mapa', () => {
+  const summit = worldText({
+    arena: { radius: 0.385 },
+    match: { mode: 'sumo', maxTicks: 1 },
+    robots: [robot({ x: 0.385 }), robot({ id: 'r2', x: -0.25 })],
+  });
+  const loaded = loadWorld(summit);
+  if (!loaded.ok) throw new Error(JSON.stringify(loaded.errors));
+  const simulation = createSimulation(loaded.world, {
+    commands: { r1: { v: 1, w: 0 } },
+  });
+  const next = simulation.stepN(2);
+  expect(next.tick).toBe(2);
+  expectPoseClose(next.robots[0]!.pose, { x: 0.585, y: 0, theta: 0 });
+  expect(next.robots[0]!.bumper).toBe(false);
+});

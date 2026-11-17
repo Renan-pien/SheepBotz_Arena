@@ -18,7 +18,10 @@ export default defineConfig({
         },
       },
     ],
-    reporters: ['default', ['json', { outputFile: 'reports/test-results.json' }]],
+    reporters: [
+      'default',
+      ['json', { outputFile: 'reports/test-results.json' }],
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json-summary', 'html'],
@@ -30,7 +33,12 @@ export default defineConfig({
         statements: 80,
         functions: 80,
         branches: 80,
-        'src/core/**': { lines: 90, statements: 90, functions: 90, branches: 90 },
+        'src/core/**': {
+          lines: 90,
+          statements: 90,
+          functions: 90,
+          branches: 90,
+        },
       },
     },
   },
