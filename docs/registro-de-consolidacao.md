@@ -259,3 +259,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T008 | 140 passaram / 0 falharam | 95.37 / 93.3 / 98.86 / 96.25 | 98.39 / 96.77 / 98.67 / 99.29 | Testes unitários passaram para ordem, mensagens, acúmulo e elegibilidade. Testes públicos da T004 aguardam T016. |
 | T012 | 144 passaram / 0 falharam | 95.61 / 93.75 / 98.9 / 96.43 | 98.49 / 97.05 / 98.72 / 99.33 | Interseções de retângulo e círculo passaram, inclusive tangência e paralelismo. |
 | T013 | 152 passaram / 0 falharam | 95.78 / 93.69 / 98.93 / 96.7 | 98.39 / 96.62 / 98.77 / 99.40 | Vetores do Anexo A passaram em laser.test.ts, inclusive a rotação no mapa assimétrico. |
+| T011 | 152 passaram / 0 falharam | 95.78 / 93.69 / 98.93 / 96.7 | 98.39 / 96.62 / 98.77 / 99.40 | RED da geometria confirmado antes do código. Interseções, varredura pura e limites de mundo passam. |
