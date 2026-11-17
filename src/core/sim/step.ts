@@ -7,12 +7,14 @@ import type {
   World,
 } from '../types';
 import { integratePose, saturate } from './kinematics';
+import { resolveObstaclesAndWalls } from './obstacles';
 
 interface TickRobot {
   readonly config: RobotConfig;
   readonly previous: RobotState;
   readonly command: Command;
   readonly pose: Pose;
+  readonly contacted: boolean;
 }
 
 // Bumper e odometria já estão no estado anterior. Laser entra na Spec 002.
@@ -25,15 +27,28 @@ function resolveContacts(robots: readonly TickRobot[]): readonly TickRobot[] {
   return robots;
 }
 
-// A etapa de obstáculos e paredes será integrada na US4.
 function resolveEnvironment(
   robots: readonly TickRobot[],
+  world: World,
 ): readonly TickRobot[] {
-  return robots;
+  return robots.map((robot) => ({
+    ...robot,
+    ...resolveObstaclesAndWalls(
+      robot.pose,
+      robot.config.radius,
+      world.obstacles,
+      world.map,
+    ),
+  }));
 }
 
 function updateMeasurements(robot: TickRobot): RobotState {
-  return { ...robot.previous, pose: robot.pose, command: robot.command };
+  return {
+    ...robot.previous,
+    pose: robot.pose,
+    command: robot.command,
+    bumper: robot.contacted,
+  };
 }
 
 // O resultado do sumô será avaliado na Spec 002.
@@ -58,9 +73,10 @@ export function step(
       previous,
       command,
       pose: integratePose(previous.pose, command, world.dt),
+      contacted: false,
     };
   });
-  const robots = resolveEnvironment(resolveContacts(candidates)).map(
+  const robots = resolveEnvironment(resolveContacts(candidates), world).map(
     updateMeasurements,
   );
   const tick = state.tick + 1;
