@@ -45,7 +45,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 - [X] T012 [P] Escrever testes de geometria: distância; ponto mais próximo de um retângulo para centro fora, sobre a borda e dentro — `tests/core/unit/geometry.test.ts` — S1-FR-027
 - [X] T013 Implementar `distance` (com `Math.sqrt`) e `closestPointOnRect` — `src/core/math/geometry.ts` — S1-FR-027
 - [X] T014 [P] Criar o mundo de exemplo idêntico ao Anexo A da spec — `examples/worlds/duelo-padrao.json` — S1-FR-001
-- [ ] T015 Criar as exportações iniciais (tipos, `normalizeAngle`, `angleDiff`) — `src/core/index.ts` — contracts/core-api.md
+- [X] T015 Criar as exportações iniciais (tipos, `normalizeAngle`, `angleDiff`) — `src/core/index.ts` — contracts/core-api.md
 
 **Checkpoint:** fundação pronta; user stories podem começar.
 
