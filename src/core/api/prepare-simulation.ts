@@ -28,8 +28,15 @@ function prepareTick(world: World, options: PrepareOptions) {
   function advance(state: SimState): SimState {
     if (controllers.size === 0) return step(world, state, commands);
     const tick = runner.run(state, commands, controllers);
+    const robots = tick.disabled.size
+      ? state.robots.map((robot) =>
+          tick.disabled.has(robot.id)
+            ? { ...robot, situacao: 'desativado' as const }
+            : robot,
+        )
+      : state.robots;
     const observed = tick.events.length
-      ? { ...state, events: [...state.events, ...tick.events] }
+      ? { ...state, robots, events: [...state.events, ...tick.events] }
       : state;
     return step(world, observed, tick.commands);
   }

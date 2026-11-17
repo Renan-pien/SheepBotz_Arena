@@ -69,7 +69,10 @@ export function step(
     const requested = Object.hasOwn(commands, config.id)
       ? commands[config.id]!
       : previous.command;
-    const command = saturate(requested, config);
+    const command =
+      previous.situacao === 'desativado'
+        ? { v: 0, w: 0 }
+        : saturate(requested, config);
     return {
       config,
       previous,

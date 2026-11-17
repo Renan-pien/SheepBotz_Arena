@@ -29,6 +29,7 @@ export function createControllerRunner(world: World) {
         const script = scripts.get(id);
         if (!script) continue;
         const robot = state.robots[index]!;
+        if (robot.situacao === 'desativado') continue;
         const frame: ControllerFrame = {
           robot,
           tick: state.tick + 1,
