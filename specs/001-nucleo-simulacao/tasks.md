@@ -101,7 +101,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** mesmas entradas, mesmos estados; reinício confiável; execução por terminal.
 **Teste independente:** duas execuções comparadas estado a estado.
 
-- [ ] T032 [US3] Escrever os testes de aceitação S1-US3-AC1 a S1-US3-AC4. Comparar todos os estados por igualdade exata. Verificar o histórico imediatamente após o reset nos dois modos e comparar os 121 estados da repetição com os da execução original — `tests/core/acceptance/s1/us3-determinism.test.ts` — S1-FR-015, S1-FR-016, S1-FR-036, S1-FR-038
+- [X] T032 [US3] Escrever os testes de aceitação S1-US3-AC1 a S1-US3-AC4. Comparar todos os estados por igualdade exata. Verificar o histórico imediatamente após o reset nos dois modos e comparar os 121 estados da repetição com os da execução original — `tests/core/acceptance/s1/us3-determinism.test.ts` — S1-FR-015, S1-FR-016, S1-FR-036, S1-FR-038
 - [ ] T033 [US3] Garantir tempo = tick × dt e recriar o estado inicial e o histórico conforme T029. Corrigir divergências detectadas em T032 — `src/core/sim/step.ts`, `src/core/sim/simulation.ts` — S1-FR-016, S1-FR-036, S1-FR-038
 - [ ] T034 [P] [US3] Escrever testes do comando de terminal: uso correto, `--command` repetido, `--history`, `--pretty`, mundo inválido (saída 1), argumento ausente ou arquivo inexistente (saída 2) — `tests/cli/run-cli.test.ts` — S1-FR-032, S1-FR-033
 - [ ] T035 [US3] Implementar `runCli(argv, io)` e o ponto de entrada; script `sim` com `tsx` (contracts/cli.md) — `src/cli/run-cli.ts`, `src/cli/index.ts`, `package.json` — S1-FR-032, S1-FR-033, RB-43
