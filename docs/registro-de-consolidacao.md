@@ -274,3 +274,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T023 | 197 passaram / 0 falharam | 95.83 / 93.63 / 99.18 / 96.53 | 97.89 / 96.13 / 99.08 / 98.59 | Testes correspondentes do sumô e regressões validados. |
 | T024 | 204 passaram / 0 falharam | 95.85 / 93.93 / 99.18 / 96.55 | 97.91 / 96.47 / 99.08 / 98.60 | Testes correspondentes do sumô e regressões validados. |
 | T021 | 204 passaram / 0 falharam | 95.85 / 93.93 / 99.18 / 96.55 | 97.91 / 96.47 / 99.08 / 98.60 | RED anterior ao código, com base de 195 testes registrada. Testes do contrato agora verdes. |
+| T025 | 207 passaram / 0 falharam | 95.88 / 94.02 / 99.18 / 96.58 | 97.93 / 96.54 / 99.08 / 98.61 | Testes correspondentes do sumô e regressões validados. |

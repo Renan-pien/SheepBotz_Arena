@@ -52,6 +52,7 @@ export function assembleSimulation(
   let history = recordHistory ? [current] : undefined;
 
   function advance(): SimState {
+    if (current.status === 'finalizada') return current;
     current = advanceTick(current);
     history?.push(current);
     return current;
@@ -63,7 +64,12 @@ export function assembleSimulation(
     step: advance,
     stepN(n) {
       assertTickCount(n);
-      for (let index = 0; index < n; index += 1) advance();
+      for (
+        let index = 0;
+        index < n && current.status !== 'finalizada';
+        index += 1
+      )
+        advance();
       return current;
     },
     reset() {

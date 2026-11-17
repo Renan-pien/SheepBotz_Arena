@@ -63,6 +63,7 @@ export function step(
   state: SimState,
   commands: Readonly<Record<string, Command>>,
 ): SimState {
+  if (state.status === 'finalizada') return state;
   const candidates = world.robots.map((config, index) => {
     const previous = state.robots[index]!;
     const requested = Object.hasOwn(commands, config.id)
