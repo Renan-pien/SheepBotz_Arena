@@ -117,7 +117,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 
 - [X] T036 [US4] Escrever os testes de aceitação S1-US4-AC1 a S1-US4-AC5 — `tests/core/acceptance/s1/us4-collisions.test.ts` — S1-FR-027 a S1-FR-030
 - [X] T037 [P] [US4] Escrever testes unitários: caso `0 < d < r`; caso `d = 0` para cada lado e desempate esquerdo, direito, inferior, superior; limitação às paredes; contato registrado; orientação inalterada — `tests/core/unit/obstacles.test.ts` — S1-FR-021, S1-FR-027 a S1-FR-029
-- [ ] T038 [US4] Implementar `resolveObstaclesAndWalls` — `src/core/sim/obstacles.ts` — S1-FR-027 a S1-FR-029
+- [X] T038 [US4] Implementar `resolveObstaclesAndWalls` — `src/core/sim/obstacles.ts` — S1-FR-027 a S1-FR-029
 - [ ] T039 [US4] Preencher a etapa 6 e o bumper da etapa 7 em `step` — `src/core/sim/step.ts` — S1-FR-017, S1-FR-030
 
 **Checkpoint:** S1-US1 a S1-US4 passam.
