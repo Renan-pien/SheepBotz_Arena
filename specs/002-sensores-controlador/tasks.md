@@ -116,7 +116,7 @@ description: "Tarefas de implementação dos sensores, controladores e regras de
 
 ### Testes
 
-- [ ] T030 [P] [US5] Escrever `S2-US5-AC1`, validando os mundos de exemplo entregues pelo mesmo `loadWorld` e conferindo Sala com obstáculos contra o Anexo C — `tests/core/acceptance/s2/us5-mundos.test.ts` — S2-FR-001, S2-FR-033, S2-FR-035. **Dep.** T029. **Pronto** Dois mundos válidos com T032.
+- [X] T030 [P] [US5] Escrever `S2-US5-AC1`, validando os mundos de exemplo entregues pelo mesmo `loadWorld` e conferindo Sala com obstáculos contra o Anexo C — `tests/core/acceptance/s2/us5-mundos.test.ts` — S2-FR-001, S2-FR-033, S2-FR-035. **Dep.** T029. **Pronto** Dois mundos válidos com T032.
 - [ ] T031 [P] [US5] Escrever `S2-US5-AC2` e `S2-US5-AC3`, carregando os cinco arquivos do Anexo D pela fachada e executando Sala com obstáculos com Desviador até o tick 2 000. Verificar os comandos esperados dos exemplos, incluindo as duas decisões de Caçador e Desviador — `tests/core/acceptance/s2/us5-controladores.test.ts` — S2-FR-009, S2-FR-012, S2-FR-033, S2-FR-036. **Dep.** T029. **Pronto** Scripts carregados e execução livre concluída com T033.
 
 ### Implementação
