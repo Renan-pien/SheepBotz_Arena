@@ -1,7 +1,7 @@
 # Quickstart de validação · Spec 002
 
-Este guia descreve as verificações de aceite para a entrega da S2. Os arquivos de exemplo e
-os comandos novos são disponibilizados pela implementação prevista no [plano](plan.md).
+Este guia descreve as verificações de aceite da S2 com os arquivos de exemplo e os
+comandos do [plano](plan.md).
 
 ## 1. Preparar o ambiente
 
@@ -81,9 +81,15 @@ cronômetro. A validação de entradas, a avaliação dos scripts e os passos fi
 janela. A meta é menos de 2 s no ambiente de SC-003. Registre CPU, SO, versão exata do Node
 e duração efetiva. [Critério SC-003](spec.md#6-critérios-de-sucesso)
 
-Para conferir o mesmo motor no navegador, rode o teste de integração `npm test -- tests/runtime`
-e exercite a inicialização SES e um controlador em uma página de teste compilada pelo Vite
-em Chromium. Confira a indisponibilidade de `Promise` e `Array.fromAsync` no controlador.
-Execute as mesmas entradas em lote e passo a passo, com processamento de microtarefas do host
-entre os passos. Compare estados, eventos e histórico sem usar um limiar temporal. A página de
-teste pertence às fixtures de integração.
+Para conferir o mesmo motor no navegador, rode o teste de integração e sirva a fixture local.
+
+```bash
+npm test -- tests/runtime
+npm exec -- vite build tests/runtime/fixtures/controller-browser
+npm exec -- vite preview tests/runtime/fixtures/controller-browser --host 127.0.0.1 --port 4173 --strictPort
+```
+
+Abra `http://127.0.0.1:4173/` em Chromium. No console, `document.documentElement.dataset.status`
+deve devolver `"ok"`. A fixture verifica a indisponibilidade de `Promise` e `Array.fromAsync`
+no controlador e compara execução em lote com execução em passos intercalados com microtarefas
+do host. O atributo `data-history` publica os cinco estados para comparação com o teste Node.
