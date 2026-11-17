@@ -114,12 +114,12 @@ export type ControllerOptions =
       readonly controllerEngine: ControllerEngine;
     };
 
-export interface HeadlessInput {
+export type HeadlessInput = ControllerOptions & {
   readonly world: string; // texto do arquivo de mundo
   readonly commands?: Readonly<Record<string, Command>>; // comando constante por id
   readonly ticks: number; // inteiro ≥ 0
   readonly history?: boolean; // padrão false
-}
+};
 
 export type HeadlessResult =
   | {

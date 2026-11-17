@@ -263,3 +263,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T014 | 160 passaram / 0 falharam | 95.79 / 93.69 / 98.95 / 96.71 | 98.40 / 96.62 / 98.80 / 99.40 | Os oito cenários públicos do tick 0 e as comparações da S1 passaram. |
 | T009 | 160 passaram / 0 falharam | 95.79 / 93.69 / 98.95 / 96.71 | 98.40 / 96.62 / 98.80 / 99.40 | RED anterior de 9 asserções. Os 8 ACs e a regressão do estado passaram após T014. |
 | T015 | 161 passaram / 0 falharam | 94.28 / 91.54 / 97.16 / 95.34 | 96.23 / 93.75 / 96.77 / 97.36 | Ciclo unitário passou com 1 000 logs, aviso único, descarte sem conversão e API revogada. |
+| T016 | 184 passaram / 0 falharam | 95.42 / 93.35 / 99.12 / 96.35 | 97.53 / 95.92 / 99.01 / 98.50 | US1 e testes públicos antecipados passam. Reset carrega nova sessão antes de publicar tick 0. |
