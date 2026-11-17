@@ -84,7 +84,7 @@ description: "Tarefas de implementação dos sensores, controladores e regras de
 ### Testes
 
 - [X] T021 [P] [US3] Escrever `S2-US3-AC1` a `S2-US3-AC5`, `S2-US3-AC9` e `S2-US3-AC10` para vitória, ambos fora, tempo esgotado, laser da pose final, igualdade com o raio e prioridade da saída — `tests/core/acceptance/s2/us3-resultado.test.ts`, `tests/core/unit/sumo.test.ts` — S2-FR-008, S2-FR-028 a S2-FR-031, S2-FR-034. **Dep.** T020. **Pronto** Poses e motivos passam com T023 e T024.
-- [ ] T022 [P] [US3] Escrever `S2-US3-AC6` a `S2-US3-AC8` para histórico sem repetição, chamadas após o fim e janela completa em modo livre com a chave `resultado` presente e nula. Cobrir `step` e `stepN` após o fim e `getHistory` após o reset — `tests/core/acceptance/s2/us3-historico.test.ts` — S2-FR-032, S2-FR-033, S1-FR-038, ADR-011. **Dep.** T020. **Pronto** Três cenários e a regressão de reset passam com T025.
+- [X] T022 [P] [US3] Escrever `S2-US3-AC6` a `S2-US3-AC8` para histórico sem repetição, chamadas após o fim e janela completa em modo livre com a chave `resultado` presente e nula. Cobrir `step` e `stepN` após o fim e `getHistory` após o reset — `tests/core/acceptance/s2/us3-historico.test.ts` — S2-FR-032, S2-FR-033, S1-FR-038, ADR-011. **Dep.** T020. **Pronto** Três cenários e a regressão de reset passam com T025.
 
 ### Implementação
 
