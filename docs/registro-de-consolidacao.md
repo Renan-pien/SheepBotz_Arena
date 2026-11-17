@@ -261,3 +261,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T013 | 152 passaram / 0 falharam | 95.78 / 93.69 / 98.93 / 96.7 | 98.39 / 96.62 / 98.77 / 99.40 | Vetores do Anexo A passaram em laser.test.ts, inclusive a rotação no mapa assimétrico. |
 | T011 | 152 passaram / 0 falharam | 95.78 / 93.69 / 98.93 / 96.7 | 98.39 / 96.62 / 98.77 / 99.40 | RED da geometria confirmado antes do código. Interseções, varredura pura e limites de mundo passam. |
 | T014 | 160 passaram / 0 falharam | 95.79 / 93.69 / 98.95 / 96.71 | 98.40 / 96.62 / 98.80 / 99.40 | Os oito cenários públicos do tick 0 e as comparações da S1 passaram. |
+| T009 | 160 passaram / 0 falharam | 95.79 / 93.69 / 98.95 / 96.71 | 98.40 / 96.62 / 98.80 / 99.40 | RED anterior de 9 asserções. Os 8 ACs e a regressão do estado passaram após T014. |
