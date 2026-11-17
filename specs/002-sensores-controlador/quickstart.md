@@ -85,8 +85,8 @@ Para conferir o mesmo motor no navegador, rode o teste de integração e sirva a
 
 ```bash
 npm test -- tests/runtime
-npm exec -- vite build tests/runtime/fixtures/controller-browser
-npm exec -- vite preview tests/runtime/fixtures/controller-browser --host 127.0.0.1 --port 4173 --strictPort
+npm exec -- vite build tests/runtime/fixtures/controller-browser --outDir "$PWD/dist/controller-browser"
+npm exec -- vite preview tests/runtime/fixtures/controller-browser --outDir "$PWD/dist/controller-browser" --host 127.0.0.1 --port 4173 --strictPort
 ```
 
 Abra `http://127.0.0.1:4173/` em Chromium. No console, `document.documentElement.dataset.status`
