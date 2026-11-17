@@ -1,6 +1,6 @@
 # SheepBotz Arena
 
-**0 testes · 0% de cobertura**
+**3 testes · 95% de cobertura**
 
 Este é o valor inicial do projeto, anterior à implementação. A task `S1-T006` prevê a geração
 dessa linha a partir dos relatórios de testes e cobertura.
