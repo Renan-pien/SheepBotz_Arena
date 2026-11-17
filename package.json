@@ -16,13 +16,15 @@
     "test:coverage": "vitest run --coverage",
     "stats": "tsx scripts/update-stats.ts",
     "sim": "tsx src/cli/index.ts",
-    "bench": "tsx scripts/bench.ts"
+    "bench": "tsx scripts/bench.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "21.2.4",
     "@eslint/js": "10.0.1",
     "@testing-library/dom": "10.4.2",
     "@testing-library/react": "16.3.3",
@@ -32,6 +34,7 @@
     "@vitest/coverage-v8": "5.1.0",
     "eslint": "10.15.0",
     "eslint-plugin-react-hooks": "7.1.1",
+    "husky": "9.1.7",
     "jsdom": "31.0.1",
     "prettier": "3.10.1",
     "tsx": "4.23.15",
