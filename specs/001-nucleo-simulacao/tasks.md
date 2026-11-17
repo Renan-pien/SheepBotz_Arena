@@ -130,7 +130,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Teste independente:** dois robôs em contato com comandos constantes.
 
 - [X] T040 [US5] Escrever os testes de aceitação S1-US5-AC1 a S1-US5-AC5 — `tests/core/acceptance/s1/us5-push.test.ts` — S1-FR-024 a S1-FR-026
-- [ ] T041 [P] [US5] Escrever testes unitários: direção pela posição do início do tick; centros coincidentes (`n = (1, 0)`); candidatos que se cruzam; ordem dos pares com 3 robôs; contato apenas com distância estritamente menor — `tests/core/unit/contacts.test.ts` — S1-FR-024, S1-FR-025
+- [X] T041 [P] [US5] Escrever testes unitários: direção pela posição do início do tick; centros coincidentes (`n = (1, 0)`); candidatos que se cruzam; ordem dos pares com 3 robôs; contato apenas com distância estritamente menor — `tests/core/unit/contacts.test.ts` — S1-FR-024, S1-FR-025
 - [ ] T042 [US5] Implementar `resolveRobotContacts` — `src/core/sim/contacts.ts` — S1-FR-024 a S1-FR-026
 - [ ] T043 [US5] Preencher a etapa 5 em `step`, antes da etapa 6, e incluir o contato entre robôs no bumper — `src/core/sim/step.ts` — S1-FR-017, S1-FR-030
 
