@@ -6,8 +6,9 @@ export default defineConfig({
       {
         test: {
           name: 'node',
-          include: ['tests/{core,cli,scripts}/**/*.test.ts'],
+          include: ['tests/{core,cli,scripts,runtime}/**/*.test.ts'],
           environment: 'node',
+          pool: 'forks',
         },
       },
       {
