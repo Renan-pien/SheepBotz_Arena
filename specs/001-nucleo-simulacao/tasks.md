@@ -81,7 +81,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 
 - [X] T024 [US2] Escrever os testes de aceitação S1-US2-AC1 a S1-US2-AC8, via `runHeadless` — `tests/core/acceptance/s1/us2-kinematics.test.ts` — S1-FR-018 a S1-FR-020, S1-FR-032
 - [X] T025 [P] [US2] Escrever testes unitários de `saturate` e `integratePose` (um passo; θ normalizado) — `tests/core/unit/kinematics.test.ts` — S1-FR-019, S1-FR-020
-- [ ] T026 [US2] Implementar `saturate` e `integratePose` (fórmulas do FR-019 e FR-020) — `src/core/sim/kinematics.ts` — S1-FR-019, S1-FR-020, S1-FR-022
+- [X] T026 [US2] Implementar `saturate` e `integratePose` (fórmulas do FR-019 e FR-020) — `src/core/sim/kinematics.ts` — S1-FR-019, S1-FR-020, S1-FR-022
   Campos do modelo [`Pose.x`, `Pose.y`, `Pose.theta`, `Command.v` e `Command.w`](data-model.md#tipos-básicos) e [`RobotConfig.maxLinearSpeed` e `RobotConfig.maxAngularSpeed`](data-model.md#mundo-normalizado).
 - [ ] T027 [US2] Implementar `createInitialState` (tick 0, tempo 0, comando (0, 0), bumper falso, odometria igual à pose inicial) — `src/core/sim/state.ts` — S1-FR-015, S1-FR-018, S1-FR-034
   Campos do modelo [`SimState.tick`, `SimState.time`, `SimState.robots`, `RobotState.id`, `RobotState.pose`, `RobotState.command`, `RobotState.bumper` e `RobotState.odometry`](data-model.md#estado-da-simulação).
