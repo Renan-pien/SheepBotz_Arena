@@ -144,7 +144,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Teste independente:** comparar pose real e odometria em movimento livre, na parede e no empurrão.
 
 - [X] T044 [US6] Escrever os testes de aceitação S1-US6-AC1 a S1-US6-AC3 — `tests/core/acceptance/s1/us6-odometry.test.ts` — S1-FR-031
-- [ ] T045 [US6] Atualizar a odometria na etapa 7 de `step` com `integratePose` sobre a própria odometria e o comando efetivo — `src/core/sim/step.ts` — S1-FR-031
+- [X] T045 [US6] Atualizar a odometria na etapa 7 de `step` com `integratePose` sobre a própria odometria e o comando efetivo — `src/core/sim/step.ts` — S1-FR-031
 
 **Checkpoint:** toda a Spec 001 passa.
 

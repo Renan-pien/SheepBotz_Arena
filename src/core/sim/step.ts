@@ -51,12 +51,13 @@ function resolveEnvironment(
   });
 }
 
-function updateMeasurements(robot: TickRobot): RobotState {
+function updateMeasurements(robot: TickRobot, dt: number): RobotState {
   return {
     ...robot.previous,
     pose: robot.pose,
     command: robot.command,
     bumper: robot.contacted,
+    odometry: integratePose(robot.previous.odometry, robot.command, dt),
   };
 }
 
@@ -86,7 +87,7 @@ export function step(
     };
   });
   const robots = resolveEnvironment(resolveContacts(candidates), world).map(
-    updateMeasurements,
+    (robot) => updateMeasurements(robot, world.dt),
   );
   const tick = state.tick + 1;
   return evaluateMatch({ tick, time: tick * world.dt, robots });
