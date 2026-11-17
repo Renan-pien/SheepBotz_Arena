@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { loadWorld } from '../../../src/core';
 import { readLasers } from '../../../src/core/sensors/laser';
-import { duel } from '../../helpers/controlled';
+import { duel } from '../../helpers/duel';
 import { expectClose } from '../../helpers/tolerance';
 import { robot, worldText } from '../../helpers/world-builder';
 
