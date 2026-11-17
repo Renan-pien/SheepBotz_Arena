@@ -79,7 +79,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** robôs se movem por comandos constantes, com execução sem interface.
 **Teste independente:** `runHeadless` com um robô e comando constante.
 
-- [ ] T024 [US2] Escrever os testes de aceitação S1-US2-AC1 a S1-US2-AC8, via `runHeadless` — `tests/core/acceptance/s1/us2-kinematics.test.ts` — S1-FR-018 a S1-FR-020, S1-FR-032
+- [X] T024 [US2] Escrever os testes de aceitação S1-US2-AC1 a S1-US2-AC8, via `runHeadless` — `tests/core/acceptance/s1/us2-kinematics.test.ts` — S1-FR-018 a S1-FR-020, S1-FR-032
 - [ ] T025 [P] [US2] Escrever testes unitários de `saturate` e `integratePose` (um passo; θ normalizado) — `tests/core/unit/kinematics.test.ts` — S1-FR-019, S1-FR-020
 - [ ] T026 [US2] Implementar `saturate` e `integratePose` (fórmulas do FR-019 e FR-020) — `src/core/sim/kinematics.ts` — S1-FR-019, S1-FR-020, S1-FR-022
   Campos do modelo [`Pose.x`, `Pose.y`, `Pose.theta`, `Command.v` e `Command.w`](data-model.md#tipos-básicos) e [`RobotConfig.maxLinearSpeed` e `RobotConfig.maxAngularSpeed`](data-model.md#mundo-normalizado).
