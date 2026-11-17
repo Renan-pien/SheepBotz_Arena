@@ -114,4 +114,18 @@ export const errors = {
       `No modo sumô, o robô em '${path}' deve começar dentro da arena.`,
     );
   },
+  unknownRobot(path: string, id: string) {
+    return error(
+      'ROBO_INEXISTENTE',
+      path,
+      `Não existe robô com id '${id}' (em '${path}').`,
+    );
+  },
+  invalidCommand(path: string) {
+    return error(
+      'COMANDO_INVALIDO',
+      path,
+      `O comando em '${path}' deve ter v e w numéricos e finitos.`,
+    );
+  },
 };
