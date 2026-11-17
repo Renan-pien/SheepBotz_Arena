@@ -252,3 +252,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | Tarefa | Testes | Projeto (%) | Núcleo (%) | Evidência |
 |---|---|---|---|---|
 | T001 | 129 passaram / 0 falharam | 95.79 / 95.02 / 100 / 96.72 | 99.27 / 97.87 / 100.00 / 100.00 | Node 24.22.3. npm ci, lint, tipos e cobertura passaram. Gatilhos de push e pull_request conferidos. |
+| T002 | 129 passaram / 0 falharam | 95.79 / 95.02 / 100 / 96.72 | 99.27 / 97.87 / 100.00 / 100.00 | SES 2.3.0 e Acorn 8.15.0 conforme ADR-015 e plano autorizado. Lockfile reproduzido por npm ci. |

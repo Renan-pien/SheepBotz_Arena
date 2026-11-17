@@ -20,8 +20,10 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "acorn": "8.15.0",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "ses": "2.3.0"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.4",

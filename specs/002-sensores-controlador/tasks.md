@@ -19,7 +19,7 @@ description: "Tarefas de implementação dos sensores, controladores e regras de
 **Objetivo** Fixar a linha de base e preparar o runtime proposto no plano.
 
 - [X] T001 Registrar a linha de base da S1 em Node 24 com instalação limpa, lint, tipos, testes e cobertura. Conferir os gatilhos de push e PR — `.nvmrc`, `package.json`, `.github/workflows/ci.yml`, `docs/registro-de-consolidacao.md` — RB-08, RB-12, RB-27. **Dep.** Nenhuma. **Pronto** Suíte de referência e cobertura registradas.
-- [ ] T002 Conferir o ADR-015 conforme o AGENTS.md §8.4 e fixar `ses@2.3.0` e `acorn@8.15.0` em versões exatas conforme R1. Preservar os comandos atuais e validar instalação pelo lockfile — `package.json`, `package-lock.json` — S2-FR-009, S2-FR-012, S2-FR-024, ADR-015. **Dep.** T001. **Pronto** `npm ci` reproduz o ambiente do motor.
+- [X] T002 Conferir o ADR-015 conforme o AGENTS.md §8.4 e fixar `ses@2.3.0` e `acorn@8.15.0` em versões exatas conforme R1. Preservar os comandos atuais e validar instalação pelo lockfile — `package.json`, `package-lock.json` — S2-FR-009, S2-FR-012, S2-FR-024, ADR-015. **Dep.** T001. **Pronto** `npm ci` reproduz o ambiente do motor.
 
 ## Fase 2 · Fundação
 
