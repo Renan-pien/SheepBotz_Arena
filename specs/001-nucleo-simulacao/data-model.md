@@ -64,7 +64,13 @@ export interface LaserConfig {
 }
 ```
 
-**Invariantes garantidos pela validação:** ids únicos por tipo; obstáculos dentro do mapa; robôs dentro do mapa, sem sobreposição inicial; `maxLinearSpeed × dt ≤ radius`; no modo `sumo`, exatamente 2 robôs, arena presente e robôs dentro da arena.
+**Invariantes garantidos pela validação**
+
+- IDs únicos por tipo, obstáculos e corpos dos robôs dentro do mapa e poses iniciais sem sobreposição.
+- Para cada robô, `RobotConfig.maxLinearSpeed × World.dt ≤ RobotConfig.radius`.
+- No modo `sumo`, `World.robots` tem exatamente 2 itens e `World.arena` está presente. A distância
+  do centro em `RobotConfig.initialPose` à origem é menor ou igual a `World.arena.radius`.
+  O corpo do robô pode ultrapassar a borda da arena (FR-011).
 
 ---
 
@@ -95,6 +101,10 @@ createInitialState(world) ──► estado tick 0
 estado tick k ──step(world, estado, comandos)──► estado tick k+1
 qualquer estado ──reset()──► estado tick 0 (idêntico ao inicial)
 ```
+
+Na fachada, `SimulationOptions.history` controla a retenção dos estados. Com histórico habilitado,
+`reset()` substitui a lista anterior por uma lista contendo apenas o novo `SimState` do tick 0.
+Com histórico desabilitado, a consulta retorna uma lista vazia. [Contrato da API](contracts/core-api.md#fachada)
 
 ---
 

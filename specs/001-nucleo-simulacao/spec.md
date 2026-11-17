@@ -58,6 +58,7 @@ Como membro da equipe, quero descrever um cenário num arquivo e saber exatament
 8. **S1-US1-AC8** · **Dado** um mundo com **três** problemas independentes (por exemplo, `dt` fora do intervalo, `seed` negativa e `robots[0].radius` igual a 0), **Quando** carregado, **Então** a validação devolve os **três** erros, não apenas o primeiro.
 9. **S1-US1-AC9** · **Dado** um robô com `theta` = 7.0 no arquivo, **Quando** o mundo é carregado, **Então** a orientação inicial do robô é 0.716815 rad (normalizada, FR-012).
 10. **S1-US1-AC10** · **Dado** um robô de raio 0.1 com `maxLinearSpeed` = 2.0 e `dt` = 0.1, **Quando** carregado, **Então** há um erro `DESLOCAMENTO_EXCESSIVO` no caminho `robots[0].maxLinearSpeed` (0.2 m por tick é maior que o raio).
+11. **S1-US1-AC11** · **Dado** o “Duelo padrão” com o robô `azul` em (0.385, 0.0) m ou em (0.400, 0.0) m, **Quando** cada variante é carregada separadamente, **Então** a primeira é aceita porque o centro está sobre a borda da arena, mesmo com parte do corpo para fora. A segunda é rejeitada com `REGRA_DA_MODALIDADE` no caminho `robots[1]`.
 
 ---
 
@@ -95,7 +96,7 @@ Como membro da equipe, quero que a mesma simulação produza sempre o mesmo resu
 1. **S1-US3-AC1** · **Dado** o mundo "Duelo padrão" com comandos (1.0, 0.5) para `vermelho` e (0.3, −0.2) para `azul`, **Quando** a simulação é executada duas vezes por 500 ticks, **Então** os estados das duas execuções são idênticos em todos os ticks.
 2. **S1-US3-AC2** · **Dado** qualquer mundo, **Quando** se executam 0 ticks, **Então** o estado devolvido é o estado inicial (tick 0, tempo 0).
 3. **S1-US3-AC3** · **Dado** um mundo com `dt` = 0.02, **Quando** se executam 150 ticks, **Então** o tick é 150 e o tempo é 3.0 s (tempo = tick × dt, FR-016).
-4. **S1-US3-AC4** · **Dado** uma simulação no tick 120, **Quando** ela é reiniciada, **Então** volta ao estado do tick 0, e executar novamente 120 ticks com as mesmas entradas reproduz exatamente o mesmo estado.
+4. **S1-US3-AC4** · **Dado** uma simulação no tick 120 com histórico habilitado, **Quando** ela é reiniciada, **Então** volta ao tick 0 do mesmo mundo e o histórico contém apenas esse estado inicial. Avançar mais 120 ticks com as mesmas entradas reproduz exatamente os 121 estados da execução anterior. Com histórico desabilitado, a consulta continua retornando uma lista vazia após o reinício.
 
 ---
 
@@ -179,7 +180,7 @@ Como membro da equipe, quero que o robô tenha uma estimativa de onde acha que e
 - **FR-008:** Todo obstáculo DEVE estar inteiramente dentro do mapa; a arena DEVE ter raio menor ou igual à metade do menor lado do mapa. Caso contrário: `FORA_DO_MAPA`. *(RB-30)*
 - **FR-009:** A pose inicial de cada robô DEVE estar com o corpo inteiro dentro do mapa (`FORA_DO_MAPA`), sem sobrepor obstáculos e sem sobrepor robôs anteriores na lista (`POSICAO_INICIAL_INVALIDA`). Encostar (distância igual à soma dos raios) é permitido. *(RB-30, RB-31)*
 - **FR-010:** Para cada robô, `maxLinearSpeed × dt` DEVE ser menor ou igual ao raio do robô; caso contrário, `DESLOCAMENTO_EXCESSIVO` no caminho `robots[i].maxLinearSpeed`. *(ADR-007, RB-31)*
-- **FR-011:** Quando `match.mode` for `"sumo"`, o mundo DEVE ter exatamente 2 robôs, DEVE ter `arena`, e o centro de cada robô DEVE estar dentro da arena (distância à origem ≤ raio da arena). Caso contrário: `REGRA_DA_MODALIDADE`. As regras da luta estão na Spec 002. *(RB-25, ADR-003)*
+- **FR-011:** Quando `match.mode` for `"sumo"`, o mundo DEVE ter exatamente 2 robôs e DEVE ter `arena`. A distância do **centro inicial** de cada robô à origem DEVE ser menor ou igual ao raio da arena. O corpo pode ultrapassar a borda da arena. Violações geram `REGRA_DA_MODALIDADE`. As regras da luta estão na Spec 002. *(RB-25, ADR-003)*
 
 #### Sistema de coordenadas, unidades e tempo
 
@@ -246,7 +247,7 @@ Como membro da equipe, quero que o robô tenha uma estimativa de onde acha que e
 - **FR-035:** Comandos para `id` inexistente DEVEM gerar o erro `ROBO_INEXISTENTE`; comandos não numéricos ou não finitos, o erro `COMANDO_INVALIDO`. O caminho do erro é `commands.<id>` e a simulação não começa em nenhum desses casos. *(RB-43, ADR-007)*
 - **FR-036:** A simulação DEVE ser determinística: as mesmas entradas (mundo, comandos ou controladores e número de ticks) produzem estados idênticos em todos os ticks. *(RB-27)*
 - **FR-037:** O núcleo NÃO DEVE depender de relógio real, de interface gráfica, de rede ou de aleatoriedade sem semente. *(RB-27)*
-- **FR-038:** O sistema DEVE permitir reiniciar a simulação para o estado do tick 0 do mesmo mundo. *(RB-24)*
+- **FR-038:** O sistema DEVE permitir reiniciar a simulação para o estado do tick 0 do mesmo mundo. Se o histórico estiver habilitado, o reinício DEVE substituir a lista anterior por uma lista contendo somente o estado inicial. Se estiver desabilitado, a consulta ao histórico DEVE retornar uma lista vazia. *(RB-24)*
 - **FR-039:** O sistema DEVE permitir avançar a simulação um tick por vez e consultar o estado após cada tick. *(RB-24)*
 - **FR-040:** Para fins de aceitação, valores DEVEM ser comparados com tolerância de ±0.001 m para distâncias e ±0.001 rad para ângulos; ângulos são comparados pela menor diferença angular (π e −π são iguais). *(RB-44, Q-002)*
 
@@ -385,7 +386,7 @@ definem os resultados esperados.
 | Requisitos | Origem | Evidência de aceitação ou verificação planejada |
 |---|---|---|
 | FR-001 a FR-007 | RB-30, RB-46 | S1-US1-AC1 a AC8. S1-T018 para o catálogo de erros. |
-| FR-008 a FR-011 | RB-25, RB-30, RB-31, ADR-003, ADR-007 | S1-US1-AC1 e AC10. S1-T017 e S1-T018 para validação da geometria e da modalidade. |
+| FR-008 a FR-011 | RB-25, RB-30, RB-31, ADR-003, ADR-007 | S1-US1-AC1, AC10 e AC11. S1-T017 e S1-T018 para validação da geometria e da modalidade. |
 | FR-012 a FR-014 | RB-30, RB-31, ADR-003 | S1-US1-AC1 e AC9, S1-US4-AC1. S1-T010 para ângulos e S1-T018 para limites do mapa e da arena. |
 | FR-015 a FR-017 | RB-27 | S1-US3-AC1 a AC4, S1-US4-AC3 e S1-US6-AC2 para passo fixo, movimento, colisão, bumper e odometria. |
 | FR-018 a FR-023 | RB-27, RB-31, ADR-007 | S1-US2-AC1 a AC8, S1-US4-AC1 e S1-US5-AC1. S1-T037 e S1-T041 para orientação e ordem dos pares. |

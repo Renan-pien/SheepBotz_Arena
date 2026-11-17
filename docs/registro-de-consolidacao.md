@@ -37,7 +37,7 @@
 |---|---|---|
 | Briefing e decisões | [Enunciado](enunciado.md), [requisitos](requisitos-briefing.md), [ADRs](decisoes.md) e [perguntas](perguntas.md) | Base importada com decisões e perguntas originais |
 | Governança e arquitetura | [Constituição](../.specify/memory/constitution.md), [arquitetura](arquitetura.md) e [AGENTS.md](../AGENTS.md) | Constituição consolidada e diretrizes documentadas |
-| S1 · Mundo e núcleo | [Spec](../specs/001-nucleo-simulacao/spec.md), [checklist](../specs/001-nucleo-simulacao/checklists/requirements.md), [plan](../specs/001-nucleo-simulacao/plan.md), [contratos](../specs/001-nucleo-simulacao/contracts/), [tasks](../specs/001-nucleo-simulacao/tasks.md) e anexos | Spec oficial estruturada e checklist documental concluído. Análise de consistência e tasks pendentes |
+| S1 · Mundo e núcleo | [Spec](../specs/001-nucleo-simulacao/spec.md), [checklist](../specs/001-nucleo-simulacao/checklists/requirements.md), [plan](../specs/001-nucleo-simulacao/plan.md), [contratos](../specs/001-nucleo-simulacao/contracts/), [tasks](../specs/001-nucleo-simulacao/tasks.md) e anexos | Checklist concluído e os quatro pontos da revisão cruzada resolvidos nos artefatos. Tasks por executar |
 | S2 · Sensores e controlador | [Spec](../specs/002-sensores-controlador/spec.md) | O plan deve fixar o algoritmo pseudoaleatório e os contratos da etapa |
 | S3 · Visualização e operação | [Spec](../specs/003-visualizacao-operacao/spec.md) | O plan deve definir o mapeamento de coordenadas na cena e o contrato da gravação |
 
@@ -46,9 +46,6 @@ quickstart e os ensaios de regeneração pertencem às etapas de implementação
 
 ## Pontos para a revisão dos artefatos
 
-- **CI da S1.** A constituição exige conferência dos commits e do README em push e pull request.
-  O plan e S1-T007 especificam essas conferências apenas para pull request. A revisão da S1
-  deve reconciliar o plan e a task com a constituição.
 - **Cobertura da S1.** O piso constitucional é de 80% de linhas no projeto e a meta geral do
   núcleo é de 90%. O plan e S1-T002 especificam limites mais estritos para a S1. Q-005 continua
   aberta quanto ao formato aceito pelo professor. A proposta na pergunta põe o HTML completo no
@@ -85,3 +82,26 @@ quickstart e os ensaios de regeneração pertencem às etapas de implementação
 6. Conferi os IDs, origens, links, exemplos e diretórios. O comando
    `check-prerequisites.sh --json --require-spec --require-tasks --include-tasks` resolveu a S1
    pelo ponteiro local e encontrou o planejamento e as tasks.
+
+## 2026-11-17 · Correções da revisão cruzada da S1
+
+1. **Validação da arena.** FR-011, o modelo, o contrato do mundo e S1-T022 passaram a explicitar a
+   comparação entre a distância do centro inicial e o raio da arena. S1-US1-AC11 e S1-T016 cobrem
+   o centro sobre a borda, com parte do corpo para fora, e o centro além da borda.
+2. **Histórico após o reset.** FR-038, S1-US3-AC4, o modelo e o contrato da API registram que o
+   histórico habilitado recomeça com apenas o estado do tick 0 e que a consulta sem histórico
+   retorna uma lista vazia. O plan, a decisão R7 e as tarefas S1-T029, S1-T032 e S1-T033 refletem
+   essa regra.
+3. **Referências por campo.** As tarefas de implementação passaram a citar os campos do modelo
+   nas seções que os definem. As referências abrangem o mundo normalizado, os tipos de pose e
+   comando, os estados, os erros e os resultados de carregamento e execução.
+4. **CI.** O plan e S1-T007 passaram a exigir verificações de commits e das métricas do README
+   e da cobertura nos dois eventos, `push` e `pull_request`. O plan define o intervalo de commits
+   por evento. A task inclui verificar a falha dos dois eventos com commits inválidos ou métricas
+   desatualizadas.
+5. **Nova validação.** Conferi as duas variantes numéricas da arena, as regras de histórico nos
+   dois modos e as checagens de CI previstas. A comparação documental confirmou 56 campos
+   referenciados nas tarefas de implementação, 40 requisitos citados nas 50 tarefas e 36
+   critérios de aceite mapeados. As âncoras, os pré-requisitos do Spec Kit e `git diff --check`
+   também passaram. A execução do workflow e dos testes da aplicação pertence às tarefas de
+   implementação da S1.

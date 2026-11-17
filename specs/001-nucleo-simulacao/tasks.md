@@ -23,13 +23,13 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 
 **Objetivo:** projeto rodando, com testes, cobertura, lint, validação de commits e CI.
 
-- [ ] T001 Inicializar o projeto: `package.json` com versões exatas e scripts `dev`, `build`, `preview`, `lint`, `typecheck`, `test`, `test:coverage`, `stats`, `sim` e `bench`; `.nvmrc` (24); `.gitignore` (`node_modules`, `dist`, `coverage`, `reports`); `tsconfig.json` estrito com `noUncheckedIndexedAccess`; `vite.config.ts`; `index.html`; `src/ui/main.tsx`; `src/ui/App.tsx` exibindo "SheepBotz Arena — em construção" — `package.json`, `.nvmrc`, `.gitignore`, `tsconfig.json`, `vite.config.ts`, `index.html`, `src/ui/*` — RB-10, ADR-008
-- [ ] T002 [P] Configurar o Vitest: ambiente `node` para `tests/core`, `tests/cli` e `tests/scripts`, e `jsdom` para `tests/ui`; cobertura v8 com reporters `text`, `json-summary` e `html` em `coverage/`; limites de 80% (linhas, instruções, funções e ramos) no projeto e 90% em `src/core/**`; exclusões apenas de `src/ui/main.tsx`, `src/cli/index.ts`, `src/core/types.ts` e arquivos de configuração; reporter JSON em `reports/test-results.json` — `vitest.config.ts` — RB-08
-- [ ] T003 [P] Teste de fumaça do placeholder da interface — `tests/ui/app.test.tsx` — RB-08
-- [ ] T004 [P] Configurar ESLint (flat config, typescript-eslint, react-hooks) e Prettier, com as regras de fronteira de `src/core` do research R11 — `eslint.config.js`, `.prettierrc.json` — RB-27, RB-28, S1-FR-037
-- [ ] T005 [P] Configurar commitlint e husky (`commit-msg`) com o cabeçalho e a regra da linha `Requisitos:` do research R12 — `commitlint.config.mjs`, `.husky/commit-msg` — RB-12
-- [ ] T006 Criar o script de estatísticas: lê `reports/test-results.json` e `coverage/coverage-summary.json`, reescreve a linha `**N testes · X% de cobertura**` do README (X = cobertura de linhas, arredondada para baixo), gera `docs/cobertura/resumo.md` e copia `coverage-summary.json` para `docs/cobertura/`; teste unitário da função que reescreve a linha — `scripts/update-stats.ts`, `tests/scripts/update-stats.test.ts` — RB-09
-- [ ] T007 Criar o workflow de CI: em push e pull request, `npm ci`, `lint`, `typecheck` e `test:coverage`; em pull request, também commitlint dos commits do PR e `npm run stats` seguido de `git diff --exit-code README.md docs/cobertura`; upload do HTML de cobertura como artefato — `.github/workflows/ci.yml` — RB-08, RB-09, RB-12
+- [X] T001 Inicializar o projeto: `package.json` com versões exatas e scripts `dev`, `build`, `preview`, `lint`, `typecheck`, `test`, `test:coverage`, `stats`, `sim` e `bench`; `.nvmrc` (24); `.gitignore` (`node_modules`, `dist`, `coverage`, `reports`); `tsconfig.json` estrito com `noUncheckedIndexedAccess`; `vite.config.ts`; `index.html`; `src/ui/main.tsx`; `src/ui/App.tsx` exibindo "SheepBotz Arena — em construção" — `package.json`, `.nvmrc`, `.gitignore`, `tsconfig.json`, `vite.config.ts`, `index.html`, `src/ui/*` — RB-10, ADR-008
+- [X] T002 [P] Configurar o Vitest: ambiente `node` para `tests/core`, `tests/cli` e `tests/scripts`, e `jsdom` para `tests/ui`; cobertura v8 com reporters `text`, `json-summary` e `html` em `coverage/`; limites de 80% (linhas, instruções, funções e ramos) no projeto e 90% em `src/core/**`; exclusões apenas de `src/ui/main.tsx`, `src/cli/index.ts`, `src/core/types.ts` e arquivos de configuração; reporter JSON em `reports/test-results.json` — `vitest.config.ts` — RB-08
+- [X] T003 [P] Teste de fumaça do placeholder da interface — `tests/ui/app.test.tsx` — RB-08
+- [X] T004 [P] Configurar ESLint (flat config, typescript-eslint, react-hooks) e Prettier, com as regras de fronteira de `src/core` do research R11 — `eslint.config.js`, `.prettierrc.json` — RB-27, RB-28, S1-FR-037
+- [X] T005 [P] Configurar commitlint e husky (`commit-msg`) com o cabeçalho e a regra da linha `Requisitos:` do research R12 — `commitlint.config.mjs`, `.husky/commit-msg` — RB-12
+- [X] T006 Criar o script de estatísticas: lê `reports/test-results.json` e `coverage/coverage-summary.json`, reescreve a linha `**N testes · X% de cobertura**` do README (X = cobertura de linhas, arredondada para baixo), gera `docs/cobertura/resumo.md` e copia `coverage-summary.json` para `docs/cobertura/`; teste unitário da função que reescreve a linha — `scripts/update-stats.ts`, `tests/scripts/update-stats.test.ts` — RB-09
+- [X] T007 Criar o workflow de CI para `push` e `pull_request`. Em ambos, rodar instalação, lint, verificação de tipos, testes com cobertura, commitlint no intervalo de commits do evento conforme o plan e `npm run stats`. Exigir resumo e JSON de cobertura versionados, conferir `git diff --exit-code README.md docs/cobertura` e publicar o HTML como artefato. Verificar que um commit inválido ou métricas desatualizadas fazem cada evento falhar — `.github/workflows/ci.yml` — RB-08, RB-09, RB-12
 
 **Checkpoint:** `npm run lint`, `npm run typecheck` e `npm test` passam; CI verde.
 
@@ -37,14 +37,15 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 
 ## Fase 2 — Fundação (bloqueia todas as user stories)
 
-- [ ] T008 [P] Declarar os tipos públicos conforme `data-model.md` — `src/core/types.ts` — S1-FR-034
-- [ ] T009 [P] Criar os helpers de teste: `expectClose` (±0.001), `expectAngleClose` (por `angleDiff`), `expectPoseClose`; e o construtor do mundo-base de teste (mapa 4 × 4, modo livre, `dt` 0.1, robôs de raio 0.1, `maxLinearSpeed` 1.0, `maxAngularSpeed` 6.0), que gera o texto JSON com sobrescritas — `tests/helpers/tolerance.ts`, `tests/helpers/world-builder.ts` — S1-FR-040
-- [ ] T010 Escrever testes de ângulo: `normalizeAngle(7) ≈ 0.716815`, `normalizeAngle(3.5) ≈ −2.783185`, `normalizeAngle(−π) = π`, `normalizeAngle(π) = π`, `normalizeAngle(0) = 0`, `angleDiff(π, −π) = 0` — `tests/core/unit/angle.test.ts` — S1-FR-012, S1-FR-040
-- [ ] T011 Implementar `normalizeAngle` e `angleDiff` (research R5) — `src/core/math/angle.ts` — S1-FR-012
-- [ ] T012 [P] Escrever testes de geometria: distância; ponto mais próximo de um retângulo para centro fora, sobre a borda e dentro — `tests/core/unit/geometry.test.ts` — S1-FR-027
-- [ ] T013 Implementar `distance` (com `Math.sqrt`) e `closestPointOnRect` — `src/core/math/geometry.ts` — S1-FR-027
-- [ ] T014 [P] Criar o mundo de exemplo idêntico ao Anexo A da spec — `examples/worlds/duelo-padrao.json` — S1-FR-001
-- [ ] T015 Criar as exportações iniciais (tipos, `normalizeAngle`, `angleDiff`) — `src/core/index.ts` — contracts/core-api.md
+- [X] T008 [P] Declarar os tipos públicos conforme `data-model.md` — `src/core/types.ts` — S1-FR-034
+- [X] T009 [P] Criar os helpers de teste: `expectClose` (±0.001), `expectAngleClose` (por `angleDiff`), `expectPoseClose`; e o construtor do mundo-base de teste (mapa 4 × 4, modo livre, `dt` 0.1, robôs de raio 0.1, `maxLinearSpeed` 1.0, `maxAngularSpeed` 6.0), que gera o texto JSON com sobrescritas — `tests/helpers/tolerance.ts`, `tests/helpers/world-builder.ts` — S1-FR-040
+- [X] T010 Escrever testes de ângulo: `normalizeAngle(7) ≈ 0.716815`, `normalizeAngle(3.5) ≈ −2.783185`, `normalizeAngle(−π) = π`, `normalizeAngle(π) = π`, `normalizeAngle(0) = 0`, `angleDiff(π, −π) = 0` — `tests/core/unit/angle.test.ts` — S1-FR-012, S1-FR-040
+- [X] T011 Implementar `normalizeAngle` e `angleDiff` (research R5) — `src/core/math/angle.ts` — S1-FR-012
+  Campos do modelo [`Pose.theta`](data-model.md#tipos-básicos).
+- [X] T012 [P] Escrever testes de geometria: distância; ponto mais próximo de um retângulo para centro fora, sobre a borda e dentro — `tests/core/unit/geometry.test.ts` — S1-FR-027
+- [X] T013 Implementar `distance` (com `Math.sqrt`) e `closestPointOnRect` — `src/core/math/geometry.ts` — S1-FR-027
+- [X] T014 [P] Criar o mundo de exemplo idêntico ao Anexo A da spec — `examples/worlds/duelo-padrao.json` — S1-FR-001
+- [X] T015 Criar as exportações iniciais (tipos, `normalizeAngle`, `angleDiff`) — `src/core/index.ts` — contracts/core-api.md
 
 **Checkpoint:** fundação pronta; user stories podem começar.
 
@@ -55,14 +56,19 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** carregar arquivos de mundo e devolver o mundo normalizado ou todos os erros.
 **Teste independente:** `loadWorld` com os arquivos da spec, sem executar ticks.
 
-- [ ] T016 [US1] Escrever os testes de aceitação S1-US1-AC1 a S1-US1-AC10 — `tests/core/acceptance/s1/us1-world-validation.test.ts` — S1-FR-001 a S1-FR-012
+- [ ] T016 [US1] Escrever os testes de aceitação S1-US1-AC1 a S1-US1-AC11, incluindo as duas variantes de posição do centro na arena — `tests/core/acceptance/s1/us1-world-validation.test.ts` — S1-FR-001 a S1-FR-012
 - [ ] T017 [P] [US1] Criar fixtures de mundos inválidos: um por código do Anexo C da spec (de `ARQUIVO_INVALIDO` a `REGRA_DA_MODALIDADE`) e `invalido-tres-erros.json` (`dt` 0.5, `seed` −1, `robots[0].radius` 0) — `tests/fixtures/worlds/*.json` — S1-SC-004
 - [ ] T018 [P] [US1] Escrever testes unitários por código de erro usando as fixtures (código, caminho e mensagem contendo o caminho) — `tests/core/unit/validate.test.ts` — S1-FR-003 a S1-FR-005, S1-SC-004
 - [ ] T019 [US1] Implementar códigos, criador de erro e mensagens de `contracts/errors.md` — `src/core/world/errors.ts` — S1-FR-003, S1-FR-004
+  Campos do modelo [`ValidationError.code`, `ValidationError.path` e `ValidationError.message`](data-model.md#erros).
 - [ ] T020 [US1] Implementar a descrição declarativa dos campos do Anexo B (tipo, obrigatório, padrão, intervalo, inteiro, formato, limites de lista) — `src/core/world/schema.ts` — S1-FR-001, S1-FR-006
+  Campos do modelo [`World.name`, `World.seed`, `World.dt`, `World.map`, `World.map.width`, `World.map.height`, `World.arena.radius`, `World.match.mode`, `World.match.maxTicks`, `World.obstacles`, `World.robots`, `Obstacle.id`, `Obstacle.x`, `Obstacle.y`, `Obstacle.width`, `Obstacle.height`, `RobotConfig.id`, `RobotConfig.initialPose`, `RobotConfig.radius`, `RobotConfig.maxLinearSpeed`, `RobotConfig.maxAngularSpeed`, `RobotConfig.color`, `LaserConfig.rays`, `LaserConfig.fov` e `LaserConfig.maxRange`](data-model.md#mundo-normalizado).
 - [ ] T021 [US1] Implementar a validação estrutural: `JSON.parse`, percorredor acumulando erros, campos desconhecidos, padrões, normalização de `theta`, cores padrão e `ID_DUPLICADO` — `src/core/world/validate.ts` — S1-FR-001 a S1-FR-007, S1-FR-012
-- [ ] T022 [US1] Implementar as verificações geométricas sobre itens válidos: `FORA_DO_MAPA`, `POSICAO_INICIAL_INVALIDA`, `DESLOCAMENTO_EXCESSIVO` e `REGRA_DA_MODALIDADE` (contracts/world.md) — `src/core/world/geometry-checks.ts` — S1-FR-007 a S1-FR-011, S1-FR-013, S1-FR-014
+  Campos do modelo [`World.arena`, `World.match`, `Obstacle.id`, `RobotConfig.id`, `RobotConfig.initialPose`, `RobotConfig.color` e `RobotConfig.laser`](data-model.md#mundo-normalizado) e [`Pose.theta`](data-model.md#tipos-básicos). Arena e laser ausentes são normalizados para `null`.
+- [ ] T022 [US1] Implementar as verificações geométricas sobre itens válidos conforme `contracts/world.md`. No modo sumô, comparar a distância do centro inicial de cada robô ao raio da arena, com igualdade permitida. A validação das paredes do mapa considera o corpo inteiro — `src/core/world/geometry-checks.ts` — S1-FR-007 a S1-FR-011, S1-FR-013, S1-FR-014
+  Campos do modelo [`World.dt`, `World.map.width`, `World.map.height`, `World.arena`, `World.arena.radius`, `World.match.mode`, `World.obstacles`, `World.robots`, `RobotConfig.initialPose`, `RobotConfig.radius` e `RobotConfig.maxLinearSpeed`](data-model.md#mundo-normalizado).
 - [ ] T023 [US1] Implementar `loadWorld` e exportá-la — `src/core/world/load-world.ts`, `src/core/index.ts` — S1-FR-002
+  Campos do modelo [`LoadWorldResult.ok`, `LoadWorldResult.world` e `LoadWorldResult.errors`](data-model.md#erros).
 
 **Checkpoint:** S1-US1 passa por completo.
 
@@ -76,11 +82,15 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 - [ ] T024 [US2] Escrever os testes de aceitação S1-US2-AC1 a S1-US2-AC8, via `runHeadless` — `tests/core/acceptance/s1/us2-kinematics.test.ts` — S1-FR-018 a S1-FR-020, S1-FR-032
 - [ ] T025 [P] [US2] Escrever testes unitários de `saturate` e `integratePose` (um passo; θ normalizado) — `tests/core/unit/kinematics.test.ts` — S1-FR-019, S1-FR-020
 - [ ] T026 [US2] Implementar `saturate` e `integratePose` (fórmulas do FR-019 e FR-020) — `src/core/sim/kinematics.ts` — S1-FR-019, S1-FR-020, S1-FR-022
+  Campos do modelo [`Pose.x`, `Pose.y`, `Pose.theta`, `Command.v` e `Command.w`](data-model.md#tipos-básicos) e [`RobotConfig.maxLinearSpeed` e `RobotConfig.maxAngularSpeed`](data-model.md#mundo-normalizado).
 - [ ] T027 [US2] Implementar `createInitialState` (tick 0, tempo 0, comando (0, 0), bumper falso, odometria igual à pose inicial) — `src/core/sim/state.ts` — S1-FR-015, S1-FR-018, S1-FR-034
+  Campos do modelo [`SimState.tick`, `SimState.time`, `SimState.robots`, `RobotState.id`, `RobotState.pose`, `RobotState.command`, `RobotState.bumper` e `RobotState.odometry`](data-model.md#estado-da-simulação).
 - [ ] T028 [US2] Implementar `step` com as etapas 2, 3, 4 e 8 do FR-017; etapas 1, 5, 6, 7 e 9 como funções nomeadas sem efeito, documentadas, a serem preenchidas nas próximas user stories — `src/core/sim/step.ts` — S1-FR-017, S1-FR-021, S1-FR-023
-- [ ] T029 [US2] Implementar a fachada `createSimulation` (`getState`, `step`, `stepN` com `RangeError`, `reset`, `getHistory`) — `src/core/sim/simulation.ts` — S1-FR-015, S1-FR-038, S1-FR-039
+- [ ] T029 [US2] Implementar a fachada `createSimulation` (`getState`, `step`, `stepN` com `RangeError`, `reset`, `getHistory`). No reset com histórico habilitado, substituir a lista anterior por outra contendo apenas o estado do tick 0. Com histórico desabilitado, retornar lista vazia na consulta — `src/core/sim/simulation.ts` — S1-FR-015, S1-FR-038, S1-FR-039
+  Campos do modelo [`SimState.tick`](data-model.md#estado-da-simulação) e [`SimulationOptions.history`](data-model.md#transições).
 - [ ] T030 [P] [US2] Escrever testes unitários de `runHeadless`: `ROBO_INEXISTENTE`, `COMANDO_INVALIDO`, acúmulo de erros, ticks inválidos (`RangeError`) e histórico — `tests/core/unit/run-headless.test.ts` — S1-FR-033, S1-FR-035
 - [ ] T031 [US2] Implementar `runHeadless` e exportar `createInitialState`, `step`, `createSimulation` e `runHeadless` — `src/core/api/run-headless.ts`, `src/core/index.ts` — S1-FR-032 a S1-FR-035
+  Campos do modelo [`HeadlessInput.world`, `HeadlessInput.commands`, `HeadlessInput.ticks`, `HeadlessInput.history`, `HeadlessResult.ok`, `HeadlessResult.state`, `HeadlessResult.history` e `HeadlessResult.errors`](data-model.md#execução-sem-interface).
 
 **Checkpoint:** S1-US1 e S1-US2 passam.
 
@@ -91,8 +101,8 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** mesmas entradas, mesmos estados; reinício confiável; execução por terminal.
 **Teste independente:** duas execuções comparadas estado a estado.
 
-- [ ] T032 [US3] Escrever os testes de aceitação S1-US3-AC1 a S1-US3-AC4 (comparação por igualdade exata de todos os estados do histórico) — `tests/core/acceptance/s1/us3-determinism.test.ts` — S1-FR-015, S1-FR-016, S1-FR-036, S1-FR-038
-- [ ] T033 [US3] Garantir tempo = tick × dt e reinício pela recriação do estado inicial; corrigir o que os testes de T032 apontarem — `src/core/sim/step.ts`, `src/core/sim/simulation.ts` — S1-FR-016, S1-FR-036, S1-FR-038
+- [ ] T032 [US3] Escrever os testes de aceitação S1-US3-AC1 a S1-US3-AC4. Comparar todos os estados por igualdade exata. Verificar o histórico imediatamente após o reset nos dois modos e comparar os 121 estados da repetição com os da execução original — `tests/core/acceptance/s1/us3-determinism.test.ts` — S1-FR-015, S1-FR-016, S1-FR-036, S1-FR-038
+- [ ] T033 [US3] Garantir tempo = tick × dt e recriar o estado inicial e o histórico conforme T029. Corrigir divergências detectadas em T032 — `src/core/sim/step.ts`, `src/core/sim/simulation.ts` — S1-FR-016, S1-FR-036, S1-FR-038
 - [ ] T034 [P] [US3] Escrever testes do comando de terminal: uso correto, `--command` repetido, `--history`, `--pretty`, mundo inválido (saída 1), argumento ausente ou arquivo inexistente (saída 2) — `tests/cli/run-cli.test.ts` — S1-FR-032, S1-FR-033
 - [ ] T035 [US3] Implementar `runCli(argv, io)` e o ponto de entrada; script `sim` com `tsx` (contracts/cli.md) — `src/cli/run-cli.ts`, `src/cli/index.ts`, `package.json` — S1-FR-032, S1-FR-033, RB-43
 
@@ -178,11 +188,11 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 
 | User story | Critérios | Arquivo de teste |
 |---|---|---|
-| US1 | S1-US1-AC1 a AC10 | `us1-world-validation.test.ts` |
+| US1 | S1-US1-AC1 a AC11 | `us1-world-validation.test.ts` |
 | US2 | S1-US2-AC1 a AC8 | `us2-kinematics.test.ts` |
 | US3 | S1-US3-AC1 a AC4 | `us3-determinism.test.ts` |
 | US4 | S1-US4-AC1 a AC5 | `us4-collisions.test.ts` |
 | US5 | S1-US5-AC1 a AC5 | `us5-push.test.ts` |
 | US6 | S1-US6-AC1 a AC3 | `us6-odometry.test.ts` |
 
-Total: 35 testes de aceitação, mais os unitários.
+Total de 36 critérios com testes de aceitação previstos, além dos testes unitários.

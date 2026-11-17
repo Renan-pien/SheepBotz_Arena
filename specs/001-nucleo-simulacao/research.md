@@ -41,7 +41,9 @@ Cada decisão registra alternativas e motivo. Decisões de stack estão na ADR-0
 
 ## R7 — Histórico opcional
 
-- **Decisão:** a fachada guarda o histórico apenas quando `{ history: true }`; o histórico é a lista de estados do tick 0 ao atual.
+- **Decisão:** a fachada guarda o histórico apenas quando `{ history: true }`. A lista contém os
+  estados do tick 0 ao atual. O reset inicia uma nova lista com apenas o estado do tick 0 quando
+  o histórico está habilitado. Com histórico desabilitado, a consulta retorna uma lista vazia.
 - **Motivo:** economia de memória em execuções longas sem histórico; replay na Spec 003 liga o histórico.
 
 ## R8 — Execução sem interface em duas portas (proposta padrão da Q-001)

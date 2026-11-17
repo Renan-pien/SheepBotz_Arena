@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    if: github.event_name != 'push' || !github.event.deleted
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: '0'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test:coverage
+      - name: Verificar commits
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if [[ "$EVENT" == push && "$BASE" =~ ^0+$ ]]; then
+            BASE=
+            if [[ "$GITHUB_REF" != "refs/heads/$DEFAULT_BRANCH" ]] &&
+              git rev-parse --verify "refs/remotes/origin/$DEFAULT_BRANCH" >/dev/null; then
+              BASE=$(git rev-parse "refs/remotes/origin/$DEFAULT_BRANCH")
+            fi
+          fi
+          if [[ -n "$BASE" ]]; then
+            git cat-file -e "$BASE^{commit}" 2>/dev/null || git fetch --no-tags origin "$BASE"
+            npx --no-install commitlint --from "$BASE" --to "$HEAD_SHA"
+          else
+            git rev-list "$HEAD_SHA" | while IFS= read -r commit; do
+              git show -s --format=%B "$commit" | npx --no-install commitlint
+            done
+          fi
+      - name: Conferir métricas versionadas
+        run: |
+          npm run stats
+          git ls-files --error-unmatch docs/cobertura/resumo.md docs/cobertura/coverage-summary.json
+          git diff --exit-code README.md docs/cobertura
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: cobertura-html
+          path: coverage/

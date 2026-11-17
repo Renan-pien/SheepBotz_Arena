@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+coverage/
+reports/
+package-lock.json
+docs/cobertura/
+.husky/_
+.DS_Store
+*.tmp
+*.swp

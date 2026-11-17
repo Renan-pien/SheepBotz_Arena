@@ -171,14 +171,20 @@ src/ui  ──►  src/core  ◄──  src/cli
 
 ### Fachada de simulação
 
-`createSimulation(world, options)` guarda o mundo, o estado atual e, opcionalmente, o histórico. Oferece `getState()`, `step()`, `stepN(n)` e `reset()`. `reset()` reconstrói o estado com `createInitialState(world)`, garantindo o mesmo estado inicial (FR-038).
+`createSimulation(world, options)` guarda o mundo, o estado atual e, opcionalmente, o histórico.
+Oferece `getState()`, `step()`, `stepN(n)`, `reset()` e `getHistory()`. `reset()` reconstrói o
+estado com `createInitialState(world)` (FR-038). Com histórico habilitado, substitui os estados
+anteriores por uma lista contendo somente o novo estado do tick 0. Com histórico desabilitado,
+`getHistory()` retorna uma lista vazia.
 
 ### Validação do mundo
 
 Duas fases, ambas acumulando erros numa lista:
 
 1. **Estrutural** (`validate.ts`): percorre o documento com a descrição declarativa de `schema.ts`, verificando campos obrigatórios, desconhecidos, tipos, inteiros, formatos e intervalos; aplica padrões; normaliza `theta`; atribui cores padrão; detecta `ID_DUPLICADO`.
-2. **Geométrica** (`geometry-checks.ts`): roda apenas sobre itens cujos campos envolvidos passaram na fase 1 (FR-007), verificando FR-008 a FR-011.
+2. **Geométrica** (`geometry-checks.ts`): roda apenas sobre itens cujos campos envolvidos passaram
+   na fase 1 (FR-007), verificando FR-008 a FR-011. No modo sumô, o centro inicial do robô pode estar
+   a uma distância da origem de até o raio da arena, mesmo que parte do corpo ultrapasse a borda.
 
 O resultado é `{ ok: true, world }` com o mundo normalizado ou `{ ok: false, errors }`.
 
@@ -210,7 +216,14 @@ O resultado é `{ ok: true, world }` com o mundo normalizado ou `{ ok: false, er
 
 - **Cobertura:** Vitest com provedor v8, métricas de linhas, instruções, funções e ramos. Limites: 80% global; 90% em `src/core/**`. Excluídos apenas: `src/ui/main.tsx`, `src/cli/index.ts`, arquivos de tipos e configuração.
 - **Linha do README:** `scripts/update-stats.ts` lê `reports/test-results.json` (reporter JSON do Vitest) e `coverage/coverage-summary.json`, e reescreve a linha `**N testes · X% de cobertura**` (X = cobertura de linhas, arredondada para baixo) e `docs/cobertura/resumo.md`. Comando: `npm run stats`.
-- **CI (`ci.yml`)** em todo push e pull request: `npm ci`, `npm run lint`, `npm run typecheck`, `npm run test:coverage`. Em pull requests, também: commitlint sobre os commits do PR e `npm run stats` seguido de `git diff --exit-code README.md docs/cobertura` (falha se o README estiver desatualizado). O relatório HTML de cobertura é publicado como artefato do CI.
+- **CI (`ci.yml`)** executa em `push` e `pull_request` as mesmas verificações. Roda `npm ci`,
+  `npm run lint`, `npm run typecheck`, `npm run test:coverage`, commitlint e `npm run stats`.
+  Após gerar as métricas, exige que o resumo e o JSON de cobertura estejam versionados e roda
+  `git diff --exit-code README.md docs/cobertura`. Publica o HTML de cobertura como artefato do CI.
+  O commitlint verifica os commits entre a revisão anterior e a nova no push, ou entre a base e
+  o HEAD do PR. Na criação de uma branch, verifica os commits do novo HEAD ausentes da branch
+  padrão. Em um primeiro push sem base de comparação, verifica os commits desde a raiz. O
+  workflow obtém o histórico necessário para comparar essas revisões.
 - **Commits:** husky executa o commitlint no `commit-msg`.
 
 ---
