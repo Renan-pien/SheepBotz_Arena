@@ -9,6 +9,7 @@ import type {
 import { resolveRobotContacts } from './contacts';
 import { integratePose, saturate } from './kinematics';
 import { resolveObstaclesAndWalls } from './obstacles';
+import { withLaser } from './state';
 
 interface TickRobot {
   readonly config: RobotConfig;
@@ -16,11 +17,6 @@ interface TickRobot {
   readonly command: Command;
   readonly pose: Pose;
   readonly contacted: boolean;
-}
-
-// Bumper e odometria já estão no estado anterior. Laser entra na Spec 002.
-function readSensors(state: SimState): SimState {
-  return state;
 }
 
 function resolveContacts(robots: readonly TickRobot[]): readonly TickRobot[] {
@@ -71,9 +67,8 @@ export function step(
   state: SimState,
   commands: Readonly<Record<string, Command>>,
 ): SimState {
-  const observed = readSensors(state);
   const candidates = world.robots.map((config, index) => {
-    const previous = observed.robots[index]!;
+    const previous = state.robots[index]!;
     const requested = Object.hasOwn(commands, config.id)
       ? commands[config.id]!
       : previous.command;
@@ -90,5 +85,10 @@ export function step(
     (robot) => updateMeasurements(robot, world.dt),
   );
   const tick = state.tick + 1;
-  return evaluateMatch({ tick, time: tick * world.dt, robots });
+  return evaluateMatch({
+    ...state,
+    tick,
+    time: tick * world.dt,
+    robots: withLaser(world, robots),
+  });
 }
