@@ -151,6 +151,30 @@ src/ui  ──►  src/core  ◄──  src/cli
 
 `src/core` não importa nada de fora dele, exceto a biblioteca padrão de JavaScript (sem módulos `node:*`). `src/cli` é o único lugar que lê arquivos e escreve no terminal.
 
+### Interfaces internas verificadas pela suíte
+
+Os testes unitários importam os resolvedores diretamente dos módulos em `src/core/sim`.
+Cada resultado descreve a pose resolvida e indica se houve contato nessa etapa do tick.
+
+```ts
+type ContactResult = { pose: Pose; contacted: boolean };
+
+// contacts.ts. Um resultado por robô, na ordem dos candidatos.
+export function resolveRobotContacts(
+  initial: readonly Pose[],
+  candidates: readonly Pose[],
+  radii: readonly number[],
+): readonly ContactResult[];
+
+// obstacles.ts. Resultado para um único robô.
+export function resolveObstaclesAndWalls(
+  candidate: Pose,
+  radius: number,
+  obstacles: readonly Obstacle[],
+  map: World['map'],
+): ContactResult;
+```
+
 ### O passo da simulação (FR-017)
 
 `step(world, state, commands)` é uma função pura que devolve um novo estado. Etapas e módulos:
@@ -216,6 +240,14 @@ O resultado é `{ ok: true, world }` com o mundo normalizado ou `{ ok: false, er
 
 - **Cobertura:** Vitest com provedor v8, métricas de linhas, instruções, funções e ramos. Limites: 80% global; 90% em `src/core/**`. Excluídos apenas: `src/ui/main.tsx`, `src/cli/index.ts`, arquivos de tipos e configuração.
 - **Linha do README:** `scripts/update-stats.ts` lê `reports/test-results.json` (reporter JSON do Vitest) e `coverage/coverage-summary.json`, e reescreve a linha `**N testes · X% de cobertura**` (X = cobertura de linhas, arredondada para baixo) e `docs/cobertura/resumo.md`. Comando: `npm run stats`.
+- **Interfaces testadas em `scripts/update-stats.ts`.** `rewriteReadme(readme: string, tests: number,
+  coverage: number): string` substitui a linha de métricas, preserva o restante do texto e sinaliza
+  com uma exceção que menciona `README.md` se a linha estiver ausente.
+  `updateStats(root: string): void` lê os relatórios nesse diretório, usa `numTotalTests` e a
+  cobertura de linhas para atualizar o README, gera o resumo Markdown e grava o JSON de cobertura
+  com chaves de arquivos relativas ao diretório raiz. O resumo apresenta a linha de cobertura
+  no formato `| Linhas | cobertas | total | percentual% |`, com valores numéricos nas três últimas
+  colunas. A importação do módulo permite testar as funções sem executar a atualização automática.
 - **CI (`ci.yml`)** executa em `push` e `pull_request` as mesmas verificações. Roda `npm ci`,
   `npm run lint`, `npm run typecheck`, `npm run test:coverage`, commitlint e `npm run stats`.
   Após gerar as métricas, exige que o resumo e o JSON de cobertura estejam versionados e roda

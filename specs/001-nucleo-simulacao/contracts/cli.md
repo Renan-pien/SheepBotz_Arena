@@ -27,6 +27,11 @@ npm run sim -- --world <arquivo.json> --ticks <N> [--command <id>=<v>,<w>]... [-
 | `1` | Mundo ou comandos inválidos (erros impressos no stdout) |
 | `2` | Uso incorreto: argumento ausente ou malformado, arquivo inexistente |
 
+Na opção `--command`, a estrutura `id=v,w` exige três partes preenchidas. Um valor de velocidade
+não numérico ou não finito em uma expressão com essa estrutura gera `COMANDO_INVALIDO` em
+`stdout`, com saída 1. Exemplos de erro de uso com saída 2 incluem `--command vermelho=1` e
+`--command vermelho=,0`.
+
 ## Exemplo
 
 ```bash
