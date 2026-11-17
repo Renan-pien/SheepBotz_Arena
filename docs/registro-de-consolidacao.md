@@ -284,3 +284,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T030 | 216 passaram / 0 falharam | 96.31 / 94.71 / 99.18 / 97.03 | 98.39 / 97.27 / 99.09 / 99.10 | RED anterior pela ausência dos arquivos, com base de 215 testes medida. Exemplos validados após T032. |
 | T033 | 223 passaram / 0 falharam | 96.48 / 94.96 / 99.18 / 97.03 | 98.59 / 97.58 / 99.09 / 99.10 | Arquivos de exemplo e execução pelos contratos públicos validados. |
 | T031 | 223 passaram / 0 falharam | 96.48 / 94.96 / 99.18 / 97.03 | 98.59 / 97.58 / 99.09 / 99.10 | RED anterior pela ausência dos arquivos, com base de 215 testes medida. Exemplos validados após T033. |
+| T035 | 231 passaram / 0 falharam | 96.58 / 95.08 / 99.18 / 97.12 | 98.59 / 97.58 / 99.09 / 99.10 | CLI v1/v2 testada com saída JSON, erros 0/1/2 e leituras UTF-8. |

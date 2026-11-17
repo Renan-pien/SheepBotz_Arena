@@ -1,5 +1,6 @@
 import { parseArgs } from 'node:util';
 import { runHeadless, type Command } from '../core';
+import { initializeControllerEngine } from '../runtime/controller-engine';
 
 interface CliIo {
   readFile(path: string): string;
@@ -11,12 +12,13 @@ interface CliInput {
   readonly file: string;
   readonly ticks: number;
   readonly commands: Readonly<Record<string, Command>>;
+  readonly controllerFiles: Readonly<Record<string, string>>;
   readonly history: boolean;
   readonly pretty: boolean;
 }
 
 const usage =
-  'Uso: npm run sim -- --world <arquivo.json> --ticks <N> [--command <id>=<v>,<w>]... [--history] [--pretty]\n';
+  'Uso: npm run sim -- --world <arquivo.json> --ticks <N> [--command <id>=<v>,<w>]... [--controller <id>=<arquivo.js>]... [--history] [--pretty]\n';
 
 function parseInput(argv: readonly string[]): CliInput | undefined {
   const { values } = parseArgs({
@@ -25,6 +27,7 @@ function parseInput(argv: readonly string[]): CliInput | undefined {
       world: { type: 'string' },
       ticks: { type: 'string' },
       command: { type: 'string', multiple: true },
+      controller: { type: 'string', multiple: true },
       history: { type: 'boolean', default: false },
       pretty: { type: 'boolean', default: false },
     },
@@ -40,10 +43,20 @@ function parseInput(argv: readonly string[]): CliInput | undefined {
     if (!match?.[2]?.trim() || !match[3]?.trim()) return undefined;
     commands[match[1]!] = { v: Number(match[2]), w: Number(match[3]) };
   }
+  const controllerFiles: Record<string, string> = Object.create(null);
+  for (const entry of values.controller ?? []) {
+    const separator = entry.indexOf('=');
+    if (separator < 0) return undefined;
+    const id = entry.slice(0, separator);
+    const file = entry.slice(separator + 1);
+    if (!id.trim() || !file.trim()) return undefined;
+    controllerFiles[id] = file;
+  }
   return {
     file: values.world,
     ticks,
     commands,
+    controllerFiles,
     history: values.history,
     pretty: values.pretty,
   };
@@ -68,12 +81,31 @@ export function runCli(argv: readonly string[], io: CliIo): number {
     io.stderr(`Não foi possível ler o arquivo de mundo '${input.file}'.\n`);
     return 2;
   }
-  const result = runHeadless({
+  const controllerFiles = Object.entries(input.controllerFiles);
+  const controllers: Record<string, string> = Object.create(null);
+  for (const [id, path] of controllerFiles) {
+    try {
+      controllers[id] = io.readFile(path);
+    } catch {
+      io.stderr(`Não foi possível ler o arquivo de controlador '${path}'.\n`);
+      return 2;
+    }
+  }
+  const options = {
     world,
     ticks: input.ticks,
     commands: input.commands,
     history: input.history,
-  });
+  };
+  const result = runHeadless(
+    controllerFiles.length
+      ? {
+          ...options,
+          controllers,
+          controllerEngine: initializeControllerEngine(),
+        }
+      : options,
+  );
   io.stdout(JSON.stringify(result, null, input.pretty ? 2 : undefined) + '\n');
   return result.ok ? 0 : 1;
 }
