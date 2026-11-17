@@ -56,7 +56,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 **Objetivo:** carregar arquivos de mundo e devolver o mundo normalizado ou todos os erros.
 **Teste independente:** `loadWorld` com os arquivos da spec, sem executar ticks.
 
-- [ ] T016 [US1] Escrever os testes de aceitação S1-US1-AC1 a S1-US1-AC11, incluindo as duas variantes de posição do centro na arena — `tests/core/acceptance/s1/us1-world-validation.test.ts` — S1-FR-001 a S1-FR-012
+- [X] T016 [US1] Escrever os testes de aceitação S1-US1-AC1 a S1-US1-AC11, incluindo as duas variantes de posição do centro na arena — `tests/core/acceptance/s1/us1-world-validation.test.ts` — S1-FR-001 a S1-FR-012
 - [ ] T017 [P] [US1] Criar fixtures de mundos inválidos: um por código do Anexo C da spec (de `ARQUIVO_INVALIDO` a `REGRA_DA_MODALIDADE`) e `invalido-tres-erros.json` (`dt` 0.5, `seed` −1, `robots[0].radius` 0) — `tests/fixtures/worlds/*.json` — S1-SC-004
 - [ ] T018 [P] [US1] Escrever testes unitários por código de erro usando as fixtures (código, caminho e mensagem contendo o caminho) — `tests/core/unit/validate.test.ts` — S1-FR-003 a S1-FR-005, S1-SC-004
 - [ ] T019 [US1] Implementar códigos, criador de erro e mensagens de `contracts/errors.md` — `src/core/world/errors.ts` — S1-FR-003, S1-FR-004
