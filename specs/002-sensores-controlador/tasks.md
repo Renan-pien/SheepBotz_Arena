@@ -68,7 +68,7 @@ description: "Tarefas de implementação dos sensores, controladores e regras de
 ### Testes
 
 - [X] T017 [P] [US2] Escrever `S2-US2-AC2`, `S2-US2-AC3`, `S2-US2-AC6` e `S2-US2-AC9` para persistência do comando, parada por tick, bumper, odometria e os campos de `getInfo()`. Assertar cópias dos objetos retornados — `tests/core/acceptance/s2/us2-api.test.ts` — S2-FR-017 a S2-FR-020, ADR-009. **Dep.** T016. **Pronto** Cenários verdes com T019.
-- [ ] T018 [P] [US2] Escrever `S2-US2-AC10` e os testes dos vetores R4, sementes extremas, independência do consumo entre robôs, reset e repetição de estados e eventos — `tests/core/acceptance/s2/us2-aleatoriedade.test.ts`, `tests/core/unit/controller-random.test.ts` — S2-FR-015, S2-FR-021, S2-SC-002. **Dep.** T016. **Pronto** Vetores e cenários verdes com T020.
+- [X] T018 [P] [US2] Escrever `S2-US2-AC10` e os testes dos vetores R4, sementes extremas, independência do consumo entre robôs, reset e repetição de estados e eventos — `tests/core/acceptance/s2/us2-aleatoriedade.test.ts`, `tests/core/unit/controller-random.test.ts` — S2-FR-015, S2-FR-021, S2-SC-002. **Dep.** T016. **Pronto** Vetores e cenários verdes com T020.
 
 ### Implementação
 
