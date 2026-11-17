@@ -287,3 +287,4 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T035 | 231 passaram / 0 falharam | 96.58 / 95.08 / 99.18 / 97.12 | 98.59 / 97.58 / 99.09 / 99.10 | CLI v1/v2 testada com saída JSON, erros 0/1/2 e leituras UTF-8. |
 | T034 | 231 passaram / 0 falharam | 96.58 / 95.08 / 99.18 / 97.12 | 98.59 / 97.58 / 99.09 / 99.10 | RED antes de implementar a flag, com 223 testes na base. Contrato CLI verde após T035. |
 | T036 | 231 passaram / 0 falharam | 96.58 / 95.08 / 99.18 / 97.12 | 98.59 / 97.58 / 99.09 / 99.10 | Fixture real compilada pelo Vite e verificada em Chrome. Todo histórico coincide com Node 24. |
+| T038 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Benchmark executado em Intel Core i5-1334U, Linux x64 e Node 24.22.3. S1 completou 3 000 ticks em 33,26 ms. S2 completou 3 000 ticks em 43,27 ms com tempo esgotado. |

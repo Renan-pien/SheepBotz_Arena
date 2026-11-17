@@ -17,6 +17,7 @@
     "stats": "tsx scripts/update-stats.ts",
     "sim": "tsx src/cli/index.ts",
     "bench": "tsx scripts/bench.ts",
+    "bench:s2": "tsx scripts/bench-s2.ts",
     "prepare": "husky"
   },
   "dependencies": {
