@@ -42,7 +42,7 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 - [X] T010 Escrever testes de ângulo: `normalizeAngle(7) ≈ 0.716815`, `normalizeAngle(3.5) ≈ −2.783185`, `normalizeAngle(−π) = π`, `normalizeAngle(π) = π`, `normalizeAngle(0) = 0`, `angleDiff(π, −π) = 0` — `tests/core/unit/angle.test.ts` — S1-FR-012, S1-FR-040
 - [X] T011 Implementar `normalizeAngle` e `angleDiff` (research R5) — `src/core/math/angle.ts` — S1-FR-012
   Campos do modelo [`Pose.theta`](data-model.md#tipos-básicos).
-- [ ] T012 [P] Escrever testes de geometria: distância; ponto mais próximo de um retângulo para centro fora, sobre a borda e dentro — `tests/core/unit/geometry.test.ts` — S1-FR-027
+- [X] T012 [P] Escrever testes de geometria: distância; ponto mais próximo de um retângulo para centro fora, sobre a borda e dentro — `tests/core/unit/geometry.test.ts` — S1-FR-027
 - [ ] T013 Implementar `distance` (com `Math.sqrt`) e `closestPointOnRect` — `src/core/math/geometry.ts` — S1-FR-027
 - [ ] T014 [P] Criar o mundo de exemplo idêntico ao Anexo A da spec — `examples/worlds/duelo-padrao.json` — S1-FR-001
 - [ ] T015 Criar as exportações iniciais (tipos, `normalizeAngle`, `angleDiff`) — `src/core/index.ts` — contracts/core-api.md
