@@ -6,10 +6,11 @@ import type {
   SimState,
   World,
 } from '../types';
+import { evaluateSumo } from '../match/sumo';
 import { resolveRobotContacts } from './contacts';
 import { integratePose, saturate } from './kinematics';
 import { resolveObstaclesAndWalls } from './obstacles';
-import { withLaser } from './state';
+import { completeMatch, withLaser } from './state';
 
 interface TickRobot {
   readonly config: RobotConfig;
@@ -57,11 +58,6 @@ function updateMeasurements(robot: TickRobot, dt: number): RobotState {
   };
 }
 
-// O resultado do sumô será avaliado na Spec 002.
-function evaluateMatch(state: SimState): SimState {
-  return state;
-}
-
 export function step(
   world: World,
   state: SimState,
@@ -85,10 +81,12 @@ export function step(
     (robot) => updateMeasurements(robot, world.dt),
   );
   const tick = state.tick + 1;
-  return evaluateMatch({
+  const next: SimState = {
     ...state,
     tick,
     time: tick * world.dt,
     robots: withLaser(world, robots),
-  });
+  };
+  const result = evaluateSumo(world, next);
+  return result ? completeMatch(next, result) : next;
 }

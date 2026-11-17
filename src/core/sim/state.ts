@@ -1,5 +1,25 @@
 import { readLasers } from '../sensors/laser';
-import type { RobotState, SimState, World } from '../types';
+import type { MatchResult, RobotState, SimState, World } from '../types';
+
+export function completeMatch(
+  state: SimState,
+  resultado: MatchResult,
+): SimState {
+  const message = {
+    saida_da_arena: `Fim da luta: vitória de '${resultado.vencedor}' por saída da arena.`,
+    ambos_sairam: 'Fim da luta: empate. Os dois robôs saíram da arena.',
+    tempo_esgotado: 'Fim da luta: empate por tempo esgotado.',
+  }[resultado.motivo];
+  return {
+    ...state,
+    status: 'finalizada',
+    resultado,
+    events: [
+      ...state.events,
+      { type: 'fim_da_luta', tick: resultado.tick, robotId: null, message },
+    ],
+  };
+}
 
 export function withLaser(
   world: World,
