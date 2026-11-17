@@ -30,7 +30,10 @@ Cada decisão registra alternativas e motivo. Decisões de stack estão na ADR-0
 
 ## R5 — Normalização de ângulo
 
-- **Decisão:** `normalizeAngle(t) = t − 2π · Math.ceil((t − π) / (2π))`, exatamente a fórmula do FR-012, com `Math.PI`. `angleDiff(a, b)` devolve a diferença normalizada de `a − b`, usada nas comparações com tolerância.
+- **Decisão:** `normalizeAngle(t)` usa `t − 2π · Math.ceil((t − π) / (2π))`, com `Math.PI`. Se o
+  cálculo direto produzir um valor `≤ −π` ou `> π` por cancelamento em ponto flutuante, aplique a
+  mesma fórmula a `t % (2 * Math.PI)`. `angleDiff(a, b)` devolve a diferença normalizada de
+  `a − b`, usada nas comparações com tolerância.
 - **Alternativas:** laços `while`; `atan2(sin, cos)`.
 - **Motivo:** fórmula fechada e idêntica à da spec.
 
@@ -59,7 +62,10 @@ Cada decisão registra alternativas e motivo. Decisões de stack estão na ADR-0
 
 ## R10 — Relatório de cobertura e linha do README (proposta padrão da Q-005)
 
-- **Decisão:** cobertura em `coverage/` (ignorada pelo git); `scripts/update-stats.ts` gera `docs/cobertura/resumo.md` e copia `coverage-summary.json` para `docs/cobertura/` (versionados) e reescreve a linha do README. O relatório HTML é artefato do CI (e será publicado no GitHub Pages na Spec 003).
+- **Decisão:** a cobertura bruta fica em `coverage/`, ignorada pelo Git. `scripts/update-stats.ts`
+  gera `docs/cobertura/resumo.md`, grava uma cópia versionada do `coverage-summary.json` com caminhos
+  relativos à raiz do projeto e atualiza a linha do README. O relatório HTML é artefato do CI
+  e será publicado no GitHub Pages na Spec 003.
 - **Alternativas:** versionar o HTML completo; atualizar o README à mão.
 - **Motivo:** o relatório comprovável fica no repositório sem milhares de arquivos HTML mudando a cada commit; o número do README nunca é digitado à mão (Princípio V).
 

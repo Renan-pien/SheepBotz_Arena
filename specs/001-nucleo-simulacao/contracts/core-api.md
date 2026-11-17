@@ -62,5 +62,8 @@ retornado por `reset()`. Se estiver desabilitado, `getHistory()` continua retorn
 ## Comportamento de `runHeadless`
 
 1. `loadWorld(input.world)`; se inválido, devolve os erros.
-2. Para cada `id` em `input.commands`: se não existir no mundo, erro `ROBO_INEXISTENTE` (caminho `commands.<id>`); se `v` ou `w` não forem números finitos, erro `COMANDO_INVALIDO` (caminho `commands.<id>`). Todos os erros são acumulados.
+2. Percorre as entradas de `input.commands` na ordem de enumeração do objeto. Para cada entrada,
+   verifica primeiro se o `id` existe no mundo e em seguida se `v` e `w` são números finitos.
+   Acumula `ROBO_INEXISTENTE` e `COMANDO_INVALIDO` conforme o caso, inclusive ambos no mesmo
+   caminho `commands.<id>` quando as duas verificações falharem.
 3. Cria a simulação com os comandos, executa `ticks` ticks e devolve `{ ok: true, state }`, mais `history` se pedido.

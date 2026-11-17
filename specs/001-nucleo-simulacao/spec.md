@@ -162,7 +162,7 @@ Como membro da equipe, quero que o robô tenha uma estimativa de onde acha que e
 - Execução de 0 ticks: devolve o estado inicial.
 - Comando informado para um `id` que não existe no mundo: erro `ROBO_INEXISTENTE` antes de iniciar.
 - Comando não numérico ou não finito na execução sem interface: erro `COMANDO_INVALIDO` antes de iniciar.
-- Arquivo com erros de tipo em um robô: as verificações geométricas daquele robô não são feitas, para evitar erros em cascata (FR-007).
+- Arquivo com erros de tipo em um robô. A validação geométrica omite as verificações que dependem dos campos inválidos e mantém as que usam apenas campos válidos (FR-007).
 
 ## Requisitos
 
@@ -184,7 +184,7 @@ Como membro da equipe, quero que o robô tenha uma estimativa de onde acha que e
 
 #### Sistema de coordenadas, unidades e tempo
 
-- **FR-012:** O sistema DEVE usar metros, radianos e segundos. O eixo x aponta para a direita, o eixo y para cima, a origem é o centro do mapa e o ângulo positivo é anti-horário. θ = 0 aponta para +x. Toda orientação DEVE ser mantida normalizada no intervalo (−π, π] pela regra `θn = θ − 2π · teto((θ − π) / 2π)`. *(RB-31)*
+- **FR-012:** O sistema DEVE usar metros, radianos e segundos. O eixo x aponta para a direita, o eixo y para cima, a origem é o centro do mapa e o ângulo positivo é anti-horário. θ = 0 aponta para +x. Toda orientação finita DEVE ser mantida normalizada no intervalo (−π, π] pela regra `θn = θ − 2π · teto((θ − π) / 2π)`. O resultado DEVE respeitar o intervalo também para entradas finitas de magnitude elevada. *(RB-31)*
 - **FR-013:** O mapa DEVE ocupar x ∈ [−largura/2, +largura/2] e y ∈ [−altura/2, +altura/2]; suas bordas são paredes. *(RB-30)*
 - **FR-014:** A arena, quando existir, DEVE ser um círculo centrado na origem. Ela não é parede: os robôs podem sair dela. *(ADR-003)*
 - **FR-015:** O estado inicial DEVE ser o tick 0. Cada avanço executa exatamente um tick com o `dt` do mundo. *(RB-27)*
@@ -244,7 +244,7 @@ Como membro da equipe, quero que o robô tenha uma estimativa de onde acha que e
 - **FR-032:** O sistema DEVE permitir executar uma simulação sem interface informando: o mundo, um comando constante opcional por `id` de robô e um número inteiro de ticks N ≥ 0. *(RB-27, RB-43)*
 - **FR-033:** O resultado DEVE ser: a lista de erros de validação (se houver) **ou** o estado após N ticks; opcionalmente, o histórico com o estado de cada tick de 0 a N. *(RB-43, RB-44)*
 - **FR-034:** O estado DEVE conter: tick, tempo e, para cada robô, `id`, pose real, comando efetivo, bumper e odometria (a Spec 002 acrescenta campos). *(RB-44)*
-- **FR-035:** Comandos para `id` inexistente DEVEM gerar o erro `ROBO_INEXISTENTE`; comandos não numéricos ou não finitos, o erro `COMANDO_INVALIDO`. O caminho do erro é `commands.<id>` e a simulação não começa em nenhum desses casos. *(RB-43, ADR-007)*
+- **FR-035:** Comandos para `id` inexistente DEVEM gerar `ROBO_INEXISTENTE`. Comandos com velocidades não numéricas ou não finitas DEVEM gerar `COMANDO_INVALIDO`. As verificações são independentes e DEVEM acumular os dois erros se ambos se aplicarem ao mesmo comando. Cada erro usa o caminho `commands.<id>` e impede o início da simulação. *(RB-43, ADR-007)*
 - **FR-036:** A simulação DEVE ser determinística: as mesmas entradas (mundo, comandos ou controladores e número de ticks) produzem estados idênticos em todos os ticks. *(RB-27)*
 - **FR-037:** O núcleo NÃO DEVE depender de relógio real, de interface gráfica, de rede ou de aleatoriedade sem semente. *(RB-27)*
 - **FR-038:** O sistema DEVE permitir reiniciar a simulação para o estado do tick 0 do mesmo mundo. Se o histórico estiver habilitado, o reinício DEVE substituir a lista anterior por uma lista contendo somente o estado inicial. Se estiver desabilitado, a consulta ao histórico DEVE retornar uma lista vazia. *(RB-24)*
