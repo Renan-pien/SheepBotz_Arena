@@ -70,3 +70,12 @@ além da cor.
   **Ver replay**. O controle deslizante é **Linha do tempo**.
 - O modo apresentação tem a região **Placar**. O painel complementar
   tem os botões **Recolher painel** e **Expandir painel**, com estado expandido.
+
+A aba inicial é **Controladores**. O rodapé mantém o botão **Reiniciar**
+habilitado no fim da luta, além da ação **Reiniciar luta** no banner. Tick,
+tempo e status são elementos de texto separados no rodapé. O tempo inclui
+duas casas e a unidade, por exemplo “0,06 s”.
+
+Cada ângulo relativo do laser usa uma casa decimal, por exemplo “−30,0°”.
+O aviso de limite dos eventos usa “1 evento oculto” no singular e
+“<quantidade> eventos ocultos” no plural.
