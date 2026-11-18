@@ -14,7 +14,7 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 ## Fase 2 · Fundação
 
 - [ ] T003 Escrever os testes da sessão inicial com o Duelo no tick 0, textos aplicados, fonte do snapshot e instância estável. Atualizar teste de montagem da tela em conjunto com a mudança de título — `tests/ui/s3/session.test.tsx`, `tests/ui/app.test.tsx` — S3-FR-001, S3-FR-002, S3-FR-021, S3-FR-022. **Dep.** T002. **Pronto** Testes verdes com T004.
-- [ ] T004 Implementar catálogo de textos, sessão observável e tela inicial. Preparar candidato pela API pública e publicar tick 0 com fontes e estado do núcleo — `src/ui/arena/catalog.ts`, `src/ui/arena/session.ts`, `src/ui/App.tsx` — S3-FR-001, S3-FR-002, S3-FR-019, S3-FR-021, S3-FR-022. **Dep.** T003 (RED). **Pronto** Duelo pronto e base S1/S2 verde. Campos [Sessão viva.worldText, Sessão viva.world, Sessão viva.simulation, Sessão viva.controllers, SessionView.snapshot, SessionView.world](data-model.md#modelo-de-dados--spec-003).
+- [X] T004 Implementar catálogo de textos, sessão observável e tela inicial. Preparar candidato pela API pública e publicar tick 0 com fontes e estado do núcleo — `src/ui/arena/catalog.ts`, `src/ui/arena/session.ts`, `src/ui/App.tsx` — S3-FR-001, S3-FR-002, S3-FR-019, S3-FR-021, S3-FR-022. **Dep.** T003 (RED). **Pronto** Duelo pronto e base S1/S2 verde. Campos [Sessão viva.worldText, Sessão viva.world, Sessão viva.simulation, Sessão viva.controllers, SessionView.snapshot, SessionView.world](data-model.md#modelo-de-dados--spec-003).
 
 ## Fase 3 · US1 — Ver a luta em 3D (P1)
 
