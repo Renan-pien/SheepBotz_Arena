@@ -290,4 +290,18 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T038 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Benchmark executado em Intel Core i5-1334U, Linux x64 e Node 24.22.3. S1 completou 3 000 ticks em 33,26 ms. S2 completou 3 000 ticks em 43,27 ms com tempo esgotado. |
 | T037 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | RED confirmado pela ausência do benchmark S2, com 231 testes na base. S1 e S2 passaram com 3 000 ticks efetivos e S2 sem histórico, após T038. |
 | T039 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Instalação limpa, lint, tipos, build e quickstart aprovados. Foram confirmados 48/48 cenários e 35 estados completos idênticos nas duas lutas. Chrome 145.0.7632.116 e Node coincidiram nos cinco estados da fixture. Intel Core i5-1334U, Linux x64, Node 24.22.3: S1 em 29,24 ms e S2 em 41,47 ms, ambas com 3 000 ticks. A auditoria do npm relatou 12 ocorrências altas na árvore completa e zero nas dependências de produção. O quickstart direciona o bundle da fixture para o dist da raiz, ignorado pelo lint. A prévia e a suíte com cobertura passaram novamente. |
-| T040 (demonstração) | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | O Codex criou o [Caçador reativo](../examples/controllers/cacador-reativo.js) a partir do Caçador, com o Anexo B como referência da API. Antes da edição, a verificação da CLI retornou 2 pela ausência do arquivo. Depois, vermelho venceu Parado por saída da arena no tick 42, com 43 estados e sem falha de controlador. A gravação da estratégia já preparada e a execução verificadas levaram 1,09 s. SC-005 aguarda a sessão cronometrada de autoria e execução por um membro da equipe. |
+| T040 (demonstração) | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | O Codex criou o [Caçador reativo](../examples/controllers/cacador-reativo.js) a partir do Caçador, com o Anexo B como referência da API. Antes da edição, a verificação da CLI retornou 2 pela ausência do arquivo. Depois, vermelho venceu Parado por saída da arena no tick 42, com 43 estados e sem falha de controlador. A gravação da estratégia já preparada e a execução verificadas levaram 1,09 s. Evidência inicial submetida à aprovação como exceção de aceite. |
+| T040 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Exceção de aceite do SC-005 aprovada pelo usuário. A reexecução confirmou a vitória de vermelho por saída da arena no tick 42, com 43 estados e sem falha de controlador. |
+
+### Exceção de aceite do SC-005
+
+Em 2026-11-17, o usuário aprovou usar a demonstração do Caçador Reativo feita
+pelo Codex como evidência de aceite da Spec 002. A aprovação substitui, nesta
+entrega, a sessão cronometrada de autoria e execução por um membro da equipe.
+A medição de 1,09 s cobre a gravação do arquivo já elaborado e sua primeira
+execução verificada. O tempo de elaboração da estratégia ficou fora da medição.
+
+A T040 reexecutou a demonstração em Node 24.22.3. No Duelo padrão, Caçador
+Reativo em vermelho venceu Parado por saída da arena no tick 42, com 43
+estados no histórico e nenhum erro de controlador.
+[Critério e exceção](../specs/002-sensores-controlador/spec.md#6-critérios-de-sucesso)

@@ -266,6 +266,11 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - **SC-004:** Cada falha de carregamento devolve um erro estruturado e impede o início da simulação. Na execução sem interface, todas as falhas de carregamento são devolvidas na mesma resposta (FR-012). Todos os casos de erro durante `setup()` ou `loop()` desativam o robô e registram um evento conforme FR-026, preservando a execução do tick.
 - **SC-005:** Um membro da equipe consegue, partindo do "Caçador", escrever uma estratégia própria e colocá-la para lutar em menos de 15 minutos, consultando apenas o Anexo B.
 
+> **Exceção de aceite da Spec 002, aprovada em 2026-11-17.** Para a entrega desta
+> spec, a demonstração do Caçador Reativo feita pelo Codex substitui a sessão
+> cronometrada de autoria e execução por um membro da equipe.
+> [Evidência da T040](../../docs/registro-de-consolidacao.md#exceção-de-aceite-do-sc-005)
+
 ---
 
 ## 7. Premissas e decisões
