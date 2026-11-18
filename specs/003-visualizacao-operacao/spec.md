@@ -165,7 +165,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 
 - Trocar de mundo durante a execução: após validar o candidato, a simulação pausa, o novo mundo é carregado no tick 0 e a gravação anterior é descartada. Uma troca inválida preserva a sessão em curso.
 - Aplicar controlador durante a execução: a simulação reinicia pausada no tick 0 se o controlador for válido.
-- Gravação muito longa: a gravação inclui o tick 100 000 e para nesse limite. O aviso "limite de gravação atingido" é exibido sem interromper a execução ao vivo.
+- Gravação muito longa: a gravação inclui o tick 100 000 e para nesse limite. Ao salvar esse tick, o aviso "limite de gravação atingido" aparece e a execução ao vivo pode continuar.
 - Janela redimensionada: a cena se ajusta sem distorcer e sem reiniciar a simulação.
 - Aba do navegador em segundo plano: a execução pausa automaticamente e não "dispara" ticks acumulados ao voltar.
 - Mundo com 8 robôs: todos aparecem nas abas de controladores e de inspeção, com rolagem.
