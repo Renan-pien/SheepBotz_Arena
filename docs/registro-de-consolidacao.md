@@ -444,3 +444,4 @@ ramos, funções e linhas.
 | T014 | 309 passaram / 0 falharam | 87.67 / 84.5 / 91.33 / 88.01 | 98.59 / 97.58 / 99.09 / 99.10 | Codec, tipos, dados inválidos e limite inclusivo testados. Cenários de UI preescritos aguardam integração da T015. |
 | T015 | 317 passaram / 0 falharam | 87.69 / 84.75 / 91.86 / 88.5 | 98.59 / 97.58 / 99.09 / 99.10 | Timeline, playback, arquivos e bloqueio de edição passaram; ida ao vivo mantém o replay se a preparação falhar. |
 | T013 | 317 passaram / 0 falharam | 87.69 / 84.75 / 91.86 / 88.5 | 98.59 / 97.58 / 99.09 / 99.10 | RED anterior por ausência do codec e integração. A suíte passou com T014 e T015, incluindo mutações de campos e limite de 100 000 ticks. |
+| T017 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Apresentação preserva sessão e orientação da câmera. Foco, recolhimento, placar e retorno por teclado validados. |

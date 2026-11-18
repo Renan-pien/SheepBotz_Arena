@@ -39,12 +39,14 @@ function attachViewport(host: HTMLElement, labels: HTMLElement, world: World) {
   }
 
   function resize() {
-    renderer.setSize(
-      Math.max(1, host.clientWidth),
-      Math.max(1, host.clientHeight),
-      false,
-    );
-    fit(view);
+    const width = Math.max(1, host.clientWidth);
+    const height = Math.max(1, host.clientHeight);
+    renderer.setSize(width, height, false);
+    if (!controls) fit(view);
+    else {
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    }
   }
 
   function draw() {

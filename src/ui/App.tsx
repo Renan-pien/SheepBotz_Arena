@@ -15,6 +15,8 @@ const tabs = ['Controladores', 'Inspeção', 'Eventos'] as const;
 export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const [session] = useState(() => supplied ?? new ArenaSession());
   const [files] = useState(() => new LocalFiles());
+  const [presenting, setPresenting] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(true);
   const [tab, setTab] = useState<(typeof tabs)[number]>('Controladores');
   const view = useSyncExternalStore(session.subscribe, session.getSnapshot);
   const { world, snapshot, status, speed, behind } = view;
@@ -57,6 +59,10 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
         session.back();
       } else if (event.key.toLowerCase() === 'r') {
         session.reset();
+      } else if (event.key.toLowerCase() === 'p') {
+        setPresenting((value) => !value);
+      } else if (event.key === 'Escape') {
+        setPresenting(false);
       }
     }
     document.addEventListener('keydown', shortcuts);
@@ -68,10 +74,31 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   }, [session]);
 
   return (
-    <main className="arena-app" data-mode={view.mode}>
-      <header>
-        <h1>SheepBotz Arena</h1>
-        <p>{world.name}</p>
+    <main
+      className={presenting ? 'arena-app is-presenting' : 'arena-app'}
+      data-mode={view.mode}
+    >
+      <header className="arena-header">
+        <div className="arena-heading">
+          <h1>SheepBotz Arena</h1>
+          <button
+            type="button"
+            aria-pressed={presenting}
+            onClick={() => setPresenting(!presenting)}
+          >
+            {presenting ? 'Sair da apresentação' : 'Modo apresentação'}
+          </button>
+          {!presenting && (
+            <button
+              type="button"
+              aria-controls="sidebar"
+              aria-expanded={panelOpen}
+              onClick={() => setPanelOpen(!panelOpen)}
+            >
+              {panelOpen ? 'Recolher painel' : 'Expandir painel'}
+            </button>
+          )}
+        </div>
         <div className="world-actions">
           <label>
             Mundo{' '}
@@ -180,9 +207,35 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           </ul>
         </div>
       )}
-      <div className="workspace">
+      {presenting && (
+        <section className="scoreboard" aria-label="Placar">
+          <div className="scoreboard-robots">
+            {world.robots.map(({ id, color }) => (
+              <span key={id}>
+                <i
+                  aria-hidden="true"
+                  className="robot-dot"
+                  style={{ background: color }}
+                />
+                {id}
+              </span>
+            ))}
+          </div>
+          <strong>{formatNumber(snapshot.time, 2)} s</strong>
+          {result && <strong className="scoreboard-result">{result}</strong>}
+        </section>
+      )}
+      <div
+        className={
+          presenting || !panelOpen ? 'workspace only-scene' : 'workspace'
+        }
+      >
         <ArenaView world={world} snapshot={snapshot} />
-        <aside className="side-panel">
+        <aside
+          className="side-panel"
+          id="sidebar"
+          hidden={presenting || !panelOpen}
+        >
           <div
             role="tablist"
             className="panel-tabs"
@@ -219,7 +272,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           </div>
         </aside>
       </div>
-      {result && (
+      {result && !presenting && (
         <section className="match-result" aria-label="Resultado">
           <strong>{result}</strong>
           {!replay && (

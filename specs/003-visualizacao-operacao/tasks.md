@@ -45,7 +45,7 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 ## Fase 8 · US6 — Modo apresentação (P3)
 
 - [ ] T016 [US6] Escrever S3-US6-AC1 a S3-US6-AC3 para placar, retorno e requisitos verificáveis de layout e foco — `tests/ui/s3/us6-apresentacao.test.tsx` — S3-FR-017, S3-FR-036 a S3-FR-039. **Dep.** T015. **Pronto** Os três critérios passam com T017.
-- [ ] T017 [US6] Integrar apresentação, rótulos, foco, contraste e quebra em 1024 px, preservando a sessão e a câmera — `src/ui/App.tsx`, `src/ui/arena.css` — S3-FR-017, S3-FR-036 a S3-FR-039. **Dep.** T016 (RED). **Pronto** Retorno pelo teclado e acesso à cena validados. Campos [Preferências.painel, Preferências.apresentação](data-model.md#modelo-de-dados--spec-003).
+- [X] T017 [US6] Integrar apresentação, rótulos, foco, contraste e quebra em 1024 px, preservando a sessão e a câmera — `src/ui/App.tsx`, `src/ui/arena.css` — S3-FR-017, S3-FR-036 a S3-FR-039. **Dep.** T016 (RED). **Pronto** Retorno pelo teclado e acesso à cena validados. Campos [Preferências.painel, Preferências.apresentação](data-model.md#modelo-de-dados--spec-003).
 
 ## Fase 9 · Acabamento
 

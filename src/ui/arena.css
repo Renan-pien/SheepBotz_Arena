@@ -377,3 +377,59 @@ button.primary:enabled:hover {
   opacity: 0.65;
   cursor: default;
 }
+
+.arena-heading {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0 0 0.9rem;
+}
+.arena-heading h1 {
+  flex: 1 1 220px;
+}
+.workspace.only-scene {
+  grid-template-columns: minmax(0, 1fr);
+}
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  margin: 0 0 0.75rem;
+  border: 1px solid #546c87;
+  border-radius: 10px;
+  background: #17283e;
+  font-size: clamp(1.25rem, 3vw, 2.25rem);
+}
+.scoreboard-robots {
+  display: flex;
+  gap: clamp(0.75rem, 2vw, 2rem);
+  flex-wrap: wrap;
+}
+.scoreboard-robots span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.scoreboard-robots .robot-dot {
+  width: 0.9em;
+  height: 0.9em;
+}
+.scoreboard-result {
+  flex: 1 0 100%;
+  color: #adf3e2;
+}
+.is-presenting {
+  width: 100%;
+}
+.is-presenting .world-actions,
+.is-presenting .scene-toolbar,
+.is-presenting .transport {
+  display: none;
+}
+.is-presenting .arena-viewport {
+  height: max(300px, calc(100dvh - 12rem));
+}
