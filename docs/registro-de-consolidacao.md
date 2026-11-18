@@ -355,3 +355,19 @@ do AGENTS.md §15 e §18 segue para o ensaio de regeneração em sessão nova,
 com registro próprio, e depois para o fechamento com CI remota aprovada,
 merge na `main` e tag `spec-002-fechada`.
 [Procedimento de regeneração](../AGENTS.md#18-ensaio-de-regeneração)
+
+### Fechamento da Spec 002
+
+O [PR #4](https://github.com/Renan-pien/SheepBotz_Arena/pull/4) integrou a
+implementação da Spec 002 à `main` em `d02c684`. A CI passou no
+[push da branch](https://github.com/Renan-pien/SheepBotz_Arena/actions/runs/44210761763),
+no [pull request](https://github.com/Renan-pien/SheepBotz_Arena/actions/runs/44210871738)
+e no [push da main](https://github.com/Renan-pien/SheepBotz_Arena/actions/runs/44211137698).
+
+O ensaio reconstruiu as Specs 001 e 002 em uma sessão nova. A primeira execução
+passou em 189 de 233 testes, com todos os cenários de aceite aprovados. As falhas
+levaram a esclarecimentos de interfaces, diagnósticos e entradas de benchmark.
+A reexecução passou em 233 de 233 testes, com 94,38% de cobertura de linhas no
+projeto e 99,30% no núcleo regenerado. A implementação de produção e os
+marcadores do checklist foram preservados.
+[Registro do ensaio](ensaio-regeneracao.md#ensaio-2--2026-11-17)
