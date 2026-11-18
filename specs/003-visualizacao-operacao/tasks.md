@@ -24,7 +24,7 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 ## Fase 4 · US2 — Controlar o tempo (P1)
 
 - [ ] T007 [US2] Escrever S3-US2-AC1 a S3-US2-AC10 com relógio injetado ou controlado, estado do fim, teclado e pausa por visibilidade — `tests/ui/s3/us2-operacao.test.tsx` — S3-FR-001 a S3-FR-004, S3-FR-012 a S3-FR-018. **Dep.** T006. **Pronto** Os dez critérios passam com T008.
-- [ ] T008 [US2] Implementar avanço fixo, limite de trabalho, botões, atalho, status, velocidades, reset e captura incremental dos estados vivos — `src/ui/arena/clock.ts`, `src/ui/arena/session.ts`, `src/ui/App.tsx` — S3-FR-001 a S3-FR-004, S3-FR-012 a S3-FR-018, S3-FR-029. **Dep.** T007 (RED). **Pronto** Duelo e reset reproduzem tick 34. Campos [SessionView.modo, SessionView.status, SessionView.velocidade, SessionView.avisos, Preferências.velocidade, Relógio.tempo, Relógio.fração, Gravação.states](data-model.md#modelo-de-dados--spec-003).
+- [X] T008 [US2] Implementar avanço fixo, limite de trabalho, botões, atalho, status, velocidades, reset e captura incremental dos estados vivos — `src/ui/arena/clock.ts`, `src/ui/arena/session.ts`, `src/ui/App.tsx` — S3-FR-001 a S3-FR-004, S3-FR-012 a S3-FR-018, S3-FR-029. **Dep.** T007 (RED). **Pronto** Duelo e reset reproduzem tick 34. Campos [SessionView.modo, SessionView.status, SessionView.velocidade, SessionView.avisos, Preferências.velocidade, Relógio.tempo, Relógio.fração, Gravação.states](data-model.md#modelo-de-dados--spec-003).
 
 ## Fase 5 · US3 — Carregar mundos e controladores (P1)
 

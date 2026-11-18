@@ -116,3 +116,33 @@ button:disabled {
   cursor: pointer;
   padding: 0.2rem;
 }
+
+.transport {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0;
+}
+.transport-actions,
+.transport-state {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+.transport-state > span {
+  padding: 0.3rem 0.5rem;
+  background: #19283b;
+  border-radius: 4px;
+}
+button.primary:enabled {
+  background: #89e3cc;
+  color: #102a26;
+  border-color: #a8eddd;
+  font-weight: 700;
+}
+button.primary:enabled:hover {
+  background: #adf3e2;
+}
