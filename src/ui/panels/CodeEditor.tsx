@@ -1,16 +1,23 @@
-import { Annotation, EditorState } from '@codemirror/state';
+import { Annotation, Compartment, EditorState } from '@codemirror/state';
 import { EditorView, lineNumbers } from '@codemirror/view';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const fromSession = Annotation.define<boolean>();
 
 interface CodeEditorProps {
   readonly label: string;
   readonly value: string;
+  readonly readOnly: boolean;
   readonly onChange: (value: string) => void;
 }
 
-export function CodeEditor({ label, value, onChange }: CodeEditorProps) {
+export function CodeEditor({
+  label,
+  value,
+  onChange,
+  readOnly,
+}: CodeEditorProps) {
+  const [access] = useState(() => new Compartment());
   const host = useRef<HTMLDivElement>(null);
   const editor = useRef<EditorView | null>(null);
   useEffect(() => {
@@ -20,6 +27,7 @@ export function CodeEditor({ label, value, onChange }: CodeEditorProps) {
       state: EditorState.create({
         extensions: [
           lineNumbers(),
+          access.of([]),
           EditorView.contentAttributes.of({
             'aria-label': label,
             spellcheck: 'false',
@@ -43,7 +51,16 @@ export function CodeEditor({ label, value, onChange }: CodeEditorProps) {
       view.destroy();
       editor.current = null;
     };
-  }, [label, onChange]);
+  }, [access, label, onChange]);
+
+  useEffect(() => {
+    editor.current?.dispatch({
+      effects: access.reconfigure([
+        EditorState.readOnly.of(readOnly),
+        EditorView.editable.of(!readOnly),
+      ]),
+    });
+  }, [access, readOnly]);
 
   useEffect(() => {
     const view = editor.current;

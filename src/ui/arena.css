@@ -360,3 +360,20 @@ button.primary:enabled:hover {
 .match-result strong {
   flex: 1 1 260px;
 }
+
+.timeline {
+  flex: 1 0 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.timeline input {
+  flex: 1;
+}
+[data-mode='replay'] .code-editor .cm-content {
+  color: #d4e2f2;
+}
+.file-control:has(input:disabled) {
+  opacity: 0.65;
+  cursor: default;
+}

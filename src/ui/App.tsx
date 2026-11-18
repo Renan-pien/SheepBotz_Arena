@@ -2,7 +2,8 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { speeds, startTicker, type PlaybackSpeed } from './arena/clock';
 import { ArenaSession } from './arena/session';
 import { worldPresets, type WorldPreset } from './arena/catalog';
-import { chosenFile, LocalFiles } from './arena/files';
+import { chosenFile, downloadText, LocalFiles } from './arena/files';
+import { encodeRecording, recordingName } from './arena/recording';
 import { Controllers } from './panels/Controllers';
 import { Events } from './panels/Events';
 import { formatNumber, Inspection, resultLabel } from './panels/Inspection';
@@ -18,7 +19,8 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const view = useSyncExternalStore(session.subscribe, session.getSnapshot);
   const { world, snapshot, status, speed, behind } = view;
   const running = status === 'executando';
-  const stopped = status === 'finalizada';
+  const replay = view.mode === 'replay';
+  const stopped = status === 'finalizada' || view.replayLast === snapshot.tick;
   const result = resultLabel(snapshot);
 
   useEffect(() => {
@@ -47,6 +49,12 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
       } else if (event.key === 'ArrowRight') {
         event.preventDefault();
         session.step();
+      } else if (
+        event.key === 'ArrowLeft' &&
+        session.getSnapshot().mode === 'replay'
+      ) {
+        event.preventDefault();
+        session.back();
       } else if (event.key.toLowerCase() === 'r') {
         session.reset();
       }
@@ -60,7 +68,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   }, [session]);
 
   return (
-    <main className="arena-app">
+    <main className="arena-app" data-mode={view.mode}>
       <header>
         <h1>SheepBotz Arena</h1>
         <p>{world.name}</p>
@@ -69,6 +77,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
             Mundo{' '}
             <select
               value={view.preset}
+              disabled={replay}
               onChange={(event) =>
                 session.chooseWorld(event.target.value as WorldPreset)
               }
@@ -91,6 +100,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
               type="file"
               accept=".json,application/json"
               aria-label="Abrir mundo"
+              disabled={replay}
               onChange={(event) => {
                 const file = chosenFile(event);
                 if (file)
@@ -108,6 +118,47 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
               }}
             />
           </label>
+          <label className="file-control">
+            Abrir gravação
+            <input
+              type="file"
+              aria-label="Abrir gravação"
+              accept=".json,application/json"
+              onChange={(event) => {
+                const file = chosenFile(event);
+                if (file)
+                  void files.read(
+                    file,
+                    session.revision,
+                    (text) => session.openRecording(text),
+                    (fileName) =>
+                      session.reportError({
+                        code: 'GRAVACAO_INVALIDA',
+                        path: '',
+                        message: 'Não foi possível ler ' + fileName + '.',
+                      }),
+                  );
+              }}
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => {
+              const recording = session.recording();
+              downloadText(
+                encodeRecording(recording),
+                recordingName(world.name, recording.createdAt),
+                'application/json',
+              );
+            }}
+          >
+            Exportar gravação
+          </button>
+          {replay && (
+            <button type="button" onClick={() => session.exitReplay()}>
+              Sair do replay
+            </button>
+          )}
         </div>
       </header>
       {view.errors.length > 0 && (
@@ -171,19 +222,40 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
       {result && (
         <section className="match-result" aria-label="Resultado">
           <strong>{result}</strong>
-          <button
-            type="button"
-            aria-label="Reiniciar luta"
-            onClick={() => session.reset()}
-          >
-            Reiniciar
-          </button>
-          <button type="button" disabled>
-            Ver replay
-          </button>
+          {!replay && (
+            <>
+              <button
+                type="button"
+                aria-label="Reiniciar luta"
+                onClick={() => session.reset()}
+              >
+                Reiniciar
+              </button>
+              <button type="button" onClick={() => session.enterReplay()}>
+                Ver replay
+              </button>
+            </>
+          )}
         </section>
       )}
       <footer className="transport" aria-label="Controles de tempo">
+        {replay && (
+          <label className="timeline">
+            Linha do tempo
+            <input
+              type="range"
+              aria-label="Linha do tempo"
+              min={0}
+              max={view.replayLast!}
+              value={snapshot.tick}
+              step={1}
+              onChange={(event) => session.seek(Number(event.target.value))}
+            />
+            <span>
+              {snapshot.tick} / {view.replayLast}
+            </span>
+          </label>
+        )}
         <div className="transport-actions">
           <button
             type="button"
@@ -207,6 +279,15 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           >
             Avançar 1 tick
           </button>
+          {replay && (
+            <button
+              type="button"
+              disabled={running || snapshot.tick === 0}
+              onClick={() => session.back()}
+            >
+              Voltar 1 tick
+            </button>
+          )}
           <button type="button" onClick={() => session.reset()}>
             Reiniciar
           </button>
@@ -230,6 +311,10 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           <span data-testid="current-tick">Tick {snapshot.tick}</span>
           <span>{formatNumber(snapshot.time, 2)} s</span>
           <span>{status}</span>
+          {replay && <span>Replay</span>}
+          {view.limitReached && (
+            <span role="status">limite de gravação atingido</span>
+          )}
           {behind && <span role="status">abaixo do tempo real</span>}
         </div>
       </footer>

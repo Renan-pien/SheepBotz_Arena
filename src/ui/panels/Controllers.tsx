@@ -26,6 +26,7 @@ function Card({
   const failure = view.snapshot.events.find(
     (event) => event.robotId === id && event.type === 'erro_controlador',
   );
+  const readonly = view.mode === 'replay';
   const dirty = draft.source !== view.controllers[id];
 
   return (
@@ -41,6 +42,7 @@ function Card({
         Exemplo
         <select
           aria-label={'Exemplo de ' + id}
+          disabled={readonly}
           value={draft.example}
           onChange={(event) =>
             session.selectExample(id, event.target.value as ControllerPreset)
@@ -54,6 +56,7 @@ function Card({
         </select>
       </label>
       <CodeEditor
+        readOnly={readonly}
         label={'Código de ' + id}
         value={draft.source}
         onChange={change}
@@ -63,6 +66,7 @@ function Card({
         <button
           type="button"
           aria-label={'Aplicar ' + id}
+          disabled={readonly}
           onClick={() => session.apply(id)}
         >
           Aplicar
@@ -70,6 +74,7 @@ function Card({
         <button
           type="button"
           aria-label={'Restaurar exemplo de ' + id}
+          disabled={readonly}
           onClick={() => session.restoreExample(id)}
         >
           Restaurar exemplo
@@ -78,6 +83,7 @@ function Card({
           Abrir código{' '}
           <input
             aria-label={'Abrir código de ' + id}
+            disabled={readonly}
             type="file"
             accept=".js"
             onChange={(event) => {
