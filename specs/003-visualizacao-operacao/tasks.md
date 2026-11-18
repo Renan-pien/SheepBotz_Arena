@@ -49,7 +49,7 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 
 ## Fase 9 · Acabamento
 
-- [ ] T018 Executar quickstart desde instalação limpa, regressões S1/S2 e navegador com WebGL. Medir FPS e latência com ambiente identificado e conferir replay e controles reais — `specs/003-visualizacao-operacao/quickstart.md`, `docs/registro-de-consolidacao.md` — S3-SC-001, S3-SC-002, S3-SC-004, S3-SC-005, RB-08, S3-FR-001, S3-FR-010, S3-FR-031. **Dep.** T017. **Pronto** Evidência registrada com condições das medições.
+- [X] T018 Executar quickstart desde instalação limpa, regressões S1/S2 e navegador com WebGL. Medir FPS e latência com ambiente identificado e conferir replay e controles reais — `specs/003-visualizacao-operacao/quickstart.md`, `docs/registro-de-consolidacao.md` — S3-SC-001, S3-SC-002, S3-SC-004, S3-SC-005, RB-08, S3-FR-001, S3-FR-010, S3-FR-031. **Dep.** T017. **Pronto** Evidência registrada com condições das medições.
 - [ ] T019 Atualizar README, rodar `npm run stats`, versionar métricas e conferir workflow em push e PR, rastrear os 39 requisitos — `README.md`, `docs/cobertura/resumo.md`, `docs/cobertura/coverage-summary.json`, `docs/rastreabilidade.md` — RB-08, RB-09, RB-12, S3-FR-001. **Dep.** T018. **Pronto** Métricas reproduzíveis e matriz preenchida.
 - [ ] T020 Registrar a validação de pessoa iniciante e ensaio com pessoa de fora da equipe conforme quickstart — `docs/registro-de-consolidacao.md` — S3-SC-003, S3-SC-006, RB-17, S3-FR-021, S3-FR-028. **Dep.** T018. **Pronto** Identificação do papel, duração, vencedor e motivo observados. Esta evidência depende da participação de pessoas.
 

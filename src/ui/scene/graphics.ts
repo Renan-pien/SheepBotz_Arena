@@ -11,7 +11,7 @@ import {
   LineSegments,
   Mesh,
   MeshBasicMaterial,
-  MeshStandardMaterial,
+  MeshLambertMaterial,
   RingGeometry,
   Scene,
   SphereGeometry,
@@ -26,7 +26,7 @@ function buildMap(world: World, scene: Scene) {
   const { width, height } = world.map;
   const ground = new Mesh(
     new BoxGeometry(width, 0.015, height),
-    new MeshStandardMaterial({ color: '#263950' }),
+    new MeshLambertMaterial({ color: '#263950' }),
   );
   ground.position.y = groundLevel - 0.008;
   scene.add(ground);
@@ -56,7 +56,7 @@ function buildMap(world: World, scene: Scene) {
       new LineBasicMaterial({ color: '#46617b' }),
     ),
   );
-  const border = new MeshStandardMaterial({ color: '#8195aa' });
+  const border = new MeshLambertMaterial({ color: '#8195aa' });
   for (const sign of [-1, 1]) {
     const xWall = new Mesh(new BoxGeometry(0.02, 0.045, height), border);
     xWall.position.set((sign * width) / 2, 0.0225, 0);
@@ -68,7 +68,7 @@ function buildMap(world: World, scene: Scene) {
     const { radius } = world.arena;
     const disk = new Mesh(
       new CylinderGeometry(radius, radius, 0.008, 72),
-      new MeshStandardMaterial({ color: '#101922' }),
+      new MeshLambertMaterial({ color: '#101922' }),
     );
     disk.position.y = -0.005;
     const ring = new Mesh(
@@ -78,7 +78,7 @@ function buildMap(world: World, scene: Scene) {
     ring.rotation.x = -Math.PI / 2;
     scene.add(disk, ring);
   }
-  const crateMaterial = new MeshStandardMaterial({ color: '#bd9961' });
+  const crateMaterial = new MeshLambertMaterial({ color: '#bd9961' });
   for (const obstacle of world.obstacles) {
     const boxHeight = Math.min(obstacle.width, obstacle.height, 0.25);
     const box = new Mesh(
@@ -111,7 +111,7 @@ export function buildScene(world: World) {
   const robots = world.robots.map(({ radius, color, laser }) => {
     const body = new Mesh(
       new CylinderGeometry(radius, radius, radius, 24),
-      new MeshStandardMaterial({ color }),
+      new MeshLambertMaterial({ color }),
     );
     const nose = new Mesh(
       new BoxGeometry(radius * 0.8, 0.006, radius * 0.2),

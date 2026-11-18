@@ -59,3 +59,17 @@ Ative o modo apresentação e use P e Esc. Para SC-003, cronometre uma
 pessoa iniciante desde a abertura até o fim da luta após aplicar um
 exemplo. Para SC-006, pergunte a uma pessoa de fora da equipe quem
 venceu e por quê, após assistir ao Duelo.
+
+### Medição de referência da implementação
+
+Chrome 145.0.7632.116 em Linux x64, Intel Core i5-1334U e WebGL 2 via
+SwiftShader, com canvas de 922 × 504 px. Três execuções do Duelo a 1×
+mediram 48,8, 41,8 e 51,4 FPS. As latências de execução, pausa, avanço,
+reset e linha do tempo foram 48,4, 46,9, 30,8, 53,9 e 19,0 ms,
+respectivamente. O teste contou frames com desenho WebGL no intervalo
+da luta e observou o primeiro frame após a mudança de estado para cada
+controle. Os 35 estados exportados corresponderam à saída da CLI.
+
+O ensaio também confirmou órbita, roda, arraste direito, Shift com
+arraste, mudança de vista, rejeição de arquivo inválido, saída do replay,
+edição por arquivo, apresentação e layout a 1024 e 1023 px.

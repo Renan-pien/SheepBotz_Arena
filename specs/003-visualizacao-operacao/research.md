@@ -65,3 +65,17 @@
   independentes da máquina na suíte.
 - **Alternativas consideradas.** Usar somente screenshots não demonstra
   igualdade de estados. Fixar limiares temporais no CI introduz flutuação.
+
+## R6 · Custo do desenho
+
+- **Decisão.** Usar materiais Lambert para os volumes, luzes simples e
+  contexto WebGL sem antialias por amostragem. Manter o tamanho do canvas
+  e o agendamento dos ticks. O painel lateral rola na altura da cena.
+- **Evidência.** No ensaio de referência por software, a primeira versão
+  com amostragem e materiais padrão mediu de 23,1 a 25,3 FPS. A cena
+  revisada, no mesmo canvas e cenário, mediu de 41,8 a 51,4 FPS. Os 35
+  estados exportados foram iguais aos da CLI antes e depois.
+  [Medição](quickstart.md#medição-de-referência-da-implementação)
+- **Alternativas consideradas.** Diminuir a resolução do canvas ou mudar
+  o intervalo de desenho. O custo de materiais e amostragem foi reduzido
+  com resolução e cadência preservadas.

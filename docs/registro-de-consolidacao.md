@@ -446,3 +446,4 @@ ramos, funções e linhas.
 | T013 | 317 passaram / 0 falharam | 87.69 / 84.75 / 91.86 / 88.5 | 98.59 / 97.58 / 99.09 / 99.10 | RED anterior por ausência do codec e integração. A suíte passou com T014 e T015, incluindo mutações de campos e limite de 100 000 ticks. |
 | T017 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Apresentação preserva sessão e orientação da câmera. Foco, recolhimento, placar e retorno por teclado validados. |
 | T016 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Três REDs confirmados antes da implementação. Todos passaram com T017. |
+| T018 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Instalação limpa e 49 cenários confirmados. Chrome 145 com SwiftShader: 41,8 a 51,4 FPS no Duelo a 1× e até 53,9 ms de resposta. Download corresponde aos 35 estados CLI. Benchmarks S1/S2 em 35,79 e 41,95 ms. |

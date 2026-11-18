@@ -7,7 +7,10 @@ import { buildScene } from './graphics';
 import { projectFrame, type SceneFrame } from './projection';
 
 function attachViewport(host: HTMLElement, labels: HTMLElement, world: World) {
-  const renderer = new WebGLRenderer({ antialias: true, alpha: true });
+  const renderer = new WebGLRenderer({
+    alpha: true,
+    powerPreference: 'high-performance',
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   host.append(renderer.domElement);
   const contents = buildScene(world);

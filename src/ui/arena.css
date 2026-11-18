@@ -185,7 +185,7 @@ button.primary:enabled:hover {
 }
 .side-panel {
   min-width: 0;
-  max-height: 72vh;
+  max-height: calc(clamp(310px, 56vh, 660px) + 3.85rem);
   overflow: auto;
   border: 1px solid #3c5069;
   background: #142237;
