@@ -292,6 +292,8 @@ Confirmação do usuário registrada para executar com o checklist de clarifica�
 | T039 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Instalação limpa, lint, tipos, build e quickstart aprovados. Foram confirmados 48/48 cenários e 35 estados completos idênticos nas duas lutas. Chrome 145.0.7632.116 e Node coincidiram nos cinco estados da fixture. Intel Core i5-1334U, Linux x64, Node 24.22.3: S1 em 29,24 ms e S2 em 41,47 ms, ambas com 3 000 ticks. A auditoria do npm relatou 12 ocorrências altas na árvore completa e zero nas dependências de produção. O quickstart direciona o bundle da fixture para o dist da raiz, ignorado pelo lint. A prévia e a suíte com cobertura passaram novamente. |
 | T040 (demonstração) | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | O Codex criou o [Caçador reativo](../examples/controllers/cacador-reativo.js) a partir do Caçador, com o Anexo B como referência da API. Antes da edição, a verificação da CLI retornou 2 pela ausência do arquivo. Depois, vermelho venceu Parado por saída da arena no tick 42, com 43 estados e sem falha de controlador. A gravação da estratégia já preparada e a execução verificadas levaram 1,09 s. Evidência inicial submetida à aprovação como exceção de aceite. |
 | T040 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Exceção de aceite do SC-005 aprovada pelo usuário. A reexecução confirmou a vitória de vermelho por saída da arena no tick 42, com 43 estados e sem falha de controlador. |
+| T041 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | README atualizado e métricas geradas com npm run stats. Origens, tarefas, commits e testes aprovados conferidos para os 36 FRs. As etapas do workflow de commitlint e métricas passaram em simulação local de push, primeiro push e pull_request. O HTML de cobertura foi gerado no caminho do artefato. |
+| T042 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Build, quickstart, 48 cenários, demonstração aceita, benchmark e passos locais da CI reconferidos. Revisão SDD, checklist e evidências para o PR consolidados no registro. Ensaio de regeneração encaminhado para a etapa de fechamento. |
 
 ### Exceção de aceite do SC-005
 
@@ -305,4 +307,51 @@ A T040 reexecutou a demonstração em Node 24.22.3. No Duelo padrão, Caçador
 Reativo em vermelho venceu Parado por saída da arena no tick 42, com 43
 estados no histórico e nenhum erro de controlador.
 [Critério e exceção](../specs/002-sensores-controlador/spec.md#6-critérios-de-sucesso)
-| T041 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | README atualizado e métricas geradas com npm run stats. Origens, tarefas, commits e testes aprovados conferidos para os 36 FRs. As etapas do workflow de commitlint e métricas passaram em simulação local de push, primeiro push e pull_request. O HTML de cobertura foi gerado no caminho do artefato. |
+
+### Evidências para o PR da Spec 002
+
+A implementação da Spec 002 na branch `002-sensores-controlador` reúne laser
+por robô, controladores JavaScript síncronos, resultado de sumô e histórico
+do tick 0 ao último tick executado. As 42 tarefas foram validadas e os 36
+requisitos têm origem, tarefa, teste e commit na
+[matriz de rastreabilidade](rastreabilidade.md#spec-002--sensores-controlador-e-regras-do-sumô).
+
+- **Revisão SDD.** Os seis achados críticos e altos da análise foram tratados
+  na spec, no plano, nos contratos, no modelo e nas tasks. A revisão confirmou
+  a evidência de testes para os pontos corrigidos. U01, sobre a ordem da
+  conversão de logs excedentes, segue como observação documental de severidade
+  média. O teste unitário da T015 confirma o descarte antes da conversão.
+  [Correções](#correções-da-análise-da-s2) ·
+  [Teste de limite de logs](../tests/core/unit/controller-cycle.test.ts)
+- **Checklist de clarificação.** Os 14 marcadores estão no estado autorizado
+  pelo usuário. A avaliação documental registra 13 itens conformes e a
+  Q-001 como premissa para a integração com a suíte externa.
+  [Checklist](../specs/002-sensores-controlador/checklists/clarificacao.md#avaliação-documental)
+- **S2-SC-001, S2-SC-002 e S2-SC-004.** Passaram 233 testes, com
+  48 de 48 cenários de aceite. As duas execuções do Duelo no quickstart
+  produziram os mesmos 35 estados, com eventos idênticos. A fixture Vite
+  confirmou os mesmos cinco estados no Chromium e no Node. A suíte validou
+  os erros agrupados de carga e a desativação durante chamadas do controlador.
+- **S2-SC-003.** Em Intel Core i5-1334U, Linux x64 e Node 24.22.3, o Duelo
+  com Parado e Girador finalizou por `tempo_esgotado` no tick 3 000 em
+  41,92 ms, abaixo dos 2 s. O benchmark de regressão da S1 completou 3 000
+  ticks em 32,18 ms.
+- **S2-SC-005.** Aceito por exceção aprovada. A demonstração do Caçador Reativo
+  confirmou vitória por saída da arena no tick 42. O escopo da medição e a
+  autorização constam no [registro da exceção](#exceção-de-aceite-do-sc-005).
+- **Quickstart.** Passaram instalação limpa, lint, tipos, testes com cobertura,
+  build, laser no tick 0, Duelo com histórico, erros de entrada e Sala com
+  obstáculos em modo livre.
+  [Quickstart](../specs/002-sensores-controlador/quickstart.md)
+- **CI local.** A cobertura de linhas ficou em 93,98% no projeto e 99,10% no
+  núcleo. As etapas do workflow de commits e métricas passaram para push,
+  primeiro push da branch e pull request. Os relatórios versionados foram
+  reproduzidos e o HTML foi gerado no caminho do artefato. A execução no GitHub
+  Actions fica para a publicação da branch e a abertura do PR.
+  [Workflow](../.github/workflows/ci.yml) · [Cobertura](cobertura/resumo.md)
+
+As evidências estão prontas para a descrição do PR de fechamento. O fluxo
+do AGENTS.md §15 e §18 segue para o ensaio de regeneração em sessão nova,
+com registro próprio, e depois para o fechamento com CI remota aprovada,
+merge na `main` e tag `spec-002-fechada`.
+[Procedimento de regeneração](../AGENTS.md#18-ensaio-de-regeneração)
