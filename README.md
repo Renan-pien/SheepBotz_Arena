@@ -1,36 +1,53 @@
 # SheepBotz Arena
 
-**129 testes · 96% de cobertura**
+**233 testes · 93% de cobertura**
 
 Métricas geradas a partir dos relatórios com `npm run stats`.
 
-Simulador genérico de robôs móveis no navegador para a equipe **Univille SheepBotz**, com lógica 2D,
-visualização 3D e sumô como modalidade de demonstração. O projeto usa GitHub Spec Kit. O usuário
-descreve o mundo em JSON, define controladores em JavaScript e acompanha a simulação tick a tick.
+Simulador de robôs móveis para a equipe **Univille SheepBotz**. A simulação 2D usa mundos em JSON
+e controladores em JavaScript. O projeto usa GitHub Spec Kit.
 
 ## Status
 
 | Spec | Escopo | Artefatos disponíveis |
 |---|---|---|
 | [001](specs/001-nucleo-simulacao/spec.md) | Mundo e núcleo de simulação | Spec oficial, [checklist](specs/001-nucleo-simulacao/checklists/requirements.md), [plan](specs/001-nucleo-simulacao/plan.md), contratos, [tasks](specs/001-nucleo-simulacao/tasks.md) e anexos |
-| [002](specs/002-sensores-controlador/spec.md) | Sensores, controlador e regras do sumô | Spec |
+| [002](specs/002-sensores-controlador/spec.md) | Laser, controladores e sumô pela biblioteca e pela CLI | [Plano](specs/002-sensores-controlador/plan.md), [contratos](specs/002-sensores-controlador/contracts/core-api.md), [tasks](specs/002-sensores-controlador/tasks.md) e [quickstart](specs/002-sensores-controlador/quickstart.md) |
 | [003](specs/003-visualizacao-operacao/spec.md) | Visualização 3D e operação | Spec |
 
-A Spec 001 fornece a biblioteca e a CLI de simulação. A interface exibe a tela inicial
-da prova de conceito. Sensores de alcance e visualização 3D pertencem às etapas seguintes.
+A Spec 001 fornece o núcleo de simulação. A Spec 002 acrescenta sensores, execução de
+controladores e resultado da luta de sumô. A interface atual exibe a tela inicial da
+prova de conceito. A visualização 3D pertence à Spec 003.
 
 ## Como rodar
 
-Com Node 24, instale as dependências e execute o exemplo headless.
+Use Node 24 e rode, a partir da raiz, o Duelo padrão com Caçador Reativo em vermelho
+e Parado em azul.
 
 ```bash
 npm ci
-npm run --silent sim -- --world examples/worlds/duelo-padrao.json --ticks 10 --command vermelho=1,0 --pretty
+npm run --silent sim -- --world examples/worlds/duelo-padrao.json --ticks 3000 \
+  --controller vermelho=examples/controllers/cacador-reativo.js \
+  --controller azul=examples/controllers/parado.js --pretty
 ```
 
-Para abrir a tela inicial, use `npm run dev`. Para validar a implementação, rode
-`npm run lint`, `npm run typecheck` e `npm run test:coverage`.
-[Quickstart da Spec 001](specs/001-nucleo-simulacao/quickstart.md)
+O comando imprime JSON com o estado final da luta. Com `--history`, inclui um estado por
+tick executado, a partir do tick 0. Para escrever um controlador, consulte a API do
+[Anexo B da Spec 002](specs/002-sensores-controlador/spec.md#anexo-b--api-do-controlador).
+
+Para abrir a tela inicial, use `npm run dev`. Para validar a implementação e gerar o
+[relatório de cobertura](docs/cobertura/resumo.md), rode os comandos abaixo. O benchmark
+da Spec 002 é executado à parte com `npm run bench:s2`.
+
+```bash
+npm run lint
+npm run typecheck
+npm run test:coverage
+npm run stats
+```
+
+[Quickstart da Spec 001](specs/001-nucleo-simulacao/quickstart.md) ·
+[Quickstart da Spec 002](specs/002-sensores-controlador/quickstart.md)
 
 ## Documentação
 

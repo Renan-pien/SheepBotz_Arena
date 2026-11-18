@@ -50,9 +50,47 @@
 
 ## Spec 002 — Sensores, controlador e regras do sumô
 
-| RB | FR | Tasks | Testes | Status |
+Os 48 cenários estão indexados por tarefa e arquivo na
+[matriz de critérios de aceite da Spec 002](../specs/002-sensores-controlador/tasks.md#critérios-de-aceite).
+
+| Origem | FR | Tasks e commits | Testes | Status |
 |---|---|---|---|---|
-| — | — | — | — | Aguardando tasks |
+| RB-32 | S2-FR-001 | S2-T009 (`e5b2404`), S2-T011 (`276c590`), S2-T013 (`2c8a350`), S2-T014 (`9b1bf14`) | [S2-US1-AC8](../tests/core/acceptance/s2/us1-laser-inicial.test.ts), [Configuração da varredura](../tests/core/unit/laser.test.ts) | Validado localmente |
+| RB-32 | S2-FR-002 | S2-T009 (`e5b2404`), S2-T011 (`276c590`), S2-T013 (`2c8a350`) | [S2-US1-AC1 e S2-US1-AC2](../tests/core/acceptance/s2/us1-laser-inicial.test.ts), [Leque completo e raio único](../tests/core/unit/laser.test.ts) | Validado localmente |
+| RB-32 | S2-FR-003 | S2-T009 (`e5b2404`), S2-T011 (`276c590`), S2-T013 (`2c8a350`) | [S2-US1-AC5 e S2-US1-AC7](../tests/core/acceptance/s2/us1-laser-inicial.test.ts) | Validado localmente |
+| RB-32, ADR-003 | S2-FR-004 | S2-T009 (`e5b2404`), S2-T011 (`276c590`), S2-T012 (`1eb8320`), S2-T013 (`2c8a350`) | [S2-US1-AC1 a S2-US1-AC3, S2-US1-AC5, S2-US1-AC7 e S2-US1-AC8](../tests/core/acceptance/s2/us1-laser-inicial.test.ts), [Interseções](../tests/core/unit/raycast.test.ts) | Validado localmente |
+| RB-32 | S2-FR-005 | S2-T009 (`e5b2404`), S2-T011 (`276c590`), S2-T012 (`1eb8320`), S2-T013 (`2c8a350`) | [S2-US1-AC4 e S2-US1-AC6](../tests/core/acceptance/s2/us1-laser-inicial.test.ts) | Validado localmente |
+| RB-32 | S2-FR-006 | S2-T011 (`276c590`), S2-T012 (`1eb8320`), S2-T013 (`2c8a350`) | [Origem dentro de retângulo e círculo](../tests/core/unit/raycast.test.ts) | Validado localmente |
+| RB-27, ADR-009 | S2-FR-007 | S2-T010 (`2dce3c9`), S2-T014 (`9b1bf14`), S2-T015 (`a1aa733`), S2-T016 (`e258330`), S2-T036 (`d0389e5`) | [S2-US1-AC10](../tests/core/acceptance/s2/us1-laser-tick.test.ts), [Paridade em passos e lote](../tests/runtime/fixtures/controller-browser/main.ts) | Validado localmente |
+| RB-45, ADR-009 | S2-FR-008 | S2-T010 (`2dce3c9`), S2-T014 (`9b1bf14`), S2-T016 (`e258330`), S2-T021 (`c109b73`), S2-T024 (`1b966a9`) | [S2-US1-AC9 a S2-US1-AC11](../tests/core/acceptance/s2/us1-laser-tick.test.ts), [S2-US3-AC5](../tests/core/acceptance/s2/us3-resultado.test.ts) | Validado localmente |
+| RB-35, ADR-016 | S2-FR-009 | S2-T003 (`ffc0cd9`), S2-T004 (`a8f4c0e`), S2-T007 (`e0d65a4`), S2-T008 (`ef556ed`), S2-T016 (`e258330`) | [Perfil e formas de script](../tests/runtime/controller-engine.test.ts), [S2-US4-AC2](../tests/core/acceptance/s2/us4-preparacao.test.ts) | Validado localmente |
+| RB-35 | S2-FR-010 | S2-T004 (`a8f4c0e`), S2-T008 (`ef556ed`), S2-T016 (`e258330`) | [Robô sem comando ou script](../tests/core/acceptance/s2/us4-preparacao.test.ts) | Validado localmente |
+| RB-43, ADR-014 | S2-FR-011 | S2-T004 (`a8f4c0e`), S2-T008 (`ef556ed`), S2-T016 (`e258330`), S2-T034 (`4b1d29d`), S2-T035 (`94d62b6`) | [S2-US4-AC7, S2-US4-AC11 e S2-US4-AC12](../tests/core/acceptance/s2/us4-preparacao.test.ts), [Erros JSON da CLI](../tests/cli/run-cli.test.ts) | Validado localmente |
+| RB-35, RB-43, ADR-010, ADR-012, ADR-014, ADR-016 | S2-FR-012 | S2-T003 (`ffc0cd9`), S2-T004 (`a8f4c0e`), S2-T007 (`e0d65a4`), S2-T008 (`ef556ed`), S2-T016 (`e258330`), S2-T034 (`4b1d29d`), S2-T035 (`94d62b6`) | [S2-US4-AC1, S2-US4-AC2, S2-US4-AC8 a S2-US4-AC10 e S2-US4-AC12](../tests/core/acceptance/s2/us4-preparacao.test.ts), [Falhas de carga na resposta](../tests/cli/run-cli.test.ts) | Validado localmente |
+| RB-35 | S2-FR-013 | S2-T005 (`6e99a4f`), S2-T010 (`2dce3c9`), S2-T015 (`a1aa733`), S2-T016 (`e258330`) | [S2-US2-AC7](../tests/core/acceptance/s2/us2-ciclo.test.ts), [S2-US1-AC10](../tests/core/acceptance/s2/us1-laser-tick.test.ts) | Validado localmente |
+| RB-35 | S2-FR-014 | S2-T005 (`6e99a4f`), S2-T015 (`a1aa733`), S2-T016 (`e258330`) | [S2-US2-AC1 e S2-US2-AC7](../tests/core/acceptance/s2/us2-ciclo.test.ts) | Validado localmente |
+| RB-35, ADR-010 | S2-FR-015 | S2-T005 (`6e99a4f`), S2-T010 (`2dce3c9`), S2-T016 (`e258330`), S2-T018 (`c393df8`), S2-T020 (`7158c3f`), S2-T029 (`0b65e1a`) | [S2-US2-AC8 e S2-US2-AC12](../tests/core/acceptance/s2/us2-ciclo.test.ts), [Reset do PRNG](../tests/core/acceptance/s2/us2-aleatoriedade.test.ts) | Validado localmente |
+| RB-32, RB-35, ADR-009 | S2-FR-016 | S2-T010 (`2dce3c9`), S2-T015 (`a1aa733`), S2-T016 (`e258330`) | [S2-US1-AC9, S2-US1-AC10 e cópia](../tests/core/acceptance/s2/us1-laser-tick.test.ts) | Validado localmente |
+| RB-34 | S2-FR-017 | S2-T017 (`8367ebe`), S2-T019 (`183209d`) | [S2-US2-AC6](../tests/core/acceptance/s2/us2-api.test.ts) | Validado localmente |
+| RB-33 | S2-FR-018 | S2-T017 (`8367ebe`), S2-T019 (`183209d`) | [S2-US2-AC6 e cópia da odometria](../tests/core/acceptance/s2/us2-api.test.ts) | Validado localmente |
+| RB-35 | S2-FR-019 | S2-T005 (`6e99a4f`), S2-T015 (`a1aa733`), S2-T017 (`8367ebe`), S2-T019 (`183209d`), S2-T026 (`37f92db`), S2-T028 (`4e94758`) | [S2-US2-AC4](../tests/core/acceptance/s2/us2-ciclo.test.ts), [S2-US2-AC2](../tests/core/acceptance/s2/us2-api.test.ts), [S2-US4-AC4](../tests/core/acceptance/s2/us4-falha-em-tick.test.ts) | Validado localmente |
+| RB-35 | S2-FR-020 | S2-T017 (`8367ebe`), S2-T019 (`183209d`) | [S2-US2-AC3 e S2-US2-AC9](../tests/core/acceptance/s2/us2-api.test.ts) | Validado localmente |
+| RB-27 | S2-FR-021 | S2-T018 (`c393df8`), S2-T020 (`7158c3f`) | [S2-US2-AC10 e independência por robô](../tests/core/acceptance/s2/us2-aleatoriedade.test.ts), [Vetores de referência](../tests/core/unit/controller-random.test.ts) | Validado localmente |
+| RB-35 | S2-FR-022 | S2-T005 (`6e99a4f`), S2-T015 (`a1aa733`) | [S2-US2-AC11](../tests/core/acceptance/s2/us2-ciclo.test.ts), [Limite e aviso único](../tests/core/unit/controller-cycle.test.ts) | Validado localmente |
+| RB-27 | S2-FR-023 | S2-T005 (`6e99a4f`), S2-T015 (`a1aa733`) | [S2-US2-AC11](../tests/core/acceptance/s2/us2-ciclo.test.ts) | Validado localmente |
+| RB-27, RB-35, ADR-010, ADR-016 | S2-FR-024 | S2-T003 (`ffc0cd9`), S2-T004 (`a8f4c0e`), S2-T005 (`6e99a4f`), S2-T007 (`e0d65a4`), S2-T015 (`a1aa733`), S2-T036 (`d0389e5`) | [Perfil síncrono](../tests/runtime/controller-engine.test.ts), [S2-US4-AC9](../tests/core/acceptance/s2/us4-preparacao.test.ts), [Lote e passos entre microtarefas](../tests/core/acceptance/s2/us2-ciclo.test.ts), [Fixture Chromium](../tests/runtime/fixtures/controller-browser/main.ts) | Validado localmente |
+| RB-35 | S2-FR-025 | S2-T026 (`37f92db`), S2-T027 (`ecb4fa2`), S2-T028 (`4e94758`), S2-T029 (`0b65e1a`) | [S2-US4-AC3 e S2-US4-AC5](../tests/core/acceptance/s2/us4-falha-em-tick.test.ts), [S2-US4-AC6](../tests/core/acceptance/s2/us4-desativado-sumo.test.ts) | Validado localmente |
+| RB-35 | S2-FR-026 | S2-T026 (`37f92db`), S2-T027 (`ecb4fa2`), S2-T028 (`4e94758`), S2-T029 (`0b65e1a`) | [S2-US4-AC3 a S2-US4-AC5](../tests/core/acceptance/s2/us4-falha-em-tick.test.ts), [S2-US4-AC6](../tests/core/acceptance/s2/us4-desativado-sumo.test.ts) | Validado localmente |
+| RB-25, RB-31, ADR-003 | S2-FR-027 | S2-T027 (`ecb4fa2`), S2-T029 (`0b65e1a`) | [S2-US4-AC6](../tests/core/acceptance/s2/us4-desativado-sumo.test.ts) | Validado localmente |
+| RB-25, ADR-003 | S2-FR-028 | S2-T021 (`c109b73`), S2-T022 (`0b11364`), S2-T023 (`79411f4`) | [S2-US3-AC1 e S2-US3-AC3](../tests/core/acceptance/s2/us3-resultado.test.ts), [S2-US3-AC7](../tests/core/acceptance/s2/us3-historico.test.ts) | Validado localmente |
+| ADR-003 | S2-FR-029 | S2-T021 (`c109b73`), S2-T023 (`79411f4`) | [S2-US3-AC9](../tests/core/acceptance/s2/us3-resultado.test.ts) | Validado localmente |
+| ADR-003 | S2-FR-030 | S2-T021 (`c109b73`), S2-T023 (`79411f4`), S2-T024 (`1b966a9`), S2-T037 (`1a0c298`), S2-T038 (`50efdc2`) | [S2-US3-AC1 a S2-US3-AC4 e S2-US3-AC10](../tests/core/acceptance/s2/us3-resultado.test.ts), [S2-SC-003](../tests/scripts/bench-s2.test.ts) | Validado localmente |
+| RB-25, ADR-013 | S2-FR-031 | S2-T021 (`c109b73`), S2-T024 (`1b966a9`), S2-T034 (`4b1d29d`), S2-T035 (`94d62b6`) | [S2-US3-AC1 a S2-US3-AC5](../tests/core/acceptance/s2/us3-resultado.test.ts), [Evento global sem ID de robô](../tests/cli/run-cli.test.ts) | Validado localmente |
+| RB-43, ADR-011 | S2-FR-032 | S2-T022 (`0b11364`), S2-T025 (`f9a6e10`), S2-T034 (`4b1d29d`), S2-T035 (`94d62b6`) | [S2-US3-AC6 e S2-US3-AC8](../tests/core/acceptance/s2/us3-historico.test.ts), [Histórico truncado](../tests/cli/run-cli.test.ts) | Validado localmente |
+| RB-25, ADR-003 | S2-FR-033 | S2-T022 (`0b11364`), S2-T023 (`79411f4`), S2-T025 (`f9a6e10`), S2-T031 (`a86ee37`), S2-T037 (`1a0c298`), S2-T038 (`50efdc2`) | [S2-US3-AC7](../tests/core/acceptance/s2/us3-historico.test.ts), [S2-US5-AC3](../tests/core/acceptance/s2/us5-controladores.test.ts), [Janela livre de 3 000 ticks](../tests/scripts/bench-s2.test.ts) | Validado localmente |
+| RB-43, RB-45 | S2-FR-034 | S2-T010 (`2dce3c9`), S2-T014 (`9b1bf14`), S2-T021 (`c109b73`), S2-T024 (`1b966a9`), S2-T026 (`37f92db`), S2-T029 (`0b65e1a`), S2-T034 (`4b1d29d`), S2-T035 (`94d62b6`) | [S2-US1-AC10 e S2-US1-AC11](../tests/core/acceptance/s2/us1-laser-tick.test.ts), [S2-US3-AC5](../tests/core/acceptance/s2/us3-resultado.test.ts), [S2-US4-AC3 a S2-US4-AC5](../tests/core/acceptance/s2/us4-falha-em-tick.test.ts), [Serialização do estado](../tests/cli/run-cli.test.ts) | Validado localmente |
+| RB-25 | S2-FR-035 | S2-T030 (`5515d40`), S2-T032 (`569c428`) | [S2-US5-AC1](../tests/core/acceptance/s2/us5-mundos.test.ts) | Validado localmente |
+| RB-25 | S2-FR-036 | S2-T031 (`a86ee37`), S2-T033 (`acb941c`) | [S2-US5-AC2, S2-US5-AC3 e comportamento dos cinco scripts](../tests/core/acceptance/s2/us5-controladores.test.ts) | Validado localmente |
 
 ## Spec 003 — Visualização 3D e operação
 

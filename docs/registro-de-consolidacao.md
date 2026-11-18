@@ -305,3 +305,4 @@ A T040 reexecutou a demonstração em Node 24.22.3. No Duelo padrão, Caçador
 Reativo em vermelho venceu Parado por saída da arena no tick 42, com 43
 estados no histórico e nenhum erro de controlador.
 [Critério e exceção](../specs/002-sensores-controlador/spec.md#6-critérios-de-sucesso)
+| T041 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | README atualizado e métricas geradas com npm run stats. Origens, tarefas, commits e testes aprovados conferidos para os 36 FRs. As etapas do workflow de commitlint e métricas passaram em simulação local de push, primeiro push e pull_request. O HTML de cobertura foi gerado no caminho do artefato. |
