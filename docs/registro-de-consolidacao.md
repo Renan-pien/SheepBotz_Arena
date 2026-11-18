@@ -403,3 +403,19 @@ para preservar os dados sem repeti-los. O guia separa verificações
 determinísticas e medições em Chromium da validação com pessoas.
 [Plano](../specs/003-visualizacao-operacao/plan.md) ·
 [Contrato de gravação](../specs/003-visualizacao-operacao/contracts/gravacao.md)
+
+### Tarefas e análise da Spec 003
+
+As 20 tarefas seguem Setup, Fundação, US1–US6 e Acabamento. Os testes
+antecedem o código e cada fase tem seu próprio critério de pronto.
+A análise cruzou a spec, o plano, os contratos, o modelo e as tasks.
+Conferiu os 39 requisitos, os 49 cenários, as 20 dependências e 26
+referências locais entre os dez artefatos. Não ficaram achados críticos
+ou altos. As verificações com pessoas de SC-003 e SC-006 ficam na T020.
+[Tarefas](../specs/003-visualizacao-operacao/tasks.md)
+
+A referência pré-implementação em Node 24.22.3 passou no lint, no
+typecheck e nos 233 testes das Specs 001 e 002, com 93,98% de cobertura
+de linhas no projeto e 99,10% no núcleo. O checklist interno tem 16
+itens concluídos e os 10 marcadores do checklist de operação aguardam
+a revisão ou a autorização de continuidade.
