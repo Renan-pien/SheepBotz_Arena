@@ -27,3 +27,6 @@ export const worldPresets = {
     defaults: { explorador: 'desviador' },
   },
 } as const;
+
+export type ControllerPreset = keyof typeof controllerPresets;
+export type WorldPreset = keyof typeof worldPresets;

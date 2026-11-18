@@ -7,11 +7,47 @@ import {
   type World,
 } from '../../core';
 import { initializeControllerEngine } from '../../runtime/controller-engine';
-import { controllerPresets, worldPresets } from './catalog';
+import {
+  controllerPresets,
+  worldPresets,
+  type ControllerPreset,
+  type WorldPreset,
+} from './catalog';
 import { TickClock, type PlaybackSpeed } from './clock';
 
 export type Sources = Readonly<Record<string, string>>;
 export type SessionStatus = 'pronta' | 'executando' | 'pausada' | 'finalizada';
+
+export interface SessionError {
+  readonly code: string;
+  readonly path: string;
+  readonly message: string;
+}
+
+export interface Draft {
+  readonly source: string;
+  readonly example: ControllerPreset;
+}
+
+type Drafts = Readonly<Record<string, Draft>>;
+
+function initialDrafts(
+  world: World,
+  defaults: Readonly<Record<string, ControllerPreset>>,
+): Drafts {
+  return Object.fromEntries(
+    world.robots.map(({ id }) => {
+      const example = Object.hasOwn(defaults, id) ? defaults[id]! : 'parado';
+      return [id, { example, source: controllerPresets[example].source }];
+    }),
+  );
+}
+
+function sourcesFrom(drafts: Drafts): Sources {
+  return Object.fromEntries(
+    Object.entries(drafts).map(([id, draft]) => [id, draft.source]),
+  );
+}
 
 export interface SessionView {
   readonly world: World;
@@ -21,23 +57,27 @@ export interface SessionView {
   readonly status: SessionStatus;
   readonly speed: PlaybackSpeed;
   readonly behind: boolean;
+  readonly preset: WorldPreset | '';
+  readonly drafts: Drafts;
+  readonly errors: readonly SessionError[];
 }
 
 export class ArenaSession {
   #simulation: Simulation;
+  #engine: ControllerEngine;
+  #revision = 0;
   #view: SessionView;
   #listeners = new Set<() => void>();
   #clock = new TickClock();
   #history: SimState[];
 
   constructor(engine: ControllerEngine = initializeControllerEngine()) {
+    this.#engine = engine;
     const worldText = worldPresets.duelo.text;
     const world = loadWorld(worldText);
     if (!world.ok) throw new Error(JSON.stringify(world.errors));
-    const controllers = {
-      vermelho: controllerPresets.cacador.source,
-      azul: controllerPresets.girador.source,
-    };
+    const drafts = initialDrafts(world.world, worldPresets.duelo.defaults);
+    const controllers = sourcesFrom(drafts);
     const prepared = prepareSimulation(world.world, {
       controllers,
       controllerEngine: engine,
@@ -52,6 +92,9 @@ export class ArenaSession {
       status: 'pronta',
       speed: 1,
       behind: false,
+      preset: 'duelo',
+      drafts,
+      errors: [],
     };
     this.#history = [this.#view.snapshot];
   }
@@ -64,6 +107,94 @@ export class ArenaSession {
       this.#listeners.delete(listener);
     };
   };
+
+  revision = () => this.#revision;
+
+  reportError(error: SessionError) {
+    this.#publish({ errors: [error] });
+  }
+
+  openWorld(worldText: string, preset: WorldPreset | '' = '') {
+    const loaded = loadWorld(worldText);
+    if (!loaded.ok) {
+      this.#publish({ errors: loaded.errors });
+      return;
+    }
+    const defaults = preset ? worldPresets[preset].defaults : {};
+    const drafts = initialDrafts(loaded.world, defaults);
+    this.#replace(loaded.world, worldText, sourcesFrom(drafts), drafts, preset);
+  }
+
+  chooseWorld(preset: WorldPreset) {
+    this.openWorld(worldPresets[preset].text, preset);
+  }
+
+  editSource(id: string, source: string) {
+    const draft = this.#view.drafts[id]!;
+    this.#publish({
+      drafts: { ...this.#view.drafts, [id]: { ...draft, source } },
+    });
+  }
+
+  selectExample(id: string, example: ControllerPreset) {
+    const source = controllerPresets[example].source;
+    this.#publish({
+      drafts: { ...this.#view.drafts, [id]: { example, source } },
+    });
+  }
+
+  restoreExample(id: string) {
+    this.selectExample(id, this.#view.drafts[id]!.example);
+  }
+
+  apply(id: string) {
+    const { world, worldText, controllers, drafts, preset } = this.#view;
+    this.#replace(
+      world,
+      worldText,
+      { ...controllers, [id]: drafts[id]!.source },
+      drafts,
+      preset,
+    );
+  }
+
+  #replace(
+    world: World,
+    worldText: string,
+    controllers: Sources,
+    drafts: Drafts,
+    preset: WorldPreset | '',
+  ) {
+    const prepared = prepareSimulation(world, {
+      controllers,
+      controllerEngine: this.#engine,
+    });
+    if (!prepared.ok) {
+      this.#publish({ errors: prepared.errors });
+      return;
+    }
+    this.#simulation = prepared.simulation;
+    this.#startNewRun(this.#simulation.getState(), {
+      world,
+      worldText,
+      controllers,
+      drafts,
+      preset,
+    });
+  }
+
+  #startNewRun(snapshot: SimState, patch: Partial<SessionView> = {}) {
+    this.#revision += 1;
+    this.#clock.clear();
+    this.#history = [snapshot];
+    this.#publish({
+      ...patch,
+      status: 'pronta',
+      snapshot,
+      behind: false,
+      errors: [],
+    });
+  }
 
   history(): readonly SimState[] {
     return this.#history.slice();
@@ -105,9 +236,7 @@ export class ArenaSession {
 
   reset() {
     const snapshot = this.#simulation.reset();
-    this.#clock.clear();
-    this.#history = [snapshot];
-    this.#publish({ status: 'pronta', snapshot, behind: false });
+    this.#startNewRun(snapshot);
   }
 
   pulse(elapsedMs: number) {

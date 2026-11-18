@@ -146,3 +146,135 @@ button.primary:enabled {
 button.primary:enabled:hover {
   background: #adf3e2;
 }
+
+.world-actions,
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.world-actions {
+  margin-bottom: 1rem;
+}
+.file-control {
+  position: relative;
+  display: inline-flex;
+  background: #203148;
+  border: 1px solid #496079;
+  border-radius: 7px;
+  padding: 0.48rem 0.72rem;
+  cursor: pointer;
+}
+.file-control input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+}
+.file-control:focus-within {
+  outline: 3px solid #8cf0d7;
+  outline-offset: 3px;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(310px, 365px);
+  gap: 1rem;
+  align-items: start;
+}
+.side-panel {
+  min-width: 0;
+  max-height: 72vh;
+  overflow: auto;
+  border: 1px solid #3c5069;
+  background: #142237;
+  border-radius: 12px;
+  padding: 0.8rem;
+}
+.side-panel h2 {
+  font-size: 1.1rem;
+  margin: 0.15rem 0 0.8rem;
+}
+.panel-cards {
+  display: grid;
+  gap: 0.65rem;
+}
+.robot-card {
+  min-width: 0;
+  background: #1b2b40;
+  padding: 0.7rem;
+  border: 1px solid #3c5069;
+  border-radius: 8px;
+}
+.robot-card h3 {
+  margin: 0 0 0.55rem;
+  font-size: 0.98rem;
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+.robot-dot {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 1px solid #f1f6fc;
+  border-radius: 50%;
+}
+.example-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.45rem;
+}
+.code-editor {
+  font-family: ui-monospace, monospace;
+  border: 1px solid #496079;
+  border-radius: 6px;
+  background: #0f1c2c;
+  margin-bottom: 0.65rem;
+}
+.code-editor .cm-editor {
+  min-height: 100px;
+  max-height: 220px;
+}
+.code-editor .cm-gutters {
+  color: #c2d0e2;
+  background: #203148;
+  border-color: #496079;
+}
+.code-editor .cm-cursor {
+  border-left-color: #f1f6fc;
+}
+.code-editor .cm-editor.cm-focused {
+  outline: 2px solid #8cf0d7;
+  outline-offset: 1px;
+}
+.issues,
+.controller-error {
+  background: #3b2530;
+  color: #ffe1e8;
+  border: 1px solid #b77a8c;
+  border-radius: 8px;
+  padding: 0.7rem;
+}
+.issues {
+  margin: 0.65rem 0;
+}
+.issues ul {
+  margin: 0.45rem 0 0;
+  padding-left: 1.4rem;
+}
+.draft-warning {
+  color: #ffdb95;
+  font-size: 0.86rem;
+}
+.card-actions {
+  font-size: 0.82rem;
+}
+@media (max-width: 1023px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

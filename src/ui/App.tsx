@@ -1,6 +1,9 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { speeds, startTicker, type PlaybackSpeed } from './arena/clock';
 import { ArenaSession } from './arena/session';
+import { worldPresets, type WorldPreset } from './arena/catalog';
+import { chosenFile, LocalFiles } from './arena/files';
+import { Controllers } from './panels/Controllers';
 import { ArenaView } from './scene/ArenaView';
 import './arena.css';
 
@@ -11,10 +14,9 @@ const seconds = new Intl.NumberFormat('pt-BR', {
 
 export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const [session] = useState(() => supplied ?? new ArenaSession());
-  const { world, snapshot, status, speed, behind } = useSyncExternalStore(
-    session.subscribe,
-    session.getSnapshot,
-  );
+  const [files] = useState(() => new LocalFiles());
+  const view = useSyncExternalStore(session.subscribe, session.getSnapshot);
+  const { world, snapshot, status, speed, behind } = view;
   const running = status === 'executando';
   const stopped = status === 'finalizada';
 
@@ -61,8 +63,78 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
       <header>
         <h1>SheepBotz Arena</h1>
         <p>{world.name}</p>
+        <div className="world-actions">
+          <label>
+            Mundo{' '}
+            <select
+              value={view.preset}
+              onChange={(event) =>
+                session.chooseWorld(event.target.value as WorldPreset)
+              }
+            >
+              {Object.entries(worldPresets).map(([key, preset]) => (
+                <option key={key} value={key}>
+                  {preset.name}
+                </option>
+              ))}
+              {view.preset === '' && (
+                <option value="" disabled>
+                  {world.name}
+                </option>
+              )}
+            </select>
+          </label>
+          <label className="file-control">
+            Abrir mundo{' '}
+            <input
+              type="file"
+              accept=".json,application/json"
+              aria-label="Abrir mundo"
+              onChange={(event) => {
+                const file = chosenFile(event);
+                if (file)
+                  void files.read(
+                    file,
+                    session.revision,
+                    (text) => session.openWorld(text),
+                    (fileName) =>
+                      session.reportError({
+                        code: 'ARQUIVO_INVALIDO',
+                        path: '',
+                        message: 'Não foi possível ler ' + fileName + '.',
+                      }),
+                  );
+              }}
+            />
+          </label>
+        </div>
       </header>
-      <ArenaView world={world} snapshot={snapshot} />
+      {view.errors.length > 0 && (
+        <div role="alert" className="issues">
+          <strong>Falha ao carregar</strong>
+          <ul>
+            {view.errors.map((error, index) => (
+              <li key={index}>
+                <code>{error.code}</code>
+                {error.path && (
+                  <>
+                    {' '}
+                    · <code>{error.path}</code>
+                  </>
+                )}{' '}
+                · {error.message}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div className="workspace">
+        <ArenaView world={world} snapshot={snapshot} />
+        <aside className="side-panel">
+          <h2>Controladores</h2>
+          <Controllers session={session} view={view} files={files} />
+        </aside>
+      </div>
       <footer className="transport" aria-label="Controles de tempo">
         <div className="transport-actions">
           <button
