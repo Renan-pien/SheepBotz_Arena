@@ -107,6 +107,103 @@ pelo bootstrap da CLI e pelo futuro bootstrap web. `src/core` ignora SES, Acorn,
 Node e DOM. A UI e a CLI dependem da API pública. A comunicação com o motor passa
 pela interface injetada e por dados explícitos da sessão.
 
+### Interfaces internas verificadas pela suíte
+
+Os testes unitários importam estas interfaces diretamente dos módulos indicados.
+As regras das operações estão nas seções de arquitetura e nos contratos.
+
+```ts
+// src/core/math/ray.ts
+type Point = { x: number; y: number };
+type Rect = { x: number; y: number; width: number; height: number };
+export function rayBox(
+  origin: Point,
+  direction: Point,
+  rect: Rect,
+): { enter: number; exit: number } | undefined;
+export function rayCircle(
+  origin: Point,
+  direction: Point,
+  center: Point,
+  radius: number,
+): number | undefined;
+
+// src/core/sensors/laser.ts e src/core/match/sumo.ts
+export function readLasers(
+  world: World,
+  poses: readonly Pose[],
+): readonly (readonly number[])[];
+export function evaluateSumo(world: World, state: SimState): MatchResult | null;
+```
+
+Em `rayBox`, o retângulo é dado por centro e dimensões. Retorne o intervalo
+paramétrico, inclusive com entrada negativa se a origem está dentro, e descarte
+intervalos inteiramente atrás da origem. `rayCircle` recebe direção unitária e
+retorna a primeira distância não negativa ou `undefined` quando não há interseção.
+`readLasers` ordena o retorno por robô e por raio. `evaluateSumo` usa o tick e as
+poses de `state` e devolve `null` enquanto não houver resultado.
+
+```ts
+// src/core/controller/runtime.ts
+export type ControllerBindings = Readonly<
+  Record<string, (...args: unknown[]) => unknown>
+>;
+export type LoadedController = { setup?: () => void; loop: () => void };
+export type ControllerLoadResult =
+  | { ok: true; value: LoadedController }
+  | { ok: false; message: string };
+export interface ControllerEngine {
+  load(source: string, bindings: ControllerBindings): ControllerLoadResult;
+}
+
+// src/runtime/controller-engine.ts
+export function initializeControllerEngine(): ControllerEngine;
+```
+
+`initializeControllerEngine` reutiliza a mesma instância. `load` avalia cada
+fonte uma vez e injeta `bindings` somente após a avaliação de nível superior.
+Em caso de falha, devolve o detalhe para o catálogo de erros.
+
+```ts
+// src/core/controller/inputs.ts
+type InputOptions = ControllerOptions & {
+  commands?: Readonly<Record<string, Command>>;
+};
+export function prepareInputs(
+  world: World,
+  options: InputOptions,
+  bindingsFor: (id: string) => ControllerBindings,
+):
+  | {
+      ok: true;
+      commands: Readonly<Record<string, Command>>;
+      controllers: ReadonlyMap<string, LoadedController>;
+    }
+  | { ok: false; errors: readonly ValidationError[] };
+
+// src/core/controller/runner.ts
+export function createControllerRunner(world: World): {
+  bindingsFor(id: string): ControllerBindings;
+  run(
+    state: SimState,
+    commands: Readonly<Record<string, Command>>,
+    scripts: ReadonlyMap<string, LoadedController>,
+  ): {
+    commands: Readonly<Record<string, Command>>;
+    events: readonly SimEvent[];
+    disabled: ReadonlySet<string>;
+  };
+};
+```
+
+`ControllerOptions` segue a configuração de controladores da
+[fachada](contracts/core-api.md). `prepareInputs` agrega erros de comandos e
+controladores conforme o contrato, chama `bindingsFor` apenas para robôs
+elegíveis e devolve os controladores na ordem do mundo. `createControllerRunner`
+fornece os vínculos da API de cada robô. `run` executa as chamadas de um único
+passo sobre o estado observado e devolve os comandos candidatos, os eventos e
+os IDs recém-desativados. A fachada recria o runner no reset.
+
 ## Arquitetura
 
 ### Preparação e reset
@@ -231,6 +328,25 @@ pela interface injetada e por dados explícitos da sessão.
   testes de sumô cobrem o encerramento e a truncagem do histórico.
 - O `bench` existente usa a geometria e os comandos de referência da S1 em modo livre,
   com 3 000 ticks efetivos. O benchmark da S2 usa as condições de SC-003 e o modo sumô.
+- Os scripts expõem os construtores de entrada abaixo. Importe esses módulos
+  sem iniciar a medição. A entrada S1
+  troca apenas `match.mode` para `free` no JSON do Duelo e usa os comandos constantes
+  `vermelho: { v: 1, w: 0 }` e `azul: { v: 0.4, w: 0.1 }`. A entrada S2 preserva
+  o texto do mundo, usa `history: false`, Parado em `vermelho`, Girador em `azul`
+  e o motor recebido. Ambas solicitam 3 000 ticks.
+
+  ```ts
+  // scripts/bench.ts
+  export function createS1BenchmarkInput(world: string): HeadlessInput;
+
+  // scripts/bench-s2.ts
+  export function createS2BenchmarkInput(
+    world: string,
+    sources: { parado: string; girador: string },
+    controllerEngine: ControllerEngine,
+  ): HeadlessInput;
+  ```
+
 - Validar SC-001, SC-002 e SC-004 pela suíte. Medir SC-003 via `bench:s2` e registrar
   ambiente e tempo. Validar SC-005 com a atividade de escrever uma estratégia a partir de
   Caçador consultando o Anexo B. O quickstart cobre a entrega sem interface.

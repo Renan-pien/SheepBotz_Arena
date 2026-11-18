@@ -15,6 +15,10 @@ pilha. Para ausência de `loop()`, use `A função loop() é obrigatória.`. Par
 pelo FR-009, o detalhe identifica o recurso rejeitado antes do tick 0. Uma exceção de
 nível superior ao tentar usar recurso indisponível é falha de avaliação e mantém o
 detalhe original.
+
+Para construções assíncronas use `O script não aceita código assíncrono.`, para
+importação dinâmica use `O script não aceita importação dinâmica.` e para callbacks
+geradores use `O callback <nome>() não pode ser um gerador.`, com `setup` ou `loop`.
 Compare código e caminho de forma exata. Para erros de sintaxe nativos, o trecho original
 segue o parser e a origem do diagnóstico. Para uma mensagem lançada pelo próprio script,
 o texto informado pelo controlador é preservado.

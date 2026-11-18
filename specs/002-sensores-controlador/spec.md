@@ -298,8 +298,8 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 |---|---|
 | 3 raios, π/3, alcance 3, mapa 4 × 4, robô na origem, θ = 0 | [2.309401, 2.000000, 2.309401] |
 | 3 raios, π/3, alcance 3, mapa 4 × 2, robô na origem, θ = π/2 | [1.154701, 1.000000, 1.154701] |
-| Idem, com obstáculo (1.0, 0.0), 0.2 × 0.4 | [2.309401, 0.900000, 2.309401] |
-| Idem, alcance 1.5, sem obstáculo | [1.5, 1.5, 1.5] |
+| 3 raios, π/3, alcance 3, mapa 4 × 4, robô na origem, θ = 0, obstáculo em (1.0, 0.0) de 0.2 × 0.4 | [2.309401, 0.900000, 2.309401] |
+| 3 raios, π/3, alcance 1.5, mapa 4 × 4, robô na origem, θ = 0, sem obstáculo | [1.5, 1.5, 1.5] |
 | 1 raio, alcance 1, robô de raio 0.1 em (0.5, 0.0) | [0.400000] |
 | 5 raios, π/2, alcance 1, robô de raio 0.1 em (0.5, 0.05) | [1.0, 1.0, 0.413397, 1.0, 1.0] |
 | "Duelo padrão", tick 0 | [0.8, 0.8, 0.35, 0.8, 0.8] para cada robô |

@@ -153,8 +153,8 @@ src/ui  ──►  src/core  ◄──  src/cli
 
 ### Interfaces internas verificadas pela suíte
 
-Os testes unitários importam os resolvedores diretamente dos módulos em `src/core/sim`.
-Cada resultado descreve a pose resolvida e indica se houve contato nessa etapa do tick.
+Os testes unitários importam estas funções diretamente dos módulos em `src/core/sim`.
+Cada resultado de resolução descreve a pose e indica se houve contato nessa etapa do tick.
 
 ```ts
 type ContactResult = { pose: Pose; contacted: boolean };
@@ -173,6 +173,12 @@ export function resolveObstaclesAndWalls(
   obstacles: readonly Obstacle[],
   map: World['map'],
 ): ContactResult;
+
+// kinematics.ts. A saturação depende apenas dos dois limites de velocidade.
+export function saturate(
+  command: Command,
+  limits: Pick<RobotConfig, 'maxLinearSpeed' | 'maxAngularSpeed'>,
+): Command;
 ```
 
 ### O passo da simulação (FR-017)
