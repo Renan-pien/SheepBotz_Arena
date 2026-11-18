@@ -433,3 +433,4 @@ ramos, funções e linhas.
 | T002 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Imports de Three.js, OrbitControls e CodeMirror verificados no Node. Build e regressão passaram com o lock atualizado. |
 | T004 | 234 passaram / 0 falharam | 93.52 / 90.36 / 99.23 / 94.16 | 98.59 / 97.58 / 99.09 / 99.10 | O Duelo é publicado no tick 0 com Caçador e Girador. App e sessão leem o mesmo snapshot. |
 | T003 | 234 passaram / 0 falharam | 93.52 / 90.36 / 99.23 / 94.16 | 98.59 / 97.58 / 99.09 / 99.10 | O teste falhou antes dos módulos e do título esperado. A suíte ficou verde com T004. O jsdom recebe motor injetado, pois seus intrínsecos impedem a inicialização real do SES nesse ambiente. |
+| T006 | 245 passaram / 0 falharam | 85.18 / 83.04 / 89.63 / 85.18 | 98.59 / 97.58 / 99.09 / 99.10 | Cena, raios, controles de câmera e vetores geométricos validados. A verificação WebGL em Chromium fica na T018. |

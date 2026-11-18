@@ -19,7 +19,7 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 ## Fase 3 · US1 — Ver a luta em 3D (P1)
 
 - [ ] T005 [US1] Escrever S3-US1-AC1 a S3-US1-AC10 para mundo e snapshot, comprimentos, orientação, câmera, visibilidade e alerta — `tests/ui/s3/us1-cena.test.tsx` — S3-FR-001, S3-FR-002, S3-FR-005 a S3-FR-011. **Dep.** T004. **Pronto** Os dez critérios passam com T006; gestos reais entram em T018.
-- [ ] T006 [US1] Implementar projeção 3D, montagem e atualização de objetos, enquadramento, órbita, zoom e pan, controles de câmera, rótulos e raios — `src/ui/scene/projection.ts`, `src/ui/scene/camera.ts`, `src/ui/scene/graphics.ts`, `src/ui/scene/ArenaView.tsx`, `src/ui/App.tsx`, `src/ui/arena.css` — S3-FR-001, S3-FR-002, S3-FR-005 a S3-FR-011, S3-FR-037. **Dep.** T005 (RED). **Pronto** Vetor do Duelo e configurações verificáveis. Campos [SessionView.snapshot, SessionView.world, Preferências.raios, Preferências.rótulos, Preferências.vista](data-model.md#modelo-de-dados--spec-003).
+- [X] T006 [US1] Implementar projeção 3D, montagem e atualização de objetos, enquadramento, órbita, zoom e pan, controles de câmera, rótulos e raios — `src/ui/scene/projection.ts`, `src/ui/scene/camera.ts`, `src/ui/scene/graphics.ts`, `src/ui/scene/ArenaView.tsx`, `src/ui/App.tsx`, `src/ui/arena.css` — S3-FR-001, S3-FR-002, S3-FR-005 a S3-FR-011, S3-FR-037. **Dep.** T005 (RED). **Pronto** Vetor do Duelo e configurações verificáveis. Campos [SessionView.snapshot, SessionView.world, Preferências.raios, Preferências.rótulos, Preferências.vista](data-model.md#modelo-de-dados--spec-003).
 
 ## Fase 4 · US2 — Controlar o tempo (P1)
 

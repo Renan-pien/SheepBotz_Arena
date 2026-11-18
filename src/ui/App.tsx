@@ -1,5 +1,7 @@
 import { useState, useSyncExternalStore } from 'react';
 import { ArenaSession } from './arena/session';
+import { ArenaView } from './scene/ArenaView';
+import './arena.css';
 
 export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const [session] = useState(() => supplied ?? new ArenaSession());
@@ -16,6 +18,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           {world.name} · Tick {snapshot.tick}
         </p>
       </header>
+      <ArenaView world={world} snapshot={snapshot} />
     </main>
   );
 }
