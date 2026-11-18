@@ -9,7 +9,7 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 ## Fase 1 · Setup
 
 - [X] T001 Confirmar Node 24, a base da tag `spec-002-fechada`, os 233 testes de regressão, a cobertura inicial e o Duelo da S2 — `docs/registro-de-consolidacao.md` — RB-08, RB-12, S3-FR-001. **Dep.** Análise e portão de implementação liberados. **Pronto** Base reproduzida.
-- [ ] T002 Fixar Three.js, tipos e CodeMirror conforme R1. Checar lint, instalação e compilação do pacote — `package.json`, `package-lock.json` — ADR-008, S3-FR-005, S3-FR-023. **Dep.** T001. **Pronto** Imports resolvem em Node e Vite.
+- [X] T002 Fixar Three.js, tipos e CodeMirror conforme R1. Checar lint, instalação e compilação do pacote — `package.json`, `package-lock.json` — ADR-008, S3-FR-005, S3-FR-023. **Dep.** T001. **Pronto** Imports resolvem em Node e Vite.
 
 ## Fase 2 · Fundação
 
