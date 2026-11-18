@@ -462,3 +462,19 @@ medido desde a navegação foi de 1,04 s. Para SC-006, restaurou o Duelo
 padrão com Caçador e Girador e leu no placar do modo apresentação
 “Vitória de vermelho — saída da arena · tick 34 · 0,68 s”.
 [Critérios e exceção](../specs/003-visualizacao-operacao/spec.md#6-critérios-de-sucesso)
+
+### Fechamento da Spec 003
+
+A Spec 003 completou as 20 tarefas, com rastreabilidade dos 39 requisitos e
+49 cenários de aceite. O quickstart foi executado a partir da instalação
+limpa na T018. Lint, tipos e a suíte original passaram com 320 testes e
+88,30% de cobertura de linhas no projeto. A exceção aprovada da T020 está
+registrada acima.
+
+A regeneração independente das três specs passou na terceira rodada nos
+320 testes, com os 133 cenários de aceite e 90,16% de cobertura de linhas
+no projeto. Os esclarecimentos ficaram nos artefatos SDD e a branch de
+ensaio foi descartada. O fechamento é rastreado pelo PR #6 e pela tag
+`spec-003-fechada`.
+[Ensaio 3](ensaio-regeneracao.md#ensaio-3--2026-11-18) ·
+[PR #6](https://github.com/Renan-pien/SheepBotz_Arena/pull/6)
