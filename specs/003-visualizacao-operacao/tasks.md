@@ -28,7 +28,7 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 
 ## Fase 5 · US3 — Carregar mundos e controladores (P1)
 
-- [ ] T009 [US3] Escrever S3-US3-AC1 a S3-US3-AC9 para mundos válidos e inválidos, rascunhos por robô e operações de código — `tests/ui/s3/us3-controladores.test.tsx` — S3-FR-019 a S3-FR-025. **Dep.** T008. **Pronto** Os nove critérios passam com T010.
+- [X] T009 [US3] Escrever S3-US3-AC1 a S3-US3-AC9 para mundos válidos e inválidos, rascunhos por robô e operações de código — `tests/ui/s3/us3-controladores.test.tsx` — S3-FR-019 a S3-FR-025. **Dep.** T008. **Pronto** Os nove critérios passam com T010.
 - [X] T010 [US3] Implementar carregamentos transacionais, seletor de mundo, cartões CodeMirror e ações de restaurar, abrir, salvar e aplicar. Apresentar falha, invalidação de resposta assíncrona antiga e controlador desativado — `src/ui/arena/session.ts`, `src/ui/arena/files.ts`, `src/ui/panels/Controllers.tsx`, `src/ui/panels/CodeEditor.tsx`, `src/ui/App.tsx` — S3-FR-019 a S3-FR-025, S3-FR-037. **Dep.** T009 (RED). **Pronto** Erros preservam sessão e fontes. Campos [Sessão viva.controllers, Sessão viva.drafts, Rascunho.texto, Rascunho.exemplo, SessionView.erros](data-model.md#modelo-de-dados--spec-003).
 
 ## Fase 6 · US4 — Inspecionar sensores e resultado (P2)
