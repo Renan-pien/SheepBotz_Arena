@@ -22,3 +22,7 @@ O adaptador lê o mundo e os controladores antes da chamada ao núcleo. O caminh
 Durante a simulação, chamadas a `log()` ficam no JSON de estado. O modo `--pretty` só altera
 a indentação. `--ticks` limita quantos ticks serão executados e uma luta encerrada pode devolver
 um tick menor. Os exemplos e verificações estão no [quickstart](../quickstart.md).
+
+A falha de leitura de um controlador usa
+`Não foi possível ler o arquivo de controlador '<caminho>'.` em stderr,
+com stdout vazio. O diagnóstico distingue controlador de mundo.

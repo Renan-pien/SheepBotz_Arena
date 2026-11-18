@@ -371,3 +371,110 @@ A reexecução passou em 233 de 233 testes, com 94,38% de cobertura de linhas no
 projeto e 99,30% no núcleo regenerado. A implementação de produção e os
 marcadores do checklist foram preservados.
 [Registro do ensaio](ensaio-regeneracao.md#ensaio-2--2026-11-17)
+
+## 2026-11-18 · Especificação e revisão da Spec 003
+
+A pasta `instruções` forneceu a especificação-base da S3, o briefing, a
+constituição, as decisões e os cinco artefatos de planejamento da S1 como
+referência de formato. A branch `003-visualizacao-operacao` partiu da
+`main` marcada com `spec-002-fechada`. A CLI da S2 confirmou o Duelo
+com Caçador e Girador, com vitória de vermelho no tick 34 em 0,68 s e 35
+estados com o tick 0.
+
+A revisão preservou as seis histórias e os 39 requisitos, completou as origens
+e fixou 49 cenários. Ficaram explícitos o resultado como evento da partida,
+a preparação atômica de mundos e controladores, o primeiro e o último tick
+do replay e a coleta até o tick 100 000 inclusive. A checagem de ambiguidades
+reaproveitou as decisões da S1 e da S2. O formato de gravação e os detalhes
+de cena e agendamento ficaram para o plano.
+
+O checklist interno de qualidade passou em 16 de 16. O checklist de operação
+contém evidências documentais e marcadores próprios da revisão.
+[Spec 003](../specs/003-visualizacao-operacao/spec.md) ·
+[Checklist](../specs/003-visualizacao-operacao/checklists/operacao.md)
+
+### Plano da Spec 003
+
+O Constitution Check passou nos nove princípios. O desenho usa Three.js e
+CodeMirror 6 conforme ADR-008, com os contratos existentes da S2 para o
+núcleo. A cena projeta posições e raios e o relógio da interface conduz
+somente passos fixos. O arquivo grava snapshots e usa prefixos de eventos
+para preservar os dados sem repeti-los. O guia separa verificações
+determinísticas e medições em Chromium da validação com pessoas.
+[Plano](../specs/003-visualizacao-operacao/plan.md) ·
+[Contrato de gravação](../specs/003-visualizacao-operacao/contracts/gravacao.md)
+
+### Tarefas e análise da Spec 003
+
+As 20 tarefas seguem Setup, Fundação, US1–US6 e Acabamento. Os testes
+antecedem o código e cada fase tem seu próprio critério de pronto.
+A análise cruzou a spec, o plano, os contratos, o modelo e as tasks.
+Conferiu os 39 requisitos, os 49 cenários, as 20 dependências e 26
+referências locais entre os dez artefatos. Não ficaram achados críticos
+ou altos. As verificações com pessoas de SC-003 e SC-006 ficam na T020.
+[Tarefas](../specs/003-visualizacao-operacao/tasks.md)
+
+A referência pré-implementação em Node 24.22.3 passou no lint, no
+typecheck e nos 233 testes das Specs 001 e 002, com 93,98% de cobertura
+de linhas no projeto e 99,10% no núcleo. O checklist interno tem 16
+itens concluídos e os 10 marcadores do checklist de operação aguardam
+a revisão ou a autorização de continuidade.
+
+### Execução da Spec 003
+
+O usuário autorizou a implementação com os dez marcadores do checklist
+de operação preservados. Os marcadores pertencem à revisão documental e
+ficam fora da aplicação. A cobertura abaixo segue a ordem instruções,
+ramos, funções e linhas.
+
+| Tarefa | Testes | Projeto (%) | Núcleo (%) | Evidência |
+|---|---|---|---|---|
+| T001 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Node 24.22.3 e tag spec-002-fechada conferidos. Lint, tipos e 233 testes passaram na base. Duelo padrão terminou no tick 34. |
+| T002 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Imports de Three.js, OrbitControls e CodeMirror verificados no Node. Build e regressão passaram com o lock atualizado. |
+| T004 | 234 passaram / 0 falharam | 93.52 / 90.36 / 99.23 / 94.16 | 98.59 / 97.58 / 99.09 / 99.10 | O Duelo é publicado no tick 0 com Caçador e Girador. App e sessão leem o mesmo snapshot. |
+| T003 | 234 passaram / 0 falharam | 93.52 / 90.36 / 99.23 / 94.16 | 98.59 / 97.58 / 99.09 / 99.10 | O teste falhou antes dos módulos e do título esperado. A suíte ficou verde com T004. O jsdom recebe motor injetado, pois seus intrínsecos impedem a inicialização real do SES nesse ambiente. |
+| T006 | 245 passaram / 0 falharam | 85.18 / 83.04 / 89.63 / 85.18 | 98.59 / 97.58 / 99.09 / 99.10 | Cena, raios, controles de câmera e vetores geométricos validados. A verificação WebGL em Chromium fica na T018. |
+| T005 | 245 passaram / 0 falharam | 85.18 / 83.04 / 89.63 / 85.18 | 98.59 / 97.58 / 99.09 / 99.10 | RED por ausência dos módulos de cena. Os dez IDs e a montagem dos recursos passaram com T006. |
+| T008 | 255 passaram / 0 falharam | 85.55 / 82.86 / 89.52 / 85.65 | 98.59 / 97.58 / 99.09 / 99.10 | Relógio e desenho independentes. Histórico incremental, pausa por visibilidade, atraso sem pular ticks e reset determinístico. |
+| T007 | 255 passaram / 0 falharam | 85.55 / 82.86 / 89.52 / 85.65 | 98.59 / 97.58 / 99.09 / 99.10 | Dez falhas RED confirmadas. UI, relógio e estado passaram sem asserção de tempo real. |
+| T010 | 264 passaram / 0 falharam | 86.15 / 82.73 / 90.21 / 86.48 | 98.59 / 97.58 / 99.09 / 99.10 | Gravação e sessão anteriores permanecem em falhas. Catálogo, rascunho, reabertura, download e aplicação por robô validados. |
+| T009 | 264 passaram / 0 falharam | 86.15 / 82.73 / 90.21 / 86.48 | 98.59 / 97.58 / 99.09 / 99.10 | As nove falhas esperadas ficaram verdes com T010, inclusive três erros de mundo e a preservação dos rascunhos. |
+| T012 | 270 passaram / 0 falharam | 86.52 / 83.22 / 90.55 / 86.85 | 98.59 / 97.58 / 99.09 / 99.10 | Inspeção e cena sincronizadas. Diferença de odometria, eventos globais, filtros, cap de 500 e desfechos em pt-BR validados. |
+| T011 | 270 passaram / 0 falharam | 86.52 / 83.22 / 90.55 / 86.85 | 98.59 / 97.58 / 99.09 / 99.10 | RED pela ausência de componentes. Os seis cenários ficaram verdes com T012. |
+| T014 | 309 passaram / 0 falharam | 87.67 / 84.5 / 91.33 / 88.01 | 98.59 / 97.58 / 99.09 / 99.10 | Codec, tipos, dados inválidos e limite inclusivo testados. Cenários de UI preescritos aguardam integração da T015. |
+| T015 | 317 passaram / 0 falharam | 87.69 / 84.75 / 91.86 / 88.5 | 98.59 / 97.58 / 99.09 / 99.10 | Timeline, playback, arquivos e bloqueio de edição passaram; ida ao vivo mantém o replay se a preparação falhar. |
+| T013 | 317 passaram / 0 falharam | 87.69 / 84.75 / 91.86 / 88.5 | 98.59 / 97.58 / 99.09 / 99.10 | RED anterior por ausência do codec e integração. A suíte passou com T014 e T015, incluindo mutações de campos e limite de 100 000 ticks. |
+| T017 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Apresentação preserva sessão e orientação da câmera. Foco, recolhimento, placar e retorno por teclado validados. |
+| T016 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Três REDs confirmados antes da implementação. Todos passaram com T017. |
+| T018 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Instalação limpa e 49 cenários confirmados. Chrome 145 com SwiftShader: 41,8 a 51,4 FPS no Duelo a 1× e até 53,9 ms de resposta. Download corresponde aos 35 estados CLI. Benchmarks S1/S2 em 35,79 e 41,95 ms. |
+| T019 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Matriz com os 39 FRs e os 49 cenários conferida. README e relatórios gerados. Passos de commitlint e métricas do workflow passaram localmente em push, primeiro push e PR. Contraste de texto nas amostras variou de 7,29:1 a 16,73:1. |
+| T020 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Demonstração substitutiva aprovada pelo usuário. Troca de Caçador por Avança e luta completa em 1,04 s desde a navegação. No modo apresentação, o placar identificou vitória de vermelho por saída da arena no tick 34. |
+
+### Exceção de aceite da T020
+
+Em 2026-11-18, o usuário aprovou que a demonstração do Codex substituísse
+as sessões com uma pessoa iniciante e uma pessoa de fora da equipe. A
+demonstração no Chrome 145.0.7632.116 operou a aplicação pelo navegador.
+
+Para SC-003, o ensaio abriu o Duelo padrão, aplicou Avança em vermelho
+e executou até a vitória de vermelho por saída da arena. O tempo
+medido desde a navegação foi de 1,04 s. Para SC-006, restaurou o Duelo
+padrão com Caçador e Girador e leu no placar do modo apresentação
+“Vitória de vermelho — saída da arena · tick 34 · 0,68 s”.
+[Critérios e exceção](../specs/003-visualizacao-operacao/spec.md#6-critérios-de-sucesso)
+
+### Fechamento da Spec 003
+
+A Spec 003 completou as 20 tarefas, com rastreabilidade dos 39 requisitos e
+49 cenários de aceite. O quickstart foi executado a partir da instalação
+limpa na T018. Lint, tipos e a suíte original passaram com 320 testes e
+88,30% de cobertura de linhas no projeto. A exceção aprovada da T020 está
+registrada acima.
+
+A regeneração independente das três specs passou na terceira rodada nos
+320 testes, com os 133 cenários de aceite e 90,16% de cobertura de linhas
+no projeto. Os esclarecimentos ficaram nos artefatos SDD e a branch de
+ensaio foi descartada. O fechamento é rastreado pelo PR #6 e pela tag
+`spec-003-fechada`.
+[Ensaio 3](ensaio-regeneracao.md#ensaio-3--2026-11-18) ·
+[PR #6](https://github.com/Renan-pien/SheepBotz_Arena/pull/6)

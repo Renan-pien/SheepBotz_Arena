@@ -94,3 +94,70 @@ lote, avanço passo a passo e reset.
 
 A implementação e a suíte da branch de entrega foram preservadas. O ensaio gerou
 esclarecimentos nos artefatos SDD e a branch temporária foi descartada.
+
+### Ensaio 3 — 2026-11-18
+
+- **Specs incluídas** S1, S2 e S3, no ensaio de encerramento da S3 e da
+  entrega das três specs. A branch temporária partiu da `main` em
+  `e0e68c5` e a sessão recebeu os artefatos do [PR #6](https://github.com/Renan-pien/SheepBotz_Arena/pull/6),
+  inicialmente no commit `6d7ac92`.
+- **Agente** Codex em sessão nova, sem histórico. A árvore cega continha
+  constituição, artefatos SDD e configuração de ferramentas. A suíte
+  original ficou em outro diretório e foi aplicada às versões congeladas.
+- **Primeira execução cega** 236 de 320 testes passaram (73,75%), com os
+  36 cenários da S1, 48 da S2 e 4 dos 49 da S3. A cobertura de linhas foi
+  de 64,43% no projeto e 99,03% no núcleo. A versão cega compilava e
+  executava o Duelo, exportava 35 estados e oferecia replay no Chrome.
+  Os tipos da suíte original expuseram diferenças nas assinaturas.
+
+| Grupo | Falhas | Causa e correção |
+|---|---:|---|
+| CLI | 1 | O diagnóstico de arquivo ilegível omitia que o arquivo era de controlador. O [contrato CLI v2](../specs/002-sensores-controlador/contracts/cli.md) explicita o texto. |
+| Catálogo e sessão inicial | 1 | Os nomes e as formas dos presets eram implícitos. O [plano da S3](../specs/003-visualizacao-operacao/plan.md#catálogo-e-sessão) define chaves e campos. |
+| Cena e câmera | 11 | A sessão escolheu outra API de projeção e câmera. As opções de visibilidade tinham controles, mas os pontos de observação do snapshot eram implícitos. O [plano](../specs/003-visualizacao-operacao/plan.md#interfaces-internas-verificadas-pela-suíte) define interfaces, atributos e a montagem sem WebGL. |
+| Operação | 6 | A chamada de relógio recebia um instante absoluto. A suíte usava um intervalo em milissegundos. A consulta determinística do histórico estava implícita. O [plano](../specs/003-visualizacao-operacao/plan.md#catálogo-e-sessão) fixa o delta, as transições e a API de consulta. |
+| Mundos, inspeção e apresentação | 18 | Nomes de operações, papéis acessíveis e rótulos foram inferidos de outro modo. O [plano](../specs/003-visualizacao-operacao/plan.md#interfaces-internas-verificadas-pela-suíte) define as operações, e o [contrato](../specs/003-visualizacao-operacao/contracts/operacao.md#nomes-acessíveis-e-formatos) fixa a semântica observável. |
+| Gravação e replay | 47 | A API interna de gravação e operação do replay tinha nomes diferentes, e a divergência no relógio impedia preparar o histórico de referência. O [plano](../specs/003-visualizacao-operacao/plan.md#gravação-e-observação) explicita tipos, assinaturas e a identidade dos prefixos de eventos. |
+
+A revisão também explicita o motor injetável para testar a UI em jsdom.
+O SES real permanece na integração em navegador e nos testes Node.
+
+#### Segunda rodada cega
+
+A versão reconstruída a partir dos artefatos revistos passou em **309 de
+320 testes**. Passaram lint, tipos e build. A cobertura de linhas foi de
+86,91% no projeto e 99,03% no núcleo. Os 84 cenários das Specs 001 e 002
+continuaram verdes, e 38 dos 49 cenários da S3 passaram.
+
+| Grupo | Falhas | Causa e correção |
+|---|---:|---|
+| Operação | 2 | O tempo estava concatenado ao status, e o botão Reiniciar do rodapé dava lugar ao do banner no fim da luta. O contrato distingue esses elementos e as duas ações. |
+| Controladores e replay | 7 | A aba inicial escolhida era Inspeção. O contrato define Controladores como a aba inicial. |
+| Inspeção e eventos | 2 | O número de casas do ângulo do raio e o texto de contagem de eventos ocultos eram implícitos. O contrato fixa uma casa e os avisos no singular e plural. |
+
+[Detalhes do contrato de operação](../specs/003-visualizacao-operacao/contracts/operacao.md#nomes-acessíveis-e-formatos)
+
+#### Terceira rodada e resultado final
+
+A sessão independente recebeu o contrato revisado e congelou a terceira
+versão em 58 arquivos de produção, com SHA-256 agregado
+`60f23ca3b9d52cbb5621f56b4ad109ae077ddb3c5e69facb02a07730a32b20aa`.
+A suíte original passou em **320 de 320 testes**, com zero falhas e os
+**133 cenários de aceite** (36 da S1, 48 da S2 e 49 da S3). Lint, tipos,
+build e os limites de cobertura passaram em Node 24.22.3.
+
+| Código regenerado | Instruções | Ramos | Funções | Linhas |
+|---|---:|---:|---:|---:|
+| Projeto | 88,81% | 86,85% | 88,77% | 90,16% |
+| Núcleo | 98,45% | 97,08% | 97,67% | 99,03% |
+
+No Chrome 145.0.7632.116 com WebGL 2, vermelho venceu por saída da arena
+no tick 34, com 0,68 s de tempo simulado. Os 35 estados exportados do
+navegador, com seus eventos, coincidiram com a saída da CLI da branch de
+entrega. Na mesma máquina (Intel Core i5-1334U, Linux x64), os benchmarks
+regenerados completaram 3 000 ticks em 25,46 ms para a S1 e 20,73 ms
+para a S2.
+
+O código de entrega e a suíte original foram preservados. O ensaio
+final das três specs foi aprovado, e a branch temporária de regeneração
+foi descartada.

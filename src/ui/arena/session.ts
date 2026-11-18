@@ -1,0 +1,383 @@
+import {
+  loadWorld,
+  prepareSimulation,
+  type ControllerEngine,
+  type SimState,
+  type Simulation,
+  type World,
+} from '../../core';
+import { initializeControllerEngine } from '../../runtime/controller-engine';
+import {
+  controllerPresets,
+  worldPresets,
+  type ControllerPreset,
+  type WorldPreset,
+} from './catalog';
+import { TickClock, type PlaybackSpeed } from './clock';
+import { decodeRecording, lastRecordedTick, type Recording } from './recording';
+
+export type Sources = Readonly<Record<string, string>>;
+export type SessionStatus = 'pronta' | 'executando' | 'pausada' | 'finalizada';
+
+export interface SessionError {
+  readonly code: string;
+  readonly path: string;
+  readonly message: string;
+}
+
+export interface Draft {
+  readonly source: string;
+  readonly example: ControllerPreset;
+}
+
+type Drafts = Readonly<Record<string, Draft>>;
+
+function initialDrafts(
+  world: World,
+  defaults: Readonly<Record<string, ControllerPreset>>,
+): Drafts {
+  return Object.fromEntries(
+    world.robots.map(({ id }) => {
+      const example = Object.hasOwn(defaults, id) ? defaults[id]! : 'parado';
+      return [id, { example, source: controllerPresets[example].source }];
+    }),
+  );
+}
+
+function sourcesFrom(drafts: Drafts): Sources {
+  return Object.fromEntries(
+    Object.entries(drafts).map(([id, draft]) => [id, draft.source]),
+  );
+}
+
+export interface SessionView {
+  readonly world: World;
+  readonly worldText: string;
+  readonly controllers: Sources;
+  readonly snapshot: SimState;
+  readonly status: SessionStatus;
+  readonly speed: PlaybackSpeed;
+  readonly behind: boolean;
+  readonly limitReached: boolean;
+  readonly mode: 'live' | 'replay';
+  readonly replayLast: number | null;
+  readonly preset: WorldPreset | '';
+  readonly drafts: Drafts;
+  readonly errors: readonly SessionError[];
+}
+
+export class ArenaSession {
+  #simulation: Simulation;
+  #engine: ControllerEngine;
+  #revision = 0;
+  #view: SessionView;
+  #listeners = new Set<() => void>();
+  #clock = new TickClock();
+  #history: SimState[];
+  #replay: Recording | null = null;
+  #createdAt = new Date().toISOString();
+
+  constructor(engine: ControllerEngine = initializeControllerEngine()) {
+    this.#engine = engine;
+    const worldText = worldPresets.duelo.text;
+    const world = loadWorld(worldText);
+    if (!world.ok) throw new Error(JSON.stringify(world.errors));
+    const drafts = initialDrafts(world.world, worldPresets.duelo.defaults);
+    const controllers = sourcesFrom(drafts);
+    const prepared = prepareSimulation(world.world, {
+      controllers,
+      controllerEngine: engine,
+    });
+    if (!prepared.ok) throw new Error(JSON.stringify(prepared.errors));
+    this.#simulation = prepared.simulation;
+    this.#view = {
+      world: world.world,
+      worldText,
+      controllers,
+      snapshot: this.#simulation.getState(),
+      status: 'pronta',
+      speed: 1,
+      behind: false,
+      limitReached: false,
+      mode: 'live',
+      replayLast: null,
+      preset: 'duelo',
+      drafts,
+      errors: [],
+    };
+    this.#history = [this.#view.snapshot];
+  }
+
+  getSnapshot = (): SessionView => this.#view;
+
+  subscribe = (listener: () => void) => {
+    this.#listeners.add(listener);
+    return () => {
+      this.#listeners.delete(listener);
+    };
+  };
+
+  revision = () => this.#revision;
+
+  reportError(error: SessionError) {
+    this.#publish({ errors: [error] });
+  }
+
+  openWorld(worldText: string, preset: WorldPreset | '' = '') {
+    if (this.#replay) return;
+    const loaded = loadWorld(worldText);
+    if (!loaded.ok) {
+      this.#publish({ errors: loaded.errors });
+      return;
+    }
+    const defaults = preset ? worldPresets[preset].defaults : {};
+    const drafts = initialDrafts(loaded.world, defaults);
+    this.#replace(loaded.world, worldText, sourcesFrom(drafts), drafts, preset);
+  }
+
+  chooseWorld(preset: WorldPreset) {
+    this.openWorld(worldPresets[preset].text, preset);
+  }
+
+  editSource(id: string, source: string) {
+    if (this.#replay) return;
+    const draft = this.#view.drafts[id]!;
+    this.#publish({
+      drafts: { ...this.#view.drafts, [id]: { ...draft, source } },
+    });
+  }
+
+  selectExample(id: string, example: ControllerPreset) {
+    if (this.#replay) return;
+    const source = controllerPresets[example].source;
+    this.#publish({
+      drafts: { ...this.#view.drafts, [id]: { example, source } },
+    });
+  }
+
+  restoreExample(id: string) {
+    this.selectExample(id, this.#view.drafts[id]!.example);
+  }
+
+  apply(id: string) {
+    if (this.#replay) return;
+    const { world, worldText, controllers, drafts, preset } = this.#view;
+    this.#replace(
+      world,
+      worldText,
+      { ...controllers, [id]: drafts[id]!.source },
+      drafts,
+      preset,
+    );
+  }
+
+  #replace(
+    world: World,
+    worldText: string,
+    controllers: Sources,
+    drafts: Drafts,
+    preset: WorldPreset | '',
+  ) {
+    const prepared = prepareSimulation(world, {
+      controllers,
+      controllerEngine: this.#engine,
+    });
+    if (!prepared.ok) {
+      this.#publish({ errors: prepared.errors });
+      return;
+    }
+    this.#simulation = prepared.simulation;
+    this.#startNewRun(this.#simulation.getState(), {
+      world,
+      worldText,
+      controllers,
+      drafts,
+      preset,
+    });
+  }
+
+  #startNewRun(snapshot: SimState, patch: Partial<SessionView> = {}) {
+    this.#revision += 1;
+    this.#clock.clear();
+    this.#history = [snapshot];
+    this.#replay = null;
+    this.#createdAt = new Date().toISOString();
+    this.#publish({
+      ...patch,
+      mode: 'live',
+      replayLast: null,
+      status: 'pronta',
+      snapshot,
+      behind: false,
+      limitReached: false,
+      errors: [],
+    });
+  }
+
+  recording(): Recording {
+    if (this.#replay) return this.#replay;
+    return {
+      world: this.#view.worldText,
+      controllers: this.#view.controllers,
+      createdAt: this.#createdAt,
+      states: this.history(),
+    };
+  }
+
+  history(): readonly SimState[] {
+    return (this.#replay?.states ?? this.#history).slice();
+  }
+
+  enterReplay() {
+    this.#showReplay(this.#view.world, this.recording());
+  }
+
+  openRecording(text: string) {
+    const result = decodeRecording(text);
+    if (!result.ok) {
+      this.reportError(result.error);
+      return;
+    }
+    this.#showReplay(result.world, result.recording);
+  }
+
+  #showReplay(world: World, recording: Recording) {
+    this.#replay = recording;
+    this.#history = [];
+    this.#revision += 1;
+    this.#clock.clear();
+    const drafts = Object.fromEntries(
+      Object.entries(recording.controllers).map(([id, source]) => {
+        const names = Object.keys(controllerPresets) as ControllerPreset[];
+        const example =
+          names.find((key) => controllerPresets[key].source === source) ??
+          'parado';
+        return [id, { example, source }];
+      }),
+    );
+    this.#publish({
+      mode: 'replay',
+      world,
+      worldText: recording.world,
+      controllers: recording.controllers,
+      drafts,
+      preset: '',
+      snapshot: recording.states[0]!,
+      replayLast: recording.states.length - 1,
+      status: 'pausada',
+      behind: false,
+      limitReached: false,
+      errors: [],
+    });
+  }
+
+  exitReplay() {
+    if (!this.#replay) return;
+    const { world, worldText, controllers, drafts } = this.#view;
+    this.#replace(world, worldText, controllers, drafts, '');
+  }
+
+  seek(tick: number) {
+    if (!this.#replay || !Number.isFinite(tick)) return;
+    const index = Math.max(
+      0,
+      Math.min(this.#replay.states.length - 1, Math.trunc(tick)),
+    );
+    this.#clock.clear();
+    this.#publish({
+      snapshot: this.#replay.states[index]!,
+      status: 'pausada',
+      behind: false,
+    });
+  }
+
+  back() {
+    if (this.#view.status !== 'executando' && this.#view.snapshot.tick > 0) {
+      this.seek(this.#view.snapshot.tick - 1);
+    }
+  }
+
+  #publish(patch: Partial<SessionView>) {
+    this.#view = { ...this.#view, ...patch };
+    this.#listeners.forEach((listener) => listener());
+  }
+
+  play() {
+    if (
+      this.#view.status === 'finalizada' ||
+      this.#view.status === 'executando' ||
+      this.#view.replayLast === this.#view.snapshot.tick
+    )
+      return;
+    this.#clock.clear();
+    this.#publish({ status: 'executando', behind: false });
+  }
+
+  pause() {
+    if (this.#view.status !== 'executando') return;
+    this.#clock.clear();
+    this.#publish({ status: 'pausada', behind: false });
+  }
+
+  setSpeed(speed: PlaybackSpeed) {
+    this.#publish({ speed });
+  }
+
+  step() {
+    if (
+      this.#view.status === 'executando' ||
+      this.#view.status === 'finalizada' ||
+      this.#view.replayLast === this.#view.snapshot.tick
+    )
+      return;
+    this.#advance(1, 'pausada', false);
+  }
+
+  reset() {
+    if (this.#replay) {
+      this.seek(0);
+      return;
+    }
+    const snapshot = this.#simulation.reset();
+    this.#startNewRun(snapshot);
+  }
+
+  pulse(elapsedMs: number) {
+    if (this.#view.status !== 'executando') return;
+    const { ticks, behind } = this.#clock.consume(
+      elapsedMs,
+      this.#view.world.dt,
+      this.#view.speed,
+    );
+    if (ticks || behind !== this.#view.behind)
+      this.#advance(ticks, 'executando', behind);
+  }
+
+  #advance(ticks: number, status: SessionStatus, behind: boolean) {
+    if (this.#replay) {
+      const last = this.#view.replayLast!;
+      const index = Math.min(last, this.#view.snapshot.tick + ticks);
+      this.#publish({
+        snapshot: this.#replay.states[index]!,
+        status: index === last ? 'finalizada' : status,
+        behind: index !== last && behind,
+      });
+      return;
+    }
+    let snapshot = this.#view.snapshot;
+    for (
+      let index = 0;
+      index < ticks && snapshot.status !== 'finalizada';
+      index += 1
+    ) {
+      snapshot = this.#simulation.step();
+      if (snapshot.tick <= lastRecordedTick) this.#history.push(snapshot);
+    }
+    this.#publish({
+      snapshot,
+      status: snapshot.status === 'finalizada' ? 'finalizada' : status,
+      behind: snapshot.status !== 'finalizada' && behind,
+      limitReached: snapshot.tick >= lastRecordedTick,
+    });
+  }
+}

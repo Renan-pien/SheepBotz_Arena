@@ -94,6 +94,46 @@ Os 48 cenários estão indexados por tarefa e arquivo na
 
 ## Spec 003 — Visualização 3D e operação
 
-| RB | FR | Tasks | Testes | Status |
+Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visualizacao-operacao/tasks.md#dependências-e-cobertura).
+
+| Origem | FR | Tasks e commits | Testes | Status |
 |---|---|---|---|---|
-| — | — | — | — | Aguardando tasks |
+| RB-28 | S3-FR-001 | S3-T003 (`f704519`), S3-T004 (`85df2b1`), S3-T005 (`7c1f98e`), S3-T006 (`90daf33`), S3-T007 (`11c3c5f`), S3-T008 (`ae09f0b`) | [S3-US1-AC1, S3-US1-AC2, S3-US1-AC6](../tests/ui/s3/us1-cena.test.tsx), [S3-US2-AC1, S3-US2-AC5](../tests/ui/s3/us2-operacao.test.tsx) | Validado localmente |
+| RB-28 | S3-FR-002 | S3-T003 (`f704519`), S3-T004 (`85df2b1`), S3-T005 (`7c1f98e`), S3-T006 (`90daf33`), S3-T011 (`d7a2d2f`), S3-T012 (`16059ff`) | [S3-US1-AC2](../tests/ui/s3/us1-cena.test.tsx), [S3-US4-AC2](../tests/ui/s3/us4-inspecao.test.tsx) | Validado localmente |
+| RB-20, Constituição VIII | S3-FR-003 | S3-T011 (`d7a2d2f`), S3-T012 (`16059ff`) | [S3-US4-AC1, S3-US4-AC5, S3-US4-AC6](../tests/ui/s3/us4-inspecao.test.tsx) | Validado localmente |
+| RB-27 | S3-FR-004 | S3-T007 (`11c3c5f`), S3-T008 (`ae09f0b`) | [S3-US2-AC5, S3-US2-AC6, S3-US2-AC7](../tests/ui/s3/us2-operacao.test.tsx) | Validado localmente |
+| RB-21, RB-36 | S3-FR-005 | S3-T005 (`7c1f98e`), S3-T006 (`90daf33`) | [S3-US1-AC3, S3-US1-AC5](../tests/ui/s3/us1-cena.test.tsx) | Validado localmente |
+| RB-36 | S3-FR-006 | S3-T005 (`7c1f98e`), S3-T006 (`90daf33`) | [S3-US1-AC1, S3-US1-AC7](../tests/ui/s3/us1-cena.test.tsx) | Validado localmente |
+| RB-37 | S3-FR-007 | S3-T005 (`7c1f98e`), S3-T006 (`90daf33`) | [S3-US1-AC2](../tests/ui/s3/us1-cena.test.tsx) | Validado localmente |
+| RB-37 | S3-FR-008 | S3-T005 (`7c1f98e`), S3-T006 (`90daf33`) | [S3-US1-AC6, S3-US1-AC9](../tests/ui/s3/us1-cena.test.tsx) | Validado localmente |
+| RB-25, ADR-003 | S3-FR-009 | S3-T005 (`7c1f98e`), S3-T006 (`90daf33`) | [S3-US1-AC8, S3-US1-AC9](../tests/ui/s3/us1-cena.test.tsx) | Validado localmente |
+| RB-36 | S3-FR-010 | S3-T005 (`7c1f98e`), S3-T006 (`90daf33`), S3-T018 (`755c56c`) | [S3-US1-AC4, S3-US1-AC5, S3-US1-AC10](../tests/ui/s3/us1-cena.test.tsx), [Quickstart em Chromium](../specs/003-visualizacao-operacao/quickstart.md#medição-de-referência-da-implementação) | Validado localmente |
+| RB-36 | S3-FR-011 | S3-T005 (`7c1f98e`), S3-T006 (`90daf33`) | [S3-US1-AC5, S3-US1-AC10](../tests/ui/s3/us1-cena.test.tsx) | Validado localmente |
+| RB-24 | S3-FR-012 | S3-T007 (`11c3c5f`), S3-T008 (`ae09f0b`) | [S3-US2-AC1, S3-US2-AC2, S3-US2-AC3, S3-US2-AC8](../tests/ui/s3/us2-operacao.test.tsx) | Validado localmente |
+| RB-24 | S3-FR-013 | S3-T007 (`11c3c5f`), S3-T008 (`ae09f0b`) | [S3-US2-AC1, S3-US2-AC2, S3-US2-AC8](../tests/ui/s3/us2-operacao.test.tsx) | Validado localmente |
+| RB-24 | S3-FR-014 | S3-T007 (`11c3c5f`), S3-T008 (`ae09f0b`) | [S3-US2-AC6](../tests/ui/s3/us2-operacao.test.tsx) | Validado localmente |
+| RB-24, RB-27 | S3-FR-015 | S3-T007 (`11c3c5f`), S3-T008 (`ae09f0b`) | [S3-US2-AC7](../tests/ui/s3/us2-operacao.test.tsx) | Validado localmente |
+| RB-24, RB-40 | S3-FR-016 | S3-T007 (`11c3c5f`), S3-T008 (`ae09f0b`) | [S3-US2-AC4, S3-US2-AC5](../tests/ui/s3/us2-operacao.test.tsx) | Validado localmente |
+| RB-17, RB-24 | S3-FR-017 | S3-T007 (`11c3c5f`), S3-T008 (`ae09f0b`), S3-T013 (`b46566a`), S3-T015 (`4872aa3`), S3-T016 (`2be4b5f`), S3-T017 (`7573965`) | [S3-US2-AC9](../tests/ui/s3/us2-operacao.test.tsx), [S3-US5-AC4](../tests/ui/s3/us5-replay.test.tsx), [S3-US6-AC2](../tests/ui/s3/us6-apresentacao.test.tsx) | Validado localmente |
+| RB-24 | S3-FR-018 | S3-T007 (`11c3c5f`), S3-T008 (`ae09f0b`) | [S3-US2-AC10](../tests/ui/s3/us2-operacao.test.tsx) | Validado localmente |
+| RB-22 | S3-FR-019 | S3-T009 (`a85cb59`), S3-T010 (`111b6ed`) | [S3-US3-AC1, S3-US3-AC2](../tests/ui/s3/us3-controladores.test.tsx) | Validado localmente |
+| RB-46 | S3-FR-020 | S3-T009 (`a85cb59`), S3-T010 (`111b6ed`) | [S3-US3-AC3](../tests/ui/s3/us3-controladores.test.tsx) | Validado localmente |
+| RB-22, RB-23, ADR-003 | S3-FR-021 | S3-T003 (`f704519`), S3-T004 (`85df2b1`), S3-T009 (`a85cb59`), S3-T010 (`111b6ed`) | [S3-US3-AC1, S3-US3-AC2](../tests/ui/s3/us3-controladores.test.tsx) | Validado localmente |
+| RB-24, ADR-003 | S3-FR-022 | S3-T003 (`f704519`), S3-T004 (`85df2b1`) | [S3-US1-AC1](../tests/ui/s3/us1-cena.test.tsx), [S3-US2-AC4](../tests/ui/s3/us2-operacao.test.tsx) | Validado localmente |
+| RB-23 | S3-FR-023 | S3-T009 (`a85cb59`), S3-T010 (`111b6ed`) | [S3-US3-AC4, S3-US3-AC5, S3-US3-AC7, S3-US3-AC9](../tests/ui/s3/us3-controladores.test.tsx) | Validado localmente |
+| RB-23, ADR-014 | S3-FR-024 | S3-T009 (`a85cb59`), S3-T010 (`111b6ed`) | [S3-US3-AC5, S3-US3-AC6, S3-US3-AC9](../tests/ui/s3/us3-controladores.test.tsx) | Validado localmente |
+| RB-23, RB-39 | S3-FR-025 | S3-T009 (`a85cb59`), S3-T010 (`111b6ed`), S3-T011 (`d7a2d2f`), S3-T012 (`16059ff`) | [S3-US3-AC8](../tests/ui/s3/us3-controladores.test.tsx), [S3-US4-AC4](../tests/ui/s3/us4-inspecao.test.tsx) | Validado localmente |
+| RB-39 | S3-FR-026 | S3-T011 (`d7a2d2f`), S3-T012 (`16059ff`) | [S3-US4-AC1, S3-US4-AC2, S3-US4-AC3](../tests/ui/s3/us4-inspecao.test.tsx) | Validado localmente |
+| RB-39, ADR-013 | S3-FR-027 | S3-T011 (`d7a2d2f`), S3-T012 (`16059ff`) | [S3-US4-AC4](../tests/ui/s3/us4-inspecao.test.tsx) | Validado localmente |
+| RB-25 | S3-FR-028 | S3-T011 (`d7a2d2f`), S3-T012 (`16059ff`), S3-T013 (`b46566a`), S3-T015 (`4872aa3`) | [S3-US4-AC5, S3-US4-AC6](../tests/ui/s3/us4-inspecao.test.tsx), [S3-US5-AC2](../tests/ui/s3/us5-replay.test.tsx) | Validado localmente |
+| RB-40 | S3-FR-029 | S3-T008 (`ae09f0b`), S3-T013 (`b46566a`), S3-T014 (`c2d3dce`) | [S3-US5-AC1, S3-US5-AC10](../tests/ui/s3/us5-recording.test.tsx) | Validado localmente |
+| RB-40 | S3-FR-030 | S3-T013 (`b46566a`), S3-T014 (`c2d3dce`) | [S3-US5-AC5](../tests/ui/s3/us5-replay.test.tsx), [S3-US5-AC8](../tests/ui/s3/us5-recording.test.tsx) | Validado localmente |
+| RB-40 | S3-FR-031 | S3-T013 (`b46566a`), S3-T015 (`4872aa3`) | [S3-US5-AC2, S3-US5-AC3, S3-US5-AC4, S3-US5-AC11](../tests/ui/s3/us5-replay.test.tsx) | Validado localmente |
+| RB-40 | S3-FR-032 | S3-T013 (`b46566a`), S3-T014 (`c2d3dce`), S3-T015 (`4872aa3`) | [S3-US5-AC5, S3-US5-AC6](../tests/ui/s3/us5-replay.test.tsx) | Validado localmente |
+| RB-40 | S3-FR-033 | S3-T013 (`b46566a`), S3-T014 (`c2d3dce`), S3-T015 (`4872aa3`) | [S3-US5-AC7](../tests/ui/s3/us5-replay.test.tsx) | Validado localmente |
+| RB-27, RB-40 | S3-FR-034 | S3-T013 (`b46566a`), S3-T014 (`c2d3dce`), S3-T018 (`755c56c`) | [S3-US5-AC8](../tests/ui/s3/us5-recording.test.tsx), [Quickstart em Chromium](../specs/003-visualizacao-operacao/quickstart.md#medição-de-referência-da-implementação) | Validado localmente |
+| RB-40 | S3-FR-035 | S3-T013 (`b46566a`), S3-T015 (`4872aa3`) | [S3-US5-AC9](../tests/ui/s3/us5-replay.test.tsx) | Validado localmente |
+| RB-17 | S3-FR-036 | S3-T016 (`2be4b5f`), S3-T017 (`7573965`) | [S3-US6-AC1, S3-US6-AC2](../tests/ui/s3/us6-apresentacao.test.tsx) | Validado localmente |
+| RB-20, Constituição VIII | S3-FR-037 | S3-T006 (`90daf33`), S3-T016 (`2be4b5f`), S3-T017 (`7573965`) | [S3-US6-AC3](../tests/ui/s3/us6-apresentacao.test.tsx) | Validado localmente |
+| RB-20, Constituição VIII | S3-FR-038 | S3-T016 (`2be4b5f`), S3-T017 (`7573965`), S3-T018 (`755c56c`) | [S3-US6-AC3](../tests/ui/s3/us6-apresentacao.test.tsx), [Quickstart em Chromium](../specs/003-visualizacao-operacao/quickstart.md#medição-de-referência-da-implementação) | Validado localmente |
+| RB-20 | S3-FR-039 | S3-T016 (`2be4b5f`), S3-T017 (`7573965`), S3-T018 (`755c56c`) | [S3-US6-AC3](../tests/ui/s3/us6-apresentacao.test.tsx), [Quickstart em Chromium](../specs/003-visualizacao-operacao/quickstart.md#medição-de-referência-da-implementação) | Validado localmente |
