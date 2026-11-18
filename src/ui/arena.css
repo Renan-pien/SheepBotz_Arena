@@ -278,3 +278,85 @@ button.primary:enabled:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.panel-tabs,
+.event-filters,
+.match-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+.panel-tabs {
+  margin-bottom: 0.75rem;
+}
+.panel-tabs button {
+  flex: 1;
+  padding: 0.5rem 0.25rem;
+}
+.panel-tabs button[aria-selected='true'] {
+  background: #39546a;
+  box-shadow: inset 0 -2px #8cf0d7;
+}
+.sensor-values {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 0.5rem;
+  font-size: 0.84rem;
+}
+.sensor-values dt,
+.muted {
+  color: #c2d0e2;
+}
+.sensor-values dd {
+  margin: 0;
+}
+.laser-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.laser-table caption {
+  text-align: left;
+  font-weight: 700;
+}
+.laser-table th,
+.laser-table td {
+  text-align: left;
+  padding: 0.32rem 0;
+  border-bottom: 1px solid #3c5069;
+}
+.laser-table meter {
+  display: inline-block;
+  width: 34%;
+  min-width: 2.3rem;
+  margin-left: 0.45rem;
+}
+.event-filters label {
+  display: grid;
+  gap: 0.25rem;
+}
+.event-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  font-size: 0.84rem;
+}
+.event-list li {
+  padding: 0.45rem 0.55rem;
+  border-bottom: 1px solid #3c5069;
+  overflow-wrap: anywhere;
+}
+.event-list li p {
+  margin: 0.3rem 0;
+}
+.match-result {
+  margin-top: 0.85rem;
+  padding: 0.7rem;
+  border: 1px solid #81c4ad;
+  border-radius: 8px;
+  background: #173b38;
+}
+.match-result strong {
+  flex: 1 1 260px;
+}

@@ -34,7 +34,7 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 ## Fase 6 · US4 — Inspecionar sensores e resultado (P2)
 
 - [ ] T011 [US4] Escrever S3-US4-AC1 a S3-US4-AC6 para estado observado, campos numéricos, filtros, global e desfechos — `tests/ui/s3/us4-inspecao.test.tsx` — S3-FR-002, S3-FR-003, S3-FR-026 a S3-FR-028. **Dep.** T010. **Pronto** Os seis critérios passam com T012.
-- [ ] T012 [US4] Implementar cartões de inspeção, gráfico, eventos, filtros e aviso de resultado. Ler campos públicos da S2 e aplicar formatação pt-BR — `src/ui/panels/Inspection.tsx`, `src/ui/panels/Events.tsx`, `src/ui/App.tsx`, `src/ui/arena.css` — S3-FR-002, S3-FR-003, S3-FR-026 a S3-FR-028. **Dep.** T011 (RED). **Pronto** Tick 0, vitória e empates conferidos. Campos [SessionView.snapshot, Preferências.filtros](data-model.md#modelo-de-dados--spec-003).
+- [X] T012 [US4] Implementar cartões de inspeção, gráfico, eventos, filtros e aviso de resultado. Ler campos públicos da S2 e aplicar formatação pt-BR — `src/ui/panels/Inspection.tsx`, `src/ui/panels/Events.tsx`, `src/ui/App.tsx`, `src/ui/arena.css` — S3-FR-002, S3-FR-003, S3-FR-026 a S3-FR-028. **Dep.** T011 (RED). **Pronto** Tick 0, vitória e empates conferidos. Campos [SessionView.snapshot, Preferências.filtros](data-model.md#modelo-de-dados--spec-003).
 
 ## Fase 7 · US5 — Gravar e rever (P2)
 

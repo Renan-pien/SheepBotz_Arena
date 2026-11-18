@@ -4,21 +4,22 @@ import { ArenaSession } from './arena/session';
 import { worldPresets, type WorldPreset } from './arena/catalog';
 import { chosenFile, LocalFiles } from './arena/files';
 import { Controllers } from './panels/Controllers';
+import { Events } from './panels/Events';
+import { formatNumber, Inspection, resultLabel } from './panels/Inspection';
 import { ArenaView } from './scene/ArenaView';
 import './arena.css';
 
-const seconds = new Intl.NumberFormat('pt-BR', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
+const tabs = ['Controladores', 'Inspeção', 'Eventos'] as const;
 
 export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const [session] = useState(() => supplied ?? new ArenaSession());
   const [files] = useState(() => new LocalFiles());
+  const [tab, setTab] = useState<(typeof tabs)[number]>('Controladores');
   const view = useSyncExternalStore(session.subscribe, session.getSnapshot);
   const { world, snapshot, status, speed, behind } = view;
   const running = status === 'executando';
   const stopped = status === 'finalizada';
+  const result = resultLabel(snapshot);
 
   useEffect(() => {
     if (running) return startTicker((elapsed) => session.pulse(elapsed));
@@ -131,10 +132,57 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
       <div className="workspace">
         <ArenaView world={world} snapshot={snapshot} />
         <aside className="side-panel">
-          <h2>Controladores</h2>
-          <Controllers session={session} view={view} files={files} />
+          <div
+            role="tablist"
+            className="panel-tabs"
+            aria-label="Painéis da simulação"
+          >
+            {tabs.map((item, index) => (
+              <button
+                type="button"
+                key={item}
+                role="tab"
+                id={'arena-tab-' + index}
+                aria-selected={tab === item}
+                aria-controls="arena-panel"
+                onClick={() => setTab(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+          <div
+            id="arena-panel"
+            role="tabpanel"
+            aria-labelledby={'arena-tab-' + tabs.indexOf(tab)}
+          >
+            {tab === 'Controladores' && (
+              <Controllers session={session} view={view} files={files} />
+            )}
+            {tab === 'Inspeção' && (
+              <Inspection world={world} snapshot={snapshot} />
+            )}
+            {tab === 'Eventos' && (
+              <Events key={view.worldText} world={world} snapshot={snapshot} />
+            )}
+          </div>
         </aside>
       </div>
+      {result && (
+        <section className="match-result" aria-label="Resultado">
+          <strong>{result}</strong>
+          <button
+            type="button"
+            aria-label="Reiniciar luta"
+            onClick={() => session.reset()}
+          >
+            Reiniciar
+          </button>
+          <button type="button" disabled>
+            Ver replay
+          </button>
+        </section>
+      )}
       <footer className="transport" aria-label="Controles de tempo">
         <div className="transport-actions">
           <button
@@ -180,7 +228,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
         </div>
         <div className="transport-state">
           <span data-testid="current-tick">Tick {snapshot.tick}</span>
-          <span>{seconds.format(snapshot.time)} s</span>
+          <span>{formatNumber(snapshot.time, 2)} s</span>
           <span>{status}</span>
           {behind && <span role="status">abaixo do tempo real</span>}
         </div>

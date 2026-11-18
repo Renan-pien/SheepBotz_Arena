@@ -439,3 +439,4 @@ ramos, funções e linhas.
 | T007 | 255 passaram / 0 falharam | 85.55 / 82.86 / 89.52 / 85.65 | 98.59 / 97.58 / 99.09 / 99.10 | Dez falhas RED confirmadas. UI, relógio e estado passaram sem asserção de tempo real. |
 | T010 | 264 passaram / 0 falharam | 86.15 / 82.73 / 90.21 / 86.48 | 98.59 / 97.58 / 99.09 / 99.10 | Gravação e sessão anteriores permanecem em falhas. Catálogo, rascunho, reabertura, download e aplicação por robô validados. |
 | T009 | 264 passaram / 0 falharam | 86.15 / 82.73 / 90.21 / 86.48 | 98.59 / 97.58 / 99.09 / 99.10 | As nove falhas esperadas ficaram verdes com T010, inclusive três erros de mundo e a preservação dos rascunhos. |
+| T012 | 270 passaram / 0 falharam | 86.52 / 83.22 / 90.55 / 86.85 | 98.59 / 97.58 / 99.09 / 99.10 | Inspeção e cena sincronizadas. Diferença de odometria, eventos globais, filtros, cap de 500 e desfechos em pt-BR validados. |
