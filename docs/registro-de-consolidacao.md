@@ -419,3 +419,14 @@ typecheck e nos 233 testes das Specs 001 e 002, com 93,98% de cobertura
 de linhas no projeto e 99,10% no núcleo. O checklist interno tem 16
 itens concluídos e os 10 marcadores do checklist de operação aguardam
 a revisão ou a autorização de continuidade.
+
+### Execução da Spec 003
+
+O usuário autorizou a implementação com os dez marcadores do checklist
+de operação preservados. Os marcadores pertencem à revisão documental e
+ficam fora da aplicação. A cobertura abaixo segue a ordem instruções,
+ramos, funções e linhas.
+
+| Tarefa | Testes | Projeto (%) | Núcleo (%) | Evidência |
+|---|---|---|---|---|
+| T001 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Node 24.22.3 e tag spec-002-fechada conferidos. Lint, tipos e 233 testes passaram na base. Duelo padrão terminou no tick 34. |
