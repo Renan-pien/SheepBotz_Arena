@@ -14,6 +14,7 @@ import {
   type WorldPreset,
 } from './catalog';
 import { TickClock, type PlaybackSpeed } from './clock';
+import { lastRecordedTick, type Recording } from './recording';
 
 export type Sources = Readonly<Record<string, string>>;
 export type SessionStatus = 'pronta' | 'executando' | 'pausada' | 'finalizada';
@@ -57,6 +58,7 @@ export interface SessionView {
   readonly status: SessionStatus;
   readonly speed: PlaybackSpeed;
   readonly behind: boolean;
+  readonly limitReached: boolean;
   readonly preset: WorldPreset | '';
   readonly drafts: Drafts;
   readonly errors: readonly SessionError[];
@@ -70,6 +72,7 @@ export class ArenaSession {
   #listeners = new Set<() => void>();
   #clock = new TickClock();
   #history: SimState[];
+  #createdAt = new Date().toISOString();
 
   constructor(engine: ControllerEngine = initializeControllerEngine()) {
     this.#engine = engine;
@@ -92,6 +95,7 @@ export class ArenaSession {
       status: 'pronta',
       speed: 1,
       behind: false,
+      limitReached: false,
       preset: 'duelo',
       drafts,
       errors: [],
@@ -187,13 +191,24 @@ export class ArenaSession {
     this.#revision += 1;
     this.#clock.clear();
     this.#history = [snapshot];
+    this.#createdAt = new Date().toISOString();
     this.#publish({
       ...patch,
       status: 'pronta',
       snapshot,
       behind: false,
+      limitReached: false,
       errors: [],
     });
+  }
+
+  recording(): Recording {
+    return {
+      world: this.#view.worldText,
+      controllers: this.#view.controllers,
+      createdAt: this.#createdAt,
+      states: this.history(),
+    };
   }
 
   history(): readonly SimState[] {
@@ -258,12 +273,13 @@ export class ArenaSession {
       index += 1
     ) {
       snapshot = this.#simulation.step();
-      this.#history.push(snapshot);
+      if (snapshot.tick <= lastRecordedTick) this.#history.push(snapshot);
     }
     this.#publish({
       snapshot,
       status: snapshot.status === 'finalizada' ? 'finalizada' : status,
       behind: snapshot.status !== 'finalizada' && behind,
+      limitReached: snapshot.tick >= lastRecordedTick,
     });
   }
 }
