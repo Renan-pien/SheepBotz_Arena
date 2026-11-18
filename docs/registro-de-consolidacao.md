@@ -449,3 +449,16 @@ ramos, funções e linhas.
 | T018 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Instalação limpa e 49 cenários confirmados. Chrome 145 com SwiftShader: 41,8 a 51,4 FPS no Duelo a 1× e até 53,9 ms de resposta. Download corresponde aos 35 estados CLI. Benchmarks S1/S2 em 35,79 e 41,95 ms. |
 | T019 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Matriz com os 39 FRs e os 49 cenários conferida. README e relatórios gerados. Passos de commitlint e métricas do workflow passaram localmente em push, primeiro push e PR. Contraste de texto nas amostras variou de 7,29:1 a 16,73:1. |
 | T020 | 320 passaram / 0 falharam | 87.45 / 84.96 / 91.97 / 88.3 | 98.59 / 97.58 / 99.09 / 99.10 | Demonstração substitutiva aprovada pelo usuário. Troca de Caçador por Avança e luta completa em 1,04 s desde a navegação. No modo apresentação, o placar identificou vitória de vermelho por saída da arena no tick 34. |
+
+### Exceção de aceite da T020
+
+Em 2026-11-18, o usuário aprovou que a demonstração do Codex substituísse
+as sessões com uma pessoa iniciante e uma pessoa de fora da equipe. A
+demonstração no Chrome 145.0.7632.116 operou a aplicação pelo navegador.
+
+Para SC-003, o ensaio abriu o Duelo padrão, aplicou Avança em vermelho
+e executou até a vitória de vermelho por saída da arena. O tempo
+medido desde a navegação foi de 1,04 s. Para SC-006, restaurou o Duelo
+padrão com Caçador e Girador e leu no placar do modo apresentação
+“Vitória de vermelho — saída da arena · tick 34 · 0,68 s”.
+[Critérios e exceção](../specs/003-visualizacao-operacao/spec.md#6-critérios-de-sucesso)
