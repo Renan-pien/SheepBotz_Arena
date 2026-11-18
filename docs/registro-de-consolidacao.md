@@ -432,3 +432,4 @@ ramos, funções e linhas.
 | T001 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Node 24.22.3 e tag spec-002-fechada conferidos. Lint, tipos e 233 testes passaram na base. Duelo padrão terminou no tick 34. |
 | T002 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Imports de Three.js, OrbitControls e CodeMirror verificados no Node. Build e regressão passaram com o lock atualizado. |
 | T004 | 234 passaram / 0 falharam | 93.52 / 90.36 / 99.23 / 94.16 | 98.59 / 97.58 / 99.09 / 99.10 | O Duelo é publicado no tick 0 com Caçador e Girador. App e sessão leem o mesmo snapshot. |
+| T003 | 234 passaram / 0 falharam | 93.52 / 90.36 / 99.23 / 94.16 | 98.59 / 97.58 / 99.09 / 99.10 | O teste falhou antes dos módulos e do título esperado. A suíte ficou verde com T004. O jsdom recebe motor injetado, pois seus intrínsecos impedem a inicialização real do SES nesse ambiente. |
