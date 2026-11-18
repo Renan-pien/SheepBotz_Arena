@@ -45,3 +45,28 @@ recentes e rotula eventos com `robotId: null` como **Partida**.
 Associações, unidades, casas decimais e mensagens de resultado seguem a
 Spec 003. Distinguir raios, alertas e tipos de evento por texto ou forma
 além da cor.
+
+## Nomes acessíveis e formatos
+
+- A região da cena se chama **Cena 3D**. As opções são **Mostrar raios**
+  e **Mostrar rótulos**. **Controladores**, **Inspeção** e **Eventos**
+  têm papel de aba. Inspeção e Eventos também nomeiam as regiões de conteúdo.
+- O seletor é **Mundo**, com valores de catálogo `duelo` e `sala`.
+  Os campos de arquivo têm rótulos **Abrir mundo** e **Abrir gravação**.
+  Os erros de preparação ou de arquivo aparecem em uma região de alerta.
+- Os nomes por robô são **Exemplo de `<id>`**, **Código de `<id>`**,
+  **Aplicar `<id>`**, **Restaurar exemplo de `<id>`**, **Abrir código de `<id>`**
+  e **Salvar código de `<id>`**. O editor é uma caixa de texto nomeada
+  e fica somente para leitura no replay. A falha em execução aparece
+  como `desativado · <mensagem>`.
+- O cartão de inspeção se chama **Inspeção de `<id>`**. A pose tem formato
+  `x <x> m · y <y> m · θ <ângulo>°`, com uma casa no ângulo. O sinal
+  negativo visível é `−`. **Pose real**, **Odometria** e **Diferença**
+  aparecem como pares de rótulo e valor.
+- Os filtros são **Robô do evento** e **Tipo de evento**. A lista vazia
+  mostra “Nenhum evento para os filtros selecionados.”. Eventos globais
+  usam o rótulo **Partida** em destaque.
+- O banner tem **Reiniciar luta** como nome acessível de Reiniciar e
+  **Ver replay**. O controle deslizante é **Linha do tempo**.
+- O modo apresentação tem a região **Placar**. O painel complementar
+  tem os botões **Recolher painel** e **Expandir painel**, com estado expandido.

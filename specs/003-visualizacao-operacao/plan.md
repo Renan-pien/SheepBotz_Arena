@@ -111,6 +111,163 @@ rejeições são detalhados no [contrato de gravação](contracts/gravacao.md).
 | FR-029 a FR-035 | `recording.ts`, `recording-state.ts`, sessão e controles no `App`. US5. |
 | FR-036 a FR-039 | `App.tsx`, `arena.css` e foco dos painéis. US6. |
 
+## Interfaces internas verificadas pela suíte
+
+Os testes determinísticos injetam um `ControllerEngine`. A inicialização
+SES real fica no navegador e nos testes Node. Em jsdom, o motor injetado
+mantém o teste da interface no ambiente suportado.
+
+### Catálogo e sessão
+
+`arena/catalog.ts` exporta `worldPresets` com chaves `duelo` e `sala`,
+campos `{name, text, defaults}` e texto original do mundo. Exporta
+`controllerPresets` com chaves `parado`, `avanca`, `girador`, `cacador`
+e `desviador`, cada uma com `{name, source}`. `source` preserva espaços
+e linhas do arquivo.
+
+```ts
+// arena/session.ts
+type PlaybackSpeed = 0.25 | 0.5 | 1 | 2 | 4;
+type SessionStatus = 'pronta' | 'executando' | 'pausada' | 'finalizada';
+type ControllerPreset = keyof typeof controllerPresets;
+type WorldPreset = keyof typeof worldPresets;
+
+interface SessionView {
+  readonly world: World;
+  readonly worldText: string;
+  readonly snapshot: SimState;
+  readonly controllers: Readonly<Record<string, string>>;
+  readonly drafts: Readonly<Record<string, {
+    source: string;
+    example: ControllerPreset;
+  }>>;
+  readonly errors: readonly { code: string; path: string; message: string }[];
+  readonly mode: 'live' | 'replay';
+  readonly status: SessionStatus;
+  readonly speed: PlaybackSpeed;
+  readonly behind: boolean;
+  readonly limitReached: boolean;
+  readonly replayLast: number | null;
+  readonly preset: WorldPreset | '';
+}
+
+export class ArenaSession {
+  constructor(engine?: ControllerEngine);
+  getSnapshot(): SessionView;
+  subscribe(listener: () => void): () => void;
+  play(): void;
+  pause(): void;
+  setSpeed(speed: PlaybackSpeed): void;
+  pulse(elapsedMs: number): void;
+  step(): void;
+  reset(): void;
+  openWorld(text: string, preset?: WorldPreset | ''): void;
+  chooseWorld(preset: WorldPreset): void;
+  editSource(id: string, source: string): void;
+  selectExample(id: string, example: ControllerPreset): void;
+  restoreExample(id: string): void;
+  apply(id: string): void;
+  history(): readonly SimState[];
+  recording(): Recording;
+  enterReplay(): void;
+  openRecording(text: string): void;
+  seek(tick: number): void;
+  back(): void;
+  exitReplay(): void;
+}
+```
+
+`getSnapshot` devolve a mesma referência até a próxima mudança. Ele e
+`subscribe` podem ser passados diretamente a `useSyncExternalStore`.
+Injetar o motor substitui a inicialização SES.
+`pulse` recebe **o intervalo transcorrido em milissegundos** e consome
+o orçamento aplicável desde a primeira chamada durante execução.
+`behind` marca pulsos com mais de 64 passos devidos e limpa quando a
+execução acompanha o ritmo. `limitReached` acusa o limite inclusivo.
+`history` consulta snapshots gravados ao vivo ou do replay aberto.
+`seek` publica o snapshot existente no índice limitado e pausa.
+Ao avançar ou reproduzir até o fim do replay, o status torna-se
+`finalizada`. Voltar e selecionar outro tick permanecem disponíveis.
+
+`App` é o componente React nomeado de `src/ui/App.tsx`. A prop
+`{session?: ArenaSession}` injeta a sessão. Sem prop, a montagem usa
+o motor do navegador. A sessão não é recriada a cada renderização.
+
+### Projeção e apresentação
+
+```ts
+// scene/projection.ts
+type ScenePoint = [number, number, number];
+type SceneFrame = Array<{
+  id: string;
+  center: ScenePoint;
+  front: ScenePoint;
+  theta: number;
+  color: string;
+  disabled: boolean;
+  outside: boolean;
+  rays: Array<{ start: ScenePoint; end: ScenePoint; hit: boolean }>;
+}>;
+export function projectFrame(world: World, state: SimState): SceneFrame;
+
+// scene/camera.ts
+type CameraView = '3d' | 'top';
+export function configureCamera(
+  camera: PerspectiveCamera, world: World, aspect: number, view: CameraView,
+): void;
+
+// scene/graphics.ts
+export function buildScene(world: World): {
+  scene: Scene;
+  update(frame: SceneFrame, raysVisible: boolean): void;
+  dispose(): void;
+};
+```
+
+`orbitSettings` contém `minDistance: 0.3`, `maxDistance: 20` e
+`mouseButtons` com `LEFT: MOUSE.ROTATE`, `MIDDLE: MOUSE.DOLLY` e
+`RIGHT: MOUSE.PAN`. `projectFrame` usa altura `radius/2` no centro
+e um vetor unitário da frente. O robô desativado recebe cor cinza
+e `disabled: true`. `outside` vem do resultado do núcleo.
+`buildScene` monta objetos em memória, sem exigir WebGL. O adaptador
+da cena instancia a renderização quando disponível.
+
+`panels/Events.tsx` exporta `Events` e `panels/Inspection.tsx`
+exporta `Inspection`. Ambos recebem `{world: World, snapshot: SimState}`.
+Filtros são locais a `Events`. `Inspection.tsx` também exporta
+`resultLabel(state: SimState): string | null`, com `null` quando a
+luta segue em andamento e a frase completa de desfecho ao terminar.
+
+### Gravação e observação
+
+```ts
+// arena/recording.ts
+export interface Recording {
+  readonly world: string;
+  readonly controllers: Readonly<Record<string, string>>;
+  readonly createdAt: string;
+  readonly states: readonly SimState[];
+}
+type DecodeResult =
+  | { ok: true; world: World; recording: Recording }
+  | { ok: false; error: { code: 'GRAVACAO_INVALIDA'; path: string; message: string } };
+export function encodeRecording(recording: Recording): string;
+export function decodeRecording(text: string): DecodeResult;
+export function recordingName(name: string, createdAt: string): string;
+```
+
+O discriminador e a versão entram na serialização. Em memória, cada
+estado possui seu prefixo de `events`. Estados cuja contagem não muda
+reutilizam a referência do prefixo. O codec valida o [formato v1](contracts/gravacao.md).
+
+A região de cena publica `data-tick`, `data-rays` e `data-labels`.
+A região de inspeção publica `data-tick`. O tick é uma string decimal
+e as opções de visibilidade usam `true` ou `false`. O contador
+`data-testid="current-tick"` contém `Tick <k>`. Esses pontos permitem
+verificar a igualdade entre tela e núcleo mesmo sem WebGL.
+Os nomes e papéis são os do [contrato de operação](contracts/operacao.md#nomes-acessíveis-e-formatos).
+
+
 ## Testes e validação
 
 Os testes de aceitação recebem IDs globais S3-USn-ACn. A mudança da tela
