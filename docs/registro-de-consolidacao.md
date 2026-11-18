@@ -392,3 +392,14 @@ O checklist interno de qualidade passou em 16 de 16. O checklist de operação
 contém evidências documentais e marcadores próprios da revisão.
 [Spec 003](../specs/003-visualizacao-operacao/spec.md) ·
 [Checklist](../specs/003-visualizacao-operacao/checklists/operacao.md)
+
+### Plano da Spec 003
+
+O Constitution Check passou nos nove princípios. O desenho usa Three.js e
+CodeMirror 6 conforme ADR-008, com os contratos existentes da S2 para o
+núcleo. A cena projeta posições e raios e o relógio da interface conduz
+somente passos fixos. O arquivo grava snapshots e usa prefixos de eventos
+para preservar os dados sem repeti-los. O guia separa verificações
+determinísticas e medições em Chromium da validação com pessoas.
+[Plano](../specs/003-visualizacao-operacao/plan.md) ·
+[Contrato de gravação](../specs/003-visualizacao-operacao/contracts/gravacao.md)
