@@ -259,6 +259,11 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 - **SC-005:** Uma gravação exportada e reaberta reproduz 100% dos estados originais.
 - **SC-006:** Em um ensaio do pitch, pelo menos uma pessoa de fora da equipe identifica quem venceu e o motivo da vitória da luta padrão após assistir à demo, sem explicação do código.
 
+> **Exceção de aceite da Spec 003, aprovada em 2026-11-18.** Para esta entrega,
+> a demonstração do Codex substitui as sessões com uma pessoa iniciante e com
+> a plateia externa de SC-003 e SC-006.
+> [Evidência da T020](../../docs/registro-de-consolidacao.md#exceção-de-aceite-da-t020)
+
 ---
 
 ## 7. Premissas e decisões
