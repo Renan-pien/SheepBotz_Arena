@@ -146,6 +146,11 @@ it.each([
     'robots[0].laser.rays',
   ],
   [
+    worldText({ robots: [robot({ laser: { fov: 2 * Math.PI + 0.01 } })] }),
+    'VALOR_FORA_DO_INTERVALO',
+    'robots[0].laser.fov',
+  ],
+  [
     worldText({ obstacles: [{ id: 'a', x: 1.9, y: 0, width: 1, height: 1 }] }),
     'FORA_DO_MAPA',
     'obstacles[0]',

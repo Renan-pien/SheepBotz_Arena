@@ -36,16 +36,29 @@ na CLI e na UI. [Plan da S1](../specs/001-nucleo-simulacao/plan.md) · [Pesquisa
 
 ### S2 · Sensores, controladores e sumô
 
-- O raycast lê o estado no início do tick. Os controladores recebem leituras e emitem comandos
-  pela API do Anexo B. A leitura do laser é uma cópia e o estado interno do simulador permanece
+- Os controladores recebem uma cópia das leituras do início do passo e emitem comandos
+  pela API do Anexo B. Cada estado publicado guarda as leituras correspondentes às poses
+  nele registradas (ADR-009). O estado interno do simulador permanece
   encapsulado. Cada robô tem uma sequência pseudoaleatória independente, determinada pela
-  semente do mundo e por sua posição na lista. O plan da S2 deve fixar o algoritmo.
-- O controlador roda a cada tick. O reset recarrega cada controlador. Falhas de execução geram
-  eventos e desativam o robô conforme S2-FR-025 e S2-FR-026. Os controladores são código de
-  confiança da equipe e compartilham o processo do simulador.
+  semente do mundo e por sua posição na lista. O gerador de 32 bits e seus vetores
+  estão fixados na pesquisa da S2.
+- O carregamento executa as instruções de nível superior antes do tick 0, sem a API do robô.
+  Falhas nessa fase impedem o início com `CONTROLADOR_INVALIDO` (ADR-010). A execução sem
+  interface, após validar o mundo, carrega os controladores com ID existente e sem comando
+  constante concorrente. A resposta reúne os erros de entrada e as falhas de carregamento.
+  Erros de controladores usam `controllers.<id>` (ADR-012 e ADR-014). O reset repete o
+  carregamento. Erros durante `setup()` ou `loop()` geram eventos e desativam o robô conforme
+  S2-FR-025 e S2-FR-026. Os controladores são código de confiança da equipe e compartilham
+  o processo do simulador.
 - As regras de sumô usam o estado após o movimento e as colisões, no último passo do tick, e
-  só são executadas quando `match.mode = "sumo"`. Mundos e controladores de exemplo usam os
-  mesmos contratos disponíveis à equipe. [Spec 002](../specs/002-sensores-controlador/spec.md)
+  só são executadas quando `match.mode = "sumo"`. O evento `fim_da_luta` pertence à partida
+  e fica sem robô associado. O vencedor é identificado em `resultado.vencedor` (ADR-013).
+  O histórico opcional guarda o tick 0 e um estado por tick executado, com uma única entrada
+  para o fim da luta (ADR-011). Mundos e controladores de exemplo usam os mesmos contratos
+  disponíveis à equipe.
+  [Spec 002](../specs/002-sensores-controlador/spec.md)
+  · [Plano](../specs/002-sensores-controlador/plan.md)
+  · [Pesquisa](../specs/002-sensores-controlador/research.md)
 
 ### S3 · Visualização e operação
 

@@ -113,3 +113,161 @@
 - **Motivo:** Mesma linguagem do controlador do usuário; mesmo código no Node e no navegador; Three.js citado no briefing e sem física embutida; ferramentas de cobertura nativas; site estático publicável como plano B da demo. B exigiria duas linguagens; C e D trazem física pronta e dificultam testes sem tela; E é desproporcional para uma PoC.
 - **Consequências:** Detalhes na seção "Stack tecnológica" da constitution. Um único projeto com `src/core` e `src/ui`, com regra de lint impedindo o `core` de importar a `ui`.
 - **Aprovado por:** Renan, Julio e Wesley
+
+---
+
+## ADR-009 — Leituras do laser alinhadas às poses do estado publicado
+
+- **Data** 2026-11-17.
+- **Status** Aceita.
+- **Contexto.** S2-FR-007 define a leitura usada pelo controlador no início do passo. S2-FR-008
+  define o conteúdo do estado publicado, usado pela inspeção e pelo replay (Q-010).
+- **Opções consideradas.** A) Publicar as leituras das poses do próprio estado. B) Publicar as
+  leituras usadas pelo controlador, com a identificação da pose anterior usada na medição.
+- **Decisão.** A. Na transição de `k` para `k + 1`, o controlador observa as leituras do
+  tick `k`. O estado publicado contém as leituras das poses registradas naquele estado,
+  inclusive no tick 0, após o reset e no fim da luta.
+- **Motivo.** A visualização pode desenhar raios e robôs usando o mesmo estado. Os estados
+  gravados contêm os dados necessários para repetir a exibição.
+- **Consequências.** S2-FR-007, S2-FR-008 e S2-FR-016 especificam as duas leituras. S3-FR-002
+  e S3-FR-007 consomem as poses e os raios do mesmo estado publicado.
+- **Aprovação.** Opção A confirmada na Q-010.
+
+---
+
+## ADR-010 — Carregamento do controlador antes do tick 0
+
+- **Data** 2026-11-17.
+- **Status** Aceita.
+- **Contexto.** S2-FR-012 valida o controlador antes da simulação e S2-FR-013 executa
+  `setup()` no primeiro passo. A Q-011 definiu o momento e o tratamento de falhas das
+  instruções de nível superior.
+- **Opções consideradas.** A) Executar instruções de nível superior no carregamento, sem a API do
+  robô. B) Executá-las no primeiro passo com a API, antes de `setup()`.
+- **Decisão.** A. O carregamento executa as instruções de nível superior antes do tick 0.
+  Falhas nessa fase geram `CONTROLADOR_INVALIDO` e impedem o início. A API fica disponível
+  durante `setup()` e `loop()`, incluindo os auxiliares chamados por elas.
+- **Motivo.** A validação pode rejeitar um controlador antes de iniciar a simulação.
+  Leituras, comandos e eventos ficam associados ao passo em execução.
+- **Consequências.** O reset carrega uma instância nova antes de publicar o tick 0. A aplicação
+  de um controlador na S3 usa a mesma validação, que preserva o controlador anterior se a
+  proposta for inválida (S3-FR-024).
+- **Aprovação.** Opção A confirmada na Q-011.
+
+---
+
+## ADR-011 — Histórico até o último tick executado
+
+- **Data** 2026-11-17.
+- **Status** Aceita.
+- **Contexto.** S1-FR-033 expõe o histórico opcional da execução sem interface. Em uma luta
+  de sumô, o tick final pode chegar antes do limite solicitado (Q-012).
+- **Opções consideradas.** A) Guardar um estado por tick executado, incluindo o tick 0.
+  B) Completar a lista até o limite solicitado com cópias do estado final.
+- **Decisão.** A. O histórico termina no tick final e inclui esse estado uma única vez.
+  Pedidos adicionais de avanço devolvem o mesmo estado final e preservam a lista.
+- **Motivo.** Cada entrada corresponde a um tick da simulação, inclusive na linha do tempo
+  da gravação.
+- **Consequências.** S2-FR-032 aplica a regra ao histórico da execução sem interface e à
+  consulta da simulação. O replay da S3 percorre somente os estados gravados (S3-FR-031).
+- **Aprovação.** Opção A confirmada na Q-012.
+
+---
+
+## ADR-012 — Falhas de carregamento dos controladores na mesma resposta
+
+- **Data** 2026-11-17.
+- **Status** Aceita.
+- **Contexto.** S2-FR-012 exige que os controladores sejam carregados e verificados antes do
+  tick 0. A Q-013 definiu o que ocorre se mais de um controlador falhar na mesma execução.
+- **Opções consideradas.** A) Reunir as falhas de carregamento. B) Encerrar a verificação na
+  primeira falha, na ordem dos robôs no arquivo.
+- **Decisão.** A. Com um mundo válido, a execução sem interface verifica todos os controladores
+  fornecidos para os robôs do mundo. Cada falha gera um `CONTROLADOR_INVALIDO` em
+  `controllers.<id>` na mesma resposta. Qualquer falha impede a publicação do tick 0.
+- **Motivo.** O chamador pode corrigir as falhas em uma rodada, seguindo o padrão de reunir
+  erros independentes da Spec 001 (S1-FR-035).
+- **Consequências.** A biblioteca e a CLI devolvem os erros de carregamento na lista prevista
+  por S1-FR-033. A edição de um único controlador na interface da S3 continua usando a
+  validação de S3-FR-024. O ADR-014 detalha quais entradas seguem para o carregamento.
+- **Aprovação.** Opção A confirmada na Q-013.
+
+---
+
+## ADR-013 — Fim da luta registrado como evento da partida
+
+- **Data** 2026-11-17.
+- **Status** Aceita.
+- **Contexto.** S2-FR-031 publica `fim_da_luta` quando o sumô termina. A Q-014 definiu se o
+  evento fica associado a um robô, o que afeta sua exibição no filtro de eventos da S3.
+- **Opções consideradas.** A) Registrar um evento da partida em vitórias e empates.
+  B) Associar o evento ao vencedor nas vitórias e à partida nos empates.
+- **Decisão.** A. `fim_da_luta` é um único evento da partida no tick final, sem robô associado
+  em vitórias ou empates. `resultado.vencedor` guarda o `id` do vencedor ou `null` em empate.
+- **Motivo.** A associação do evento é a mesma em todos os desfechos e o resultado já contém
+  a identificação do vencedor.
+- **Consequências.** A S3 usa a associação do evento para o filtro por robô (S3-FR-027),
+  consulta o resultado para mostrar o vencedor (S3-FR-028) e grava ambos os dados para o replay
+  (S3-FR-030 e S3-FR-031).
+- **Aprovação.** Opção A confirmada na Q-014.
+
+---
+
+## ADR-014 — Erros de entrada e de carregamento na mesma resposta
+
+- **Data** 2026-11-17.
+- **Status** Aceita.
+- **Contexto.** A Q-015 identificou uma lacuna no contrato da execução sem interface quando
+  erros de entrada e falhas de carregamento ocorrem na mesma chamada (CHK006).
+- **Decisão.** Com um mundo válido, `ROBO_INEXISTENTE` e `ENTRADA_CONFLITANTE` decorrentes de
+  uma entrada de controlador usam `controllers.<id>`. O carregamento é feito para controladores
+  com ID existente e sem comando constante concorrente. O resultado reúne as falhas dessas
+  cargas e os erros de entrada na mesma lista, e qualquer erro impede a publicação do tick 0.
+- **Motivo.** A mesma resposta permite corrigir problemas independentes sem várias chamadas e
+  preserva o acúmulo de falhas de carregamento definido no ADR-012.
+- **Consequências.** S2-FR-011, S2-FR-012 e o Anexo E definem a lista que a biblioteca e a CLI
+  devolvem. Os erros de comandos continuam seguindo S1-FR-035. A S3 valida a aplicação de um
+  controlador por vez conforme S3-FR-024.
+- **Aprovação.** Proposta da Q-015 aprovada pelo usuário.
+
+---
+
+## ADR-015 — Execução e contratos da Spec 002
+
+- **Data** 2026-11-17.
+- **Status** Proposta técnica registrada no planejamento da S2.
+- **Contexto.** S2-FR-007 a FR-034 exigem execução síncrona de scripts, estado determinístico e
+  contratos consumíveis no Node e no navegador. ADR-009 a ADR-014 definem o comportamento.
+- **Alternativas avaliadas.** Execução nativa no ambiente do host, SES com escopo por
+  controlador e QuickJS em WebAssembly. A pesquisa também compara opções de raycast,
+  aleatoriedade, preparação e compatibilidade.
+- **Desenho.** Usar SES e Acorn em adaptador injetado, com análise prévia do script
+  síncrono e API por fase. Reutilizar a física da S1, derivar a leitura de cada snapshot e
+  manter PRNG de 32 bits por robô. A v2 estende estado e erros e mantém as entradas de
+  biblioteca e CLI. O evento de partida usa `robotId: null` na interface pública.
+- **Motivo.** A separação mantém horário e entrada e saída fora do núcleo. As alternativas,
+  resultados do ensaio isolado e vetores determinísticos estão no
+  [relatório de pesquisa](../specs/002-sensores-controlador/research.md).
+- **Consumidores.** A CLI mantém a resposta discriminada. A S3 prepara uma sessão candidata
+  e usa o estado publicado para inspeção, filtro de eventos, resultado e replay.
+  [Contratos da S2](../specs/002-sensores-controlador/contracts/core-api.md)
+
+---
+
+## ADR-016 — Fronteira síncrona dos controladores da Spec 002
+
+- **Data** 2026-11-17.
+- **Status** Aceita.
+- **Contexto.** C01 e C02 da análise da S2 identificaram uma divergência na aceitação dos
+  scripts e a possibilidade de trabalho agendado fora do tick no SES padrão.
+- **Decisão.** A S2 aceita scripts JavaScript síncronos em modo estrito. As formas excluídas
+  por FR-009 geram `CONTROLADOR_INVALIDO` em `controllers.<id>` antes do tick 0. A carga
+  ocorre sem API do robô. Depois dela, o estado do script só muda em chamadas síncronas
+  de `setup()` e `loop()`. Avançar em lote ou passo a passo produz os mesmos snapshots,
+  eventos e histórico para as mesmas entradas.
+- **Motivo.** O agendamento do host não determina a sequência nem o estado do script.
+- **Consequências.** S2-FR-009, FR-012 e FR-024 definem o comportamento. O plano mantém
+  a proposta de SES/Acorn do ADR-015 e acrescenta a atenuação das capacidades no adaptador.
+  A CLI e a S3 compartilham a mesma validação de controladores. Os testes conferem rejeição
+  antes do tick 0, disponibilidade de recursos e paridade entre as formas de avanço.
+- **Aprovação.** Correções de C01 e C02 autorizadas pelo usuário.

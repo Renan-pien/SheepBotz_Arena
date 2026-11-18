@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 import { runCli } from '../../src/cli/run-cli';
+import { duel } from '../helpers/duel';
 import { robot, worldText } from '../helpers/world-builder';
 
 const source = worldText({
@@ -7,11 +8,16 @@ const source = worldText({
 });
 const base = ['--world', 'exemplo.json', '--ticks', '2'];
 
-function invoke(args: string[], text?: string) {
+function invoke(
+  args: string[],
+  text?: string,
+  scripts: Record<string, string> = {},
+) {
   const printed: string[] = [];
   const diagnostics: string[] = [];
   const code = runCli(args, {
     readFile(path) {
+      if (Object.hasOwn(scripts, path)) return scripts[path]!;
       if (path !== 'exemplo.json') throw new Error('Arquivo indisponível.');
       return text ?? source;
     },
@@ -20,6 +26,101 @@ function invoke(args: string[], text?: string) {
   });
   return { code, stdout: printed.join(''), stderr: diagnostics.join('') };
 }
+
+it('usa a última opção de controlador e mantém o texto UTF-8', () => {
+  const run = invoke(
+    [
+      ...base,
+      '--controller',
+      'a=nem-leia.js',
+      '--controller',
+      'a=ação=robô.js',
+      '--history',
+    ],
+    undefined,
+    { 'ação=robô.js': 'function loop() { log("ação"); setSpeed(.5,0); }' },
+  );
+  expect(run.code).toBe(0);
+  expect(run.stderr).toBe('');
+  expect(JSON.parse(run.stdout)).toMatchObject({
+    ok: true,
+    state: {
+      tick: 2,
+      events: [
+        { type: 'log', tick: 1, robotId: 'a', message: 'ação' },
+        { type: 'log', tick: 2, robotId: 'a', message: 'ação' },
+      ],
+    },
+  });
+});
+
+it('devolve os erros de controlador no JSON e código 1', () => {
+  const run = invoke(
+    [
+      ...base,
+      '--command',
+      'a=0,0',
+      '--controller',
+      'a=script.js',
+      '--controller',
+      'b=script.js',
+    ],
+    undefined,
+    { 'script.js': 'function loop( {' },
+  );
+  expect(run.code).toBe(1);
+  expect(run.stderr).toBe('');
+  expect(JSON.parse(run.stdout)).toMatchObject({
+    ok: false,
+    errors: [
+      { code: 'ENTRADA_CONFLITANTE', path: 'controllers.a' },
+      { code: 'CONTROLADOR_INVALIDO', path: 'controllers.b' },
+    ],
+  });
+});
+
+it.each(['a=', '=script.js', 'a=  ', 'sem-separador'])(
+  'rejeita opção de controlador incompleta: %s',
+  (flag) => {
+    const run = invoke([...base, '--controller', flag]);
+    expect(run.code).toBe(2);
+    expect(run.stdout).toBe('');
+    expect(run.stderr).toContain('Uso:');
+  },
+);
+
+it('devolve somente diagnóstico de E/S se não puder ler o controlador', () => {
+  const run = invoke([...base, '--controller', 'a=ausente.js']);
+  expect(run.code).toBe(2);
+  expect(run.stdout).toBe('');
+  expect(run.stderr).toContain('ausente.js');
+  expect(run.stderr).toContain('controlador');
+});
+
+it('serializa um único evento global e trunca o histórico no fim do duelo', () => {
+  const run = invoke(
+    [
+      '--world',
+      'exemplo.json',
+      '--ticks',
+      '40',
+      '--controller',
+      'vermelho=avanca.js',
+      '--history',
+    ],
+    duel,
+    { 'avanca.js': 'function loop() {setSpeed(1,0);}' },
+  );
+  expect(run.code).toBe(0);
+  const output = JSON.parse(run.stdout);
+  expect(output.state).toMatchObject({
+    tick: 34,
+    status: 'finalizada',
+    events: [{ type: 'fim_da_luta', robotId: null, tick: 34 }],
+  });
+  expect(output.history).toHaveLength(35);
+  expect(output.history[34]).toEqual(output.state);
+});
 
 it('imprime um resultado headless compacto em stdout', () => {
   const run = invoke(base);

@@ -28,12 +28,32 @@ export function createSimulation(
   world: World,
   options: SimulationOptions = {},
 ): Simulation {
-  const commands = options.commands ?? {};
+  const commands = Object.fromEntries(
+    Object.entries(options.commands ?? {}).map(([id, command]) => [
+      id,
+      { ...command },
+    ]),
+  );
+  return assembleSimulation(world, options.history, (state) =>
+    step(world, state, commands),
+  );
+}
+
+type AdvanceTick = (state: SimState) => SimState;
+
+export function assembleSimulation(
+  world: World,
+  recordHistory: boolean | undefined,
+  firstTick: AdvanceTick,
+  reload: () => AdvanceTick = () => firstTick,
+): Simulation {
+  let advanceTick = firstTick;
   let current = createInitialState(world);
-  let history = options.history ? [current] : undefined;
+  let history = recordHistory ? [current] : undefined;
 
   function advance(): SimState {
-    current = step(world, current, commands);
+    if (current.status === 'finalizada') return current;
+    current = advanceTick(current);
     history?.push(current);
     return current;
   }
@@ -44,11 +64,19 @@ export function createSimulation(
     step: advance,
     stepN(n) {
       assertTickCount(n);
-      for (let index = 0; index < n; index += 1) advance();
+      for (
+        let index = 0;
+        index < n && current.status !== 'finalizada';
+        index += 1
+      )
+        advance();
       return current;
     },
     reset() {
-      current = createInitialState(world);
+      const next = reload();
+      const initial = createInitialState(world);
+      advanceTick = next;
+      current = initial;
       if (history) history = [current];
       return current;
     },

@@ -14,6 +14,10 @@ const duel = readFileSync(
   new URL('../../../../examples/worlds/duelo-padrao.json', import.meta.url),
   'utf8',
 );
+const fixedWindowDuel = JSON.stringify({
+  ...JSON.parse(duel),
+  match: { mode: 'free', maxTicks: 3000 },
+});
 
 function loadedWorld(text: string) {
   const result = loadWorld(text);
@@ -29,7 +33,7 @@ function run(input: HeadlessInput) {
 
 it('S1-US3-AC1: produz o mesmo estado para cada tick em duas execuções', () => {
   const input = {
-    world: duel,
+    world: fixedWindowDuel,
     ticks: 500,
     history: true,
     commands: { vermelho: { v: 1, w: 0.5 }, azul: { v: 0.3, w: -0.2 } },
@@ -57,7 +61,7 @@ it('S1-US3-AC3: calcula o tempo como 150 × 0.02 s', () => {
 });
 
 it('S1-US3-AC4: reinicia o histórico e reproduz os 121 estados', () => {
-  const world = loadedWorld(duel);
+  const world = loadedWorld(fixedWindowDuel);
   const commands = { vermelho: { v: 0.4, w: 0.1 } };
   const simulation = createSimulation(world, { history: true, commands });
   const initial = simulation.getState();

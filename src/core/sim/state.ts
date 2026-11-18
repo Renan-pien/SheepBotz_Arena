@@ -1,15 +1,55 @@
-import type { SimState, World } from '../types';
+import { readLasers } from '../sensors/laser';
+import type { MatchResult, RobotState, SimState, World } from '../types';
+
+export function completeMatch(
+  state: SimState,
+  resultado: MatchResult,
+): SimState {
+  const message = {
+    saida_da_arena: `Fim da luta: vitória de '${resultado.vencedor}' por saída da arena.`,
+    ambos_sairam: 'Fim da luta: empate. Os dois robôs saíram da arena.',
+    tempo_esgotado: 'Fim da luta: empate por tempo esgotado.',
+  }[resultado.motivo];
+  return {
+    ...state,
+    status: 'finalizada',
+    resultado,
+    events: [
+      ...state.events,
+      { type: 'fim_da_luta', tick: resultado.tick, robotId: null, message },
+    ],
+  };
+}
+
+export function withLaser(
+  world: World,
+  robots: readonly RobotState[],
+): readonly RobotState[] {
+  const readings = readLasers(
+    world,
+    robots.map(({ pose }) => pose),
+  );
+  return robots.map((robot, index) => ({ ...robot, laser: readings[index]! }));
+}
 
 export function createInitialState(world: World): SimState {
   return {
     tick: 0,
     time: 0,
-    robots: world.robots.map(({ id, initialPose }) => ({
-      id,
-      pose: initialPose,
-      command: { v: 0, w: 0 },
-      bumper: false,
-      odometry: initialPose,
-    })),
+    status: 'em_andamento',
+    resultado: null,
+    events: [],
+    robots: withLaser(
+      world,
+      world.robots.map(({ id, initialPose }) => ({
+        id,
+        pose: initialPose,
+        command: { v: 0, w: 0 },
+        bumper: false,
+        odometry: initialPose,
+        laser: [],
+        situacao: 'ativo',
+      })),
+    ),
   };
 }

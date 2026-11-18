@@ -51,10 +51,9 @@ quickstart e os ensaios de regeneração pertencem às etapas de implementação
   aberta quanto ao formato aceito pelo professor. A proposta na pergunta põe o HTML completo no
   repositório, enquanto a pesquisa R10 e o plan tratam o HTML como artefato de CI e versionam
   o resumo e o JSON.
-- **Leituras de laser da S2.** S2-FR-007 calcula a leitura no estado do início do tick e S2-FR-008
-  pede que as leituras no estado correspondam àquele estado. A revisão da S2 deve explicitar
-  quais leituras aparecem no estado publicado e no tick 0, preservando o contrato do controlador
-  e o consumo pela cena da S3.
+- **Leituras de laser da S2.** A Q-010 foi resolvida no ADR-009. O controlador observa o início do
+  passo e cada estado publicado guarda as leituras das próprias poses. A Spec 002 registra a regra
+  e os casos de aceite.
 - **Origem dos requisitos.** A revisão da S1 completou as referências exigidas pelo Princípio VI.
   A revisão da S2 ainda deve tratar casos como S2-FR-006.
   A [matriz](rastreabilidade.md) ainda é um esqueleto do dossiê, inclusive para a S1, que já tem
@@ -182,3 +181,177 @@ checkpoint integrado.
 - **Publicação.** A descrição do [PR #2](https://github.com/Renan-pien/SheepBotz_Arena/pull/2)
   foi conferida no GitHub e contém os resultados do quickstart e do benchmark. A conferência
   confirmou que o PR compara `001-nucleo-simulacao` com `main`. T050 concluída.
+
+## 2026-11-17 · Clarificação da S2
+
+A [Spec 002](../specs/002-sensores-controlador/spec.md#clarifications) registra cinco
+respostas confirmadas, da Q-010 à Q-014. Os [ADRs](decisoes.md) documentam a leitura do laser,
+o carregamento dos controladores, o limite do histórico, a devolução conjunta das falhas de
+carregamento e a associação do evento de fim da luta. Os cenários de aceitação cobrem cada
+decisão. A próxima etapa do AGENTS.md §4 é o checklist da spec, seguido do planejamento.
+
+## 2026-11-17 · Checklist da S2
+
+A revisão documental conferiu os 36 requisitos funcionais e os 44 cenários de aceite da
+Spec 002. As cinco decisões da clarificação estão refletidas nos requisitos e nos cenários.
+O checklist registra sete verificações conformes, seis pendências documentais e uma dependência
+externa. A Q-015 registra a lacuna no contrato de erros para entradas incompatíveis. O
+procedimento de benchmark e a premissa da Q-001 foram encaminhados ao plano.
+[Checklist da Spec 002](../specs/002-sensores-controlador/checklists/clarificacao.md)
+
+### Revalidação após aprovação da Q-015
+
+- O ADR-014 registra o contrato de erros e a lista conjunta de falhas. A Spec 002 inclui
+  os cenários para ID ausente, comando concorrente e combinação com falha de carregamento.
+- A Spec 002 cobre os limites do sumô, o deslocamento por empurrão do robô desativado, a janela
+  de execução em modo livre, o benchmark de 3 000 ticks e a origem dos 36 requisitos.
+- O núcleo da S1 confirmou os centros a 0,5000 m e 0,5625 m nos ticks 1 e 2 do cenário de
+  borda, o empurrão para 0,390 m no tick 34 e as posições fixas dos centros na referência de
+  3 000 ticks. A medição de desempenho da S2 fica para a implementação.
+- A revalidação reuniu 48 cenários e 14 verificações, com 13 conformes e a Q-001 registrada
+  como premissa. A próxima etapa é `$speckit-plan`.
+  [Avaliação do checklist](../specs/002-sensores-controlador/checklists/clarificacao.md#avaliação-documental)
+
+## 2026-11-17 · Planejamento da S2
+
+O plano, a pesquisa, o modelo de dados, os contratos e o quickstart registram o desenho de
+laser, controladores e sumô. O Constitution Check foi conferido com o mapa dos 36 requisitos
+e a avaliação dos 14 itens do checklist. Q-001 permanece como premissa externa.
+O ensaio isolado avaliou o runtime em Node 24.22.3 e em Chrome com Vite. A suíte de
+regressão da S1 passou com 129 testes em Node 24.22.3.
+O ADR-015 registra a proposta técnica e seus consumidores. A etapa seguinte é gerar as tasks.
+[Plano da Spec 002](../specs/002-sensores-controlador/plan.md)
+
+## 2026-11-17 · Tarefas da S2
+
+Foram organizadas 42 tarefas em oito fases, com dependências, arquivos, critérios de conclusão
+e rastreabilidade. A fundação antecipa testes dos 7 cenários da US2 e dos 8 cenários da US4 que
+exercitam o código compartilhado pela primeira fatia. A validação documental confirmou o formato,
+a cobertura dos 36 requisitos e dos 48 cenários, as referências ao modelo e a ausência de
+dependências para tarefas posteriores. A próxima etapa é `$speckit-analyze`.
+[Tarefas da Spec 002](../specs/002-sensores-controlador/tasks.md)
+
+### Correções da análise da S2
+
+As correções seguiram a ordem da spec, plano e contratos, modelo e tasks.
+
+| Achados | Alteração |
+|---|---|
+| C01 e C02 | ADR-016, requisitos FR-009, FR-012 e FR-024 e perfil síncrono no plano. Presença de `Promise` e `Array.fromAsync` verificada como indisponível em ensaios isolados em Node 24.22.3 e Chrome com Vite. Os ensaios deram a mesma sequência em lote e passo a passo. |
+| A01 e R01 | `SimState.resultado` explícito em cada snapshot, com `null` durante a execução. Modelo e tasks usam `ControllerLogLimit.acceptedCount`, `ControllerLogLimit.warningEmitted` e `ControllerRandom.state`. |
+| V01 e O01 | S2-US1-AC2 e Anexo A agora usam mapa de 4 × 2 m com vetor rotacionado distinto. T011 prepara os vetores unitários de `laser.ts`, T013 os verifica e T014 valida os cenários públicos do tick 0. |
+
+A alteração manteve 36 requisitos funcionais, 48 cenários e 42 tarefas. U01, sobre a ordem
+de conversão dos logs excedentes, continua como achado médio da revisão.
+[ADR-016](decisoes.md#adr-016--fronteira-síncrona-dos-controladores-da-spec-002)
+
+## Execução da Spec 002
+
+Confirmação do usuário registrada para executar com o checklist de clarificação no estado atual. Cobertura na ordem instruções, ramos, funções e linhas.
+
+| Tarefa | Testes | Projeto (%) | Núcleo (%) | Evidência |
+|---|---|---|---|---|
+| T001 | 129 passaram / 0 falharam | 95.79 / 95.02 / 100 / 96.72 | 99.27 / 97.87 / 100.00 / 100.00 | Node 24.22.3. npm ci, lint, tipos e cobertura passaram. Gatilhos de push e pull_request conferidos. |
+| T002 | 129 passaram / 0 falharam | 95.79 / 95.02 / 100 / 96.72 | 99.27 / 97.87 / 100.00 / 100.00 | SES 2.3.0 e Acorn 8.15.0 conforme ADR-015 e plano autorizado. Lockfile reproduzido por npm ci. |
+| T006 | 129 passaram / 0 falharam | 95.79 / 95.02 / 100 / 96.72 | 99.27 / 97.87 / 100.00 / 100.00 | Janela fixa e travessia de arena preservadas em modo livre. T003 a T005 em RED por interfaces ainda ausentes, com a base verde medida separadamente. |
+| T007 | 138 passaram / 0 falharam | 95.49 / 93.46 / 100 / 96.24 | 98.91 / 97.41 / 100.00 / 99.60 | Validação sintática e perfil SES passaram nos testes isolados, incluindo carga e preservação da mensagem. |
+| T003 | 138 passaram / 0 falharam | 95.49 / 93.46 / 100 / 96.24 | 98.91 / 97.41 / 100.00 / 99.60 | RED inicial por motor ausente, com 129 testes da base e 96.72% de linhas. Nove testes do motor verdes após T007. |
+| T008 | 140 passaram / 0 falharam | 95.37 / 93.3 / 98.86 / 96.25 | 98.39 / 96.77 / 98.67 / 99.29 | Testes unitários passaram para ordem, mensagens, acúmulo e elegibilidade. Testes públicos da T004 aguardam T016. |
+| T012 | 144 passaram / 0 falharam | 95.61 / 93.75 / 98.9 / 96.43 | 98.49 / 97.05 / 98.72 / 99.33 | Interseções de retângulo e círculo passaram, inclusive tangência e paralelismo. |
+| T013 | 152 passaram / 0 falharam | 95.78 / 93.69 / 98.93 / 96.7 | 98.39 / 96.62 / 98.77 / 99.40 | Vetores do Anexo A passaram em laser.test.ts, inclusive a rotação no mapa assimétrico. |
+| T011 | 152 passaram / 0 falharam | 95.78 / 93.69 / 98.93 / 96.7 | 98.39 / 96.62 / 98.77 / 99.40 | RED da geometria confirmado antes do código. Interseções, varredura pura e limites de mundo passam. |
+| T014 | 160 passaram / 0 falharam | 95.79 / 93.69 / 98.95 / 96.71 | 98.40 / 96.62 / 98.80 / 99.40 | Os oito cenários públicos do tick 0 e as comparações da S1 passaram. |
+| T009 | 160 passaram / 0 falharam | 95.79 / 93.69 / 98.95 / 96.71 | 98.40 / 96.62 / 98.80 / 99.40 | RED anterior de 9 asserções. Os 8 ACs e a regressão do estado passaram após T014. |
+| T015 | 161 passaram / 0 falharam | 94.28 / 91.54 / 97.16 / 95.34 | 96.23 / 93.75 / 96.77 / 97.36 | Ciclo unitário passou com 1 000 logs, aviso único, descarte sem conversão e API revogada. |
+| T016 | 184 passaram / 0 falharam | 95.42 / 93.35 / 99.12 / 96.35 | 97.53 / 95.92 / 99.01 / 98.50 | US1 e testes públicos antecipados passam. Reset carrega nova sessão antes de publicar tick 0. |
+| T004 | 184 passaram / 0 falharam | 95.42 / 93.35 / 99.12 / 96.35 | 97.53 / 95.92 / 99.01 / 98.50 | RED da preparação por interfaces ausentes. Unidade ficou verde em T008 e os casos públicos passaram em T016. |
+| T005 | 184 passaram / 0 falharam | 95.42 / 93.35 / 99.12 / 96.35 | 97.53 / 95.92 / 99.01 / 98.50 | RED anterior, ciclo unitário verde em T015 e comparações públicas de comandos, reset e paridade verdes em T016. |
+| T010 | 184 passaram / 0 falharam | 95.42 / 93.35 / 99.12 / 96.35 | 97.53 / 95.92 / 99.01 / 98.50 | RED com quatro falhas esperadas antes da integração. Cenários de leitura, cópia e reset passam em T016. |
+| T019 | 189 passaram / 0 falharam | 95.67 / 93.69 / 99.15 / 96.4 | 97.80 / 96.31 / 99.05 / 98.53 | Testes da API e determinismo correspondentes passaram, com cobertura medida. |
+| T017 | 189 passaram / 0 falharam | 95.67 / 93.69 / 99.15 / 96.4 | 97.80 / 96.31 / 99.05 / 98.53 | RED confirmado antes do código, com a base em 184 testes. Cenários verdes com T019. |
+| T020 | 195 passaram / 0 falharam | 95.72 / 93.69 / 99.17 / 96.45 | 97.83 / 96.31 / 99.07 / 98.55 | Testes da API e determinismo correspondentes passaram, com cobertura medida. |
+| T018 | 195 passaram / 0 falharam | 95.72 / 93.69 / 99.17 / 96.45 | 97.83 / 96.31 / 99.07 / 98.55 | RED confirmado antes do código, com a base em 184 testes. Cenários verdes com T020. |
+| T023 | 197 passaram / 0 falharam | 95.83 / 93.63 / 99.18 / 96.53 | 97.89 / 96.13 / 99.08 / 98.59 | Testes correspondentes do sumô e regressões validados. |
+| T024 | 204 passaram / 0 falharam | 95.85 / 93.93 / 99.18 / 96.55 | 97.91 / 96.47 / 99.08 / 98.60 | Testes correspondentes do sumô e regressões validados. |
+| T021 | 204 passaram / 0 falharam | 95.85 / 93.93 / 99.18 / 96.55 | 97.91 / 96.47 / 99.08 / 98.60 | RED anterior ao código, com base de 195 testes registrada. Testes do contrato agora verdes. |
+| T025 | 207 passaram / 0 falharam | 95.88 / 94.02 / 99.18 / 96.58 | 97.93 / 96.54 / 99.08 / 98.61 | Testes correspondentes do sumô e regressões validados. |
+| T022 | 207 passaram / 0 falharam | 95.88 / 94.02 / 99.18 / 96.58 | 97.93 / 96.54 / 99.08 / 98.61 | RED anterior ao código, com base de 195 testes registrada. Testes do contrato agora verdes. |
+| T028 | 210 passaram / 0 falharam | 96.29 / 94.6 / 99.18 / 97.02 | 98.37 / 97.20 / 99.08 / 99.10 | Falhas por robô e regressões validadas sem interrupção do simulador. |
+| T029 | 215 passaram / 0 falharam | 96.31 / 94.71 / 99.18 / 97.03 | 98.39 / 97.27 / 99.09 / 99.10 | Falhas por robô e regressões validadas sem interrupção do simulador. |
+| T026 | 215 passaram / 0 falharam | 96.31 / 94.71 / 99.18 / 97.03 | 98.39 / 97.27 / 99.09 / 99.10 | RED antes do código. Falha, comando descartado, mensagem e ordem dos robôs validados. |
+| T027 | 215 passaram / 0 falharam | 96.31 / 94.71 / 99.18 / 97.03 | 98.39 / 97.27 / 99.09 / 99.10 | RED anterior. Desativação no tick 1, comando zero, empurrão e derrota no tick 34 verificados. |
+| T032 | 216 passaram / 0 falharam | 96.31 / 94.71 / 99.18 / 97.03 | 98.39 / 97.27 / 99.09 / 99.10 | Arquivos de exemplo e execução pelos contratos públicos validados. |
+| T030 | 216 passaram / 0 falharam | 96.31 / 94.71 / 99.18 / 97.03 | 98.39 / 97.27 / 99.09 / 99.10 | RED anterior pela ausência dos arquivos, com base de 215 testes medida. Exemplos validados após T032. |
+| T033 | 223 passaram / 0 falharam | 96.48 / 94.96 / 99.18 / 97.03 | 98.59 / 97.58 / 99.09 / 99.10 | Arquivos de exemplo e execução pelos contratos públicos validados. |
+| T031 | 223 passaram / 0 falharam | 96.48 / 94.96 / 99.18 / 97.03 | 98.59 / 97.58 / 99.09 / 99.10 | RED anterior pela ausência dos arquivos, com base de 215 testes medida. Exemplos validados após T033. |
+| T035 | 231 passaram / 0 falharam | 96.58 / 95.08 / 99.18 / 97.12 | 98.59 / 97.58 / 99.09 / 99.10 | CLI v1/v2 testada com saída JSON, erros 0/1/2 e leituras UTF-8. |
+| T034 | 231 passaram / 0 falharam | 96.58 / 95.08 / 99.18 / 97.12 | 98.59 / 97.58 / 99.09 / 99.10 | RED antes de implementar a flag, com 223 testes na base. Contrato CLI verde após T035. |
+| T036 | 231 passaram / 0 falharam | 96.58 / 95.08 / 99.18 / 97.12 | 98.59 / 97.58 / 99.09 / 99.10 | Fixture real compilada pelo Vite e verificada em Chrome. Todo histórico coincide com Node 24. |
+| T038 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Benchmark executado em Intel Core i5-1334U, Linux x64 e Node 24.22.3. S1 completou 3 000 ticks em 33,26 ms. S2 completou 3 000 ticks em 43,27 ms com tempo esgotado. |
+| T037 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | RED confirmado pela ausência do benchmark S2, com 231 testes na base. S1 e S2 passaram com 3 000 ticks efetivos e S2 sem histórico, após T038. |
+| T039 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Instalação limpa, lint, tipos, build e quickstart aprovados. Foram confirmados 48/48 cenários e 35 estados completos idênticos nas duas lutas. Chrome 145.0.7632.116 e Node coincidiram nos cinco estados da fixture. Intel Core i5-1334U, Linux x64, Node 24.22.3: S1 em 29,24 ms e S2 em 41,47 ms, ambas com 3 000 ticks. A auditoria do npm relatou 12 ocorrências altas na árvore completa e zero nas dependências de produção. O quickstart direciona o bundle da fixture para o dist da raiz, ignorado pelo lint. A prévia e a suíte com cobertura passaram novamente. |
+| T040 (demonstração) | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | O Codex criou o [Caçador reativo](../examples/controllers/cacador-reativo.js) a partir do Caçador, com o Anexo B como referência da API. Antes da edição, a verificação da CLI retornou 2 pela ausência do arquivo. Depois, vermelho venceu Parado por saída da arena no tick 42, com 43 estados e sem falha de controlador. A gravação da estratégia já preparada e a execução verificadas levaram 1,09 s. Evidência inicial submetida à aprovação como exceção de aceite. |
+| T040 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Exceção de aceite do SC-005 aprovada pelo usuário. A reexecução confirmou a vitória de vermelho por saída da arena no tick 42, com 43 estados e sem falha de controlador. |
+| T041 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | README atualizado e métricas geradas com npm run stats. Origens, tarefas, commits e testes aprovados conferidos para os 36 FRs. As etapas do workflow de commitlint e métricas passaram em simulação local de push, primeiro push e pull_request. O HTML de cobertura foi gerado no caminho do artefato. |
+| T042 | 233 passaram / 0 falharam | 93.61 / 90.88 / 99.2 / 93.98 | 98.59 / 97.58 / 99.09 / 99.10 | Build, quickstart, 48 cenários, demonstração aceita, benchmark e passos locais da CI reconferidos. Revisão SDD, checklist e evidências para o PR consolidados no registro. Ensaio de regeneração encaminhado para a etapa de fechamento. |
+
+### Exceção de aceite do SC-005
+
+Em 2026-11-17, o usuário aprovou usar a demonstração do Caçador Reativo feita
+pelo Codex como evidência de aceite da Spec 002. A aprovação substitui, nesta
+entrega, a sessão cronometrada de autoria e execução por um membro da equipe.
+A medição de 1,09 s cobre a gravação do arquivo já elaborado e sua primeira
+execução verificada. O tempo de elaboração da estratégia ficou fora da medição.
+
+A T040 reexecutou a demonstração em Node 24.22.3. No Duelo padrão, Caçador
+Reativo em vermelho venceu Parado por saída da arena no tick 42, com 43
+estados no histórico e nenhum erro de controlador.
+[Critério e exceção](../specs/002-sensores-controlador/spec.md#6-critérios-de-sucesso)
+
+### Evidências para o PR da Spec 002
+
+A implementação da Spec 002 na branch `002-sensores-controlador` reúne laser
+por robô, controladores JavaScript síncronos, resultado de sumô e histórico
+do tick 0 ao último tick executado. As 42 tarefas foram validadas e os 36
+requisitos têm origem, tarefa, teste e commit na
+[matriz de rastreabilidade](rastreabilidade.md#spec-002--sensores-controlador-e-regras-do-sumô).
+
+- **Revisão SDD.** Os seis achados críticos e altos da análise foram tratados
+  na spec, no plano, nos contratos, no modelo e nas tasks. A revisão confirmou
+  a evidência de testes para os pontos corrigidos. U01, sobre a ordem da
+  conversão de logs excedentes, segue como observação documental de severidade
+  média. O teste unitário da T015 confirma o descarte antes da conversão.
+  [Correções](#correções-da-análise-da-s2) ·
+  [Teste de limite de logs](../tests/core/unit/controller-cycle.test.ts)
+- **Checklist de clarificação.** Os 14 marcadores estão no estado autorizado
+  pelo usuário. A avaliação documental registra 13 itens conformes e a
+  Q-001 como premissa para a integração com a suíte externa.
+  [Checklist](../specs/002-sensores-controlador/checklists/clarificacao.md#avaliação-documental)
+- **S2-SC-001, S2-SC-002 e S2-SC-004.** Passaram 233 testes, com
+  48 de 48 cenários de aceite. As duas execuções do Duelo no quickstart
+  produziram os mesmos 35 estados, com eventos idênticos. A fixture Vite
+  confirmou os mesmos cinco estados no Chromium e no Node. A suíte validou
+  os erros agrupados de carga e a desativação durante chamadas do controlador.
+- **S2-SC-003.** Em Intel Core i5-1334U, Linux x64 e Node 24.22.3, o Duelo
+  com Parado e Girador finalizou por `tempo_esgotado` no tick 3 000 em
+  41,92 ms, abaixo dos 2 s. O benchmark de regressão da S1 completou 3 000
+  ticks em 32,18 ms.
+- **S2-SC-005.** Aceito por exceção aprovada. A demonstração do Caçador Reativo
+  confirmou vitória por saída da arena no tick 42. O escopo da medição e a
+  autorização constam no [registro da exceção](#exceção-de-aceite-do-sc-005).
+- **Quickstart.** Passaram instalação limpa, lint, tipos, testes com cobertura,
+  build, laser no tick 0, Duelo com histórico, erros de entrada e Sala com
+  obstáculos em modo livre.
+  [Quickstart](../specs/002-sensores-controlador/quickstart.md)
+- **CI local.** A cobertura de linhas ficou em 93,98% no projeto e 99,10% no
+  núcleo. As etapas do workflow de commits e métricas passaram para push,
+  primeiro push da branch e pull request. Os relatórios versionados foram
+  reproduzidos e o HTML foi gerado no caminho do artefato. A execução no GitHub
+  Actions fica para a publicação da branch e a abertura do PR.
+  [Workflow](../.github/workflows/ci.yml) · [Cobertura](cobertura/resumo.md)
+
+As evidências estão prontas para a descrição do PR de fechamento. O fluxo
+do AGENTS.md §15 e §18 segue para o ensaio de regeneração em sessão nova,
+com registro próprio, e depois para o fechamento com CI remota aprovada,
+merge na `main` e tag `spec-002-fechada`.
+[Procedimento de regeneração](../AGENTS.md#18-ensaio-de-regeneração)

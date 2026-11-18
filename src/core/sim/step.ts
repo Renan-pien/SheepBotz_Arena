@@ -6,9 +6,11 @@ import type {
   SimState,
   World,
 } from '../types';
+import { evaluateSumo } from '../match/sumo';
 import { resolveRobotContacts } from './contacts';
 import { integratePose, saturate } from './kinematics';
 import { resolveObstaclesAndWalls } from './obstacles';
+import { completeMatch, withLaser } from './state';
 
 interface TickRobot {
   readonly config: RobotConfig;
@@ -16,11 +18,6 @@ interface TickRobot {
   readonly command: Command;
   readonly pose: Pose;
   readonly contacted: boolean;
-}
-
-// Bumper e odometria já estão no estado anterior. Laser entra na Spec 002.
-function readSensors(state: SimState): SimState {
-  return state;
 }
 
 function resolveContacts(robots: readonly TickRobot[]): readonly TickRobot[] {
@@ -61,23 +58,21 @@ function updateMeasurements(robot: TickRobot, dt: number): RobotState {
   };
 }
 
-// O resultado do sumô será avaliado na Spec 002.
-function evaluateMatch(state: SimState): SimState {
-  return state;
-}
-
 export function step(
   world: World,
   state: SimState,
   commands: Readonly<Record<string, Command>>,
 ): SimState {
-  const observed = readSensors(state);
+  if (state.status === 'finalizada') return state;
   const candidates = world.robots.map((config, index) => {
-    const previous = observed.robots[index]!;
+    const previous = state.robots[index]!;
     const requested = Object.hasOwn(commands, config.id)
       ? commands[config.id]!
       : previous.command;
-    const command = saturate(requested, config);
+    const command =
+      previous.situacao === 'desativado'
+        ? { v: 0, w: 0 }
+        : saturate(requested, config);
     return {
       config,
       previous,
@@ -90,5 +85,12 @@ export function step(
     (robot) => updateMeasurements(robot, world.dt),
   );
   const tick = state.tick + 1;
-  return evaluateMatch({ tick, time: tick * world.dt, robots });
+  const next: SimState = {
+    ...state,
+    tick,
+    time: tick * world.dt,
+    robots: withLaser(world, robots),
+  };
+  const result = evaluateSumo(world, next);
+  return result ? completeMatch(next, result) : next;
 }

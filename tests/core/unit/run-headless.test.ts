@@ -75,6 +75,8 @@ it('devolve todos os estados de 0 a N quando o histórico é solicitado', () => 
     command: { v: 0, w: 0 },
     bumper: false,
     odometry: { x: 0, y: 0, theta: 0 },
+    laser: [],
+    situacao: 'ativo',
   });
 });
 

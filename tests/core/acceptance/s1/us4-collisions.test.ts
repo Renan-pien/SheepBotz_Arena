@@ -54,7 +54,7 @@ it('S1-US4-AC5: libera o bumper no primeiro tick em que se afasta da parede', ()
 it('atravessa a borda da arena sem tratar o círculo como parede do mapa', () => {
   const summit = worldText({
     arena: { radius: 0.385 },
-    match: { mode: 'sumo', maxTicks: 1 },
+    match: { mode: 'free', maxTicks: 1 },
     robots: [robot({ x: 0.385 }), robot({ id: 'r2', x: -0.25 })],
   });
   const loaded = loadWorld(summit);

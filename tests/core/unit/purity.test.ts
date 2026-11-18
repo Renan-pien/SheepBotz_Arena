@@ -17,5 +17,6 @@ it('mantém o núcleo independente da plataforma, do relógio e da UI', () => {
     expect(source, file).not.toMatch(
       /(?:\b(?:from|import)\s*|\bimport\s*\(\s*)['"](?:node:|[^'"]*\/(?:ui|cli)(?:\/|['"]))/,
     );
+    expect(source, file).not.toMatch(/['"][^'"]*runtime\/controller-engine/);
   }
 });

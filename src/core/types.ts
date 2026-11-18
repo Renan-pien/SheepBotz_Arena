@@ -1,3 +1,5 @@
+import type { ControllerEngine } from './controller/runtime';
+
 export interface Pose {
   readonly x: number; // metros
   readonly y: number; // metros
@@ -52,12 +54,30 @@ export interface RobotState {
   readonly command: Command; // comando efetivo (saturado) aplicado no último tick; (0, 0) no tick 0
   readonly bumper: boolean; // contato no último tick; false no tick 0
   readonly odometry: Pose; // pose estimada (ignora colisões)
+  readonly laser: readonly number[];
+  readonly situacao: 'ativo' | 'desativado';
+}
+
+export interface MatchResult {
+  readonly vencedor: string | null;
+  readonly motivo: 'saida_da_arena' | 'ambos_sairam' | 'tempo_esgotado';
+  readonly tick: number;
+}
+
+export interface SimEvent {
+  readonly type: 'log' | 'erro_controlador' | 'limite_de_logs' | 'fim_da_luta';
+  readonly tick: number;
+  readonly robotId: string | null;
+  readonly message: string;
 }
 
 export interface SimState {
   readonly tick: number; // 0 no estado inicial
   readonly time: number; // tick × dt
   readonly robots: readonly RobotState[]; // mesma ordem de world.robots
+  readonly status: 'em_andamento' | 'finalizada';
+  readonly resultado: MatchResult | null;
+  readonly events: readonly SimEvent[];
 }
 
 export type ErrorCode =
@@ -73,7 +93,9 @@ export type ErrorCode =
   | 'DESLOCAMENTO_EXCESSIVO'
   | 'REGRA_DA_MODALIDADE'
   | 'ROBO_INEXISTENTE'
-  | 'COMANDO_INVALIDO';
+  | 'COMANDO_INVALIDO'
+  | 'ENTRADA_CONFLITANTE'
+  | 'CONTROLADOR_INVALIDO';
 
 export interface ValidationError {
   readonly code: ErrorCode;
@@ -85,12 +107,19 @@ export type LoadWorldResult =
   | { readonly ok: true; readonly world: World }
   | { readonly ok: false; readonly errors: readonly ValidationError[] };
 
-export interface HeadlessInput {
+export type ControllerOptions =
+  | { readonly controllers?: undefined; readonly controllerEngine?: undefined }
+  | {
+      readonly controllers: Readonly<Record<string, string>>;
+      readonly controllerEngine: ControllerEngine;
+    };
+
+export type HeadlessInput = ControllerOptions & {
   readonly world: string; // texto do arquivo de mundo
   readonly commands?: Readonly<Record<string, Command>>; // comando constante por id
   readonly ticks: number; // inteiro ≥ 0
   readonly history?: boolean; // padrão false
-}
+};
 
 export type HeadlessResult =
   | {

@@ -9,3 +9,8 @@ export {
   type SimulationOptions,
 } from './sim/simulation';
 export { runHeadless } from './api/run-headless';
+export {
+  prepareSimulation,
+  type PrepareResult,
+} from './api/prepare-simulation';
+export type { ControllerEngine } from './controller/runtime';
