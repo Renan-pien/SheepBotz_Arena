@@ -32,6 +32,10 @@ não numérico ou não finito em uma expressão com essa estrutura gera `COMANDO
 `stdout`, com saída 1. Exemplos de erro de uso com saída 2 incluem `--command vermelho=1` e
 `--command vermelho=,0`.
 
+Nas falhas de sintaxe da chamada, publique a linha de instruções iniciada por `Uso:` em
+`stderr`. Para arquivo ilegível, use um diagnóstico iniciado por `Não foi possível ler`.
+A saída 2 mantém `stdout` vazio.
+
 ## Exemplo
 
 ```bash
