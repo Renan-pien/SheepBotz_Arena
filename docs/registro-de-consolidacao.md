@@ -371,3 +371,24 @@ A reexecução passou em 233 de 233 testes, com 94,38% de cobertura de linhas no
 projeto e 99,30% no núcleo regenerado. A implementação de produção e os
 marcadores do checklist foram preservados.
 [Registro do ensaio](ensaio-regeneracao.md#ensaio-2--2026-11-17)
+
+## 2026-11-18 · Especificação e revisão da Spec 003
+
+A pasta `instruções` forneceu a especificação-base da S3, o briefing, a
+constituição, as decisões e os cinco artefatos de planejamento da S1 como
+referência de formato. A branch `003-visualizacao-operacao` partiu da
+`main` marcada com `spec-002-fechada`. A CLI da S2 confirmou o Duelo
+com Caçador e Girador, com vitória de vermelho no tick 34 em 0,68 s e 35
+estados com o tick 0.
+
+A revisão preservou as seis histórias e os 39 requisitos, completou as origens
+e fixou 49 cenários. Ficaram explícitos o resultado como evento da partida,
+a preparação atômica de mundos e controladores, o primeiro e o último tick
+do replay e a coleta até o tick 100 000 inclusive. A checagem de ambiguidades
+reaproveitou as decisões da S1 e da S2. O formato de gravação e os detalhes
+de cena e agendamento ficaram para o plano.
+
+O checklist interno de qualidade passou em 16 de 16. O checklist de operação
+contém evidências documentais e marcadores próprios da revisão.
+[Spec 003](../specs/003-visualizacao-operacao/spec.md) ·
+[Checklist](../specs/003-visualizacao-operacao/checklists/operacao.md)
