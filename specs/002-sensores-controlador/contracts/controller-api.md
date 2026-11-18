@@ -33,13 +33,17 @@ produzem os mesmos estados, eventos e histórico para as mesmas entradas.
 | `getInfo()` | Cópia de `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }`. `tick` e `time` são observados. `laser` é `{ rays, fov, maxRange }` ou `null` e `arenaRadius` é o raio em metros ou `null`. |
 | `setSpeed(v, w)` | Recebe dois números finitos em m/s e rad/s. O último comando válido do passo é aplicado após saturação pela física. Sem chamada, vale o comando efetivo anterior. |
 | `random()` | Número em `[0, 1)`. Usa a semente do mundo e o índice do robô. `setup()` e `loop()` compartilham apenas a sequência daquele robô. |
-| `log(...valores)` | Converte cada valor com `String(valor)` e junta com um espaço. Registra ID do robô e tick `k + 1`. São aceitos até 1 000 logs por robô por execução. A tentativa 1 001 gera o aviso único `limite_de_logs`. |
+| `log(...valores)` | Converte cada valor de um log aceito com `String(valor)` e junta com um espaço. Registra ID do robô e tick `k + 1`. São aceitos até 1 000 logs por robô por execução. Descarte tentativas excedentes antes de converter os argumentos. A tentativa 1 001 gera o aviso único `limite_de_logs`. |
 
 Argumento inválido de `setSpeed` caracteriza falha mesmo se o script capturar a exceção.
 Uma falha em `setup()` suprime o primeiro `loop()`. Em ambas as fases, a primeira falha
 desativa o robô, descarta o comando candidato e impõe comando zero desde o tick em curso.
 Registros de log já emitidos permanecem. O evento `erro_controlador` leva a mensagem da
 falha e o tick `k + 1`. Outros robôs e a física continuam no mesmo passo.
+
+Para argumentos inválidos de `setSpeed`, use a mensagem `setSpeed exige dois números finitos.`.
+Para uma exceção com `message`, use seu texto. Sem `message`, converta o valor lançado com
+`String`. Se essa conversão falhar, use `O controlador lançou um valor sem mensagem.`.
 
 A [pesquisa R4](../research.md#r4--sequência-pseudoaleatória-por-robô) fixa o algoritmo e os
 vetores do gerador. Os scripts fornecidos como exemplo são os do Anexo D da [spec](../spec.md).
