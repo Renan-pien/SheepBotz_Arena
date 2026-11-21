@@ -16,7 +16,7 @@ import {
   Scene,
   SphereGeometry,
 } from 'three';
-import type { World } from '../../core';
+import { ARENA_EDGE_INNER_RATIO, type World } from '../../core';
 import type { SceneFrame } from './projection';
 
 const groundLevel = -0.012;
@@ -72,7 +72,7 @@ function buildMap(world: World, scene: Scene) {
     );
     disk.position.y = -0.005;
     const ring = new Mesh(
-      new RingGeometry(radius * 0.975, radius * 1.025, 72),
+      new RingGeometry(radius * ARENA_EDGE_INNER_RATIO, radius * 1.025, 72),
       new MeshBasicMaterial({ color: '#f0f6fc' }),
     );
     ring.rotation.x = -Math.PI / 2;

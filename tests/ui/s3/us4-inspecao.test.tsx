@@ -11,6 +11,8 @@ import type { SimEvent } from '../../../src/core';
 import { App } from '../../../src/ui/App';
 import { ArenaSession } from '../../../src/ui/arena/session';
 import { Events } from '../../../src/ui/panels/Events';
+import { worldPresets } from '../../../src/ui/arena/catalog';
+import { encodeRecording } from '../../../src/ui/arena/recording';
 import { resultLabel } from '../../../src/ui/panels/Inspection';
 import { testEngine } from './support';
 
@@ -150,4 +152,57 @@ it('S3-US4-AC6: traduz empate por tempo e por saídas simultâneas', () => {
       resultado: { vencedor: null, motivo: 'ambos_sairam', tick: 2 },
     }),
   ).toContain('Empate — os dois saíram da arena');
+});
+
+it('S3-US4-AC7: inspeção acompanha os quatro lados ao avançar, voltar, reiniciar e abrir v1/v2/v3', () => {
+  const session = mount();
+  const duel = JSON.parse(worldPresets.duelo.text);
+  duel.robots[0].x = 0.32;
+  duel.robots[1].x = -0.2;
+  act(() => {
+    session.openWorld(JSON.stringify(duel));
+    session.selectExample('vermelho', 'cacador');
+    session.apply('vermelho');
+  });
+  inspect();
+  function readings(id: string) {
+    const card = within(
+      screen.getByRole('article', { name: 'Inspeção de ' + id }),
+    );
+    const group = within(card.getByRole('region', { name: 'Sensor de borda' }));
+    return ['Frente', 'Traseira', 'Esquerda', 'Direita'].map(
+      (side) => group.getByText(side).nextElementSibling?.textContent,
+    );
+  }
+  const interior = ['Interior', 'Interior', 'Interior', 'Interior'];
+  const frontActive = ['Na borda', 'Interior', 'Interior', 'Interior'];
+  expect(readings('vermelho')).toEqual(interior);
+  act(() => session.step());
+  expect(readings('vermelho')).toEqual(frontActive);
+  expect(readings('azul')).toEqual(interior);
+  const file = JSON.parse(encodeRecording(session.recording()));
+  act(() => session.back());
+  expect(readings('vermelho')).toEqual(interior);
+  act(() => session.step());
+  expect(readings('vermelho')).toEqual(frontActive);
+  act(() => session.reset());
+  expect(readings('vermelho')).toEqual(interior);
+  for (const version of [1, 2, 3]) {
+    const recording = { ...file, version };
+    if (version === 1) delete recording.stallSeconds;
+    act(() => session.openRecording(JSON.stringify(recording)));
+    expect(session.getSnapshot().mode).toBe('replay');
+    expect(readings('vermelho')).toEqual(interior);
+    act(() => session.seek(1));
+    expect(readings('vermelho')).toEqual(frontActive);
+    act(() => session.back());
+    expect(readings('vermelho')).toEqual(interior);
+  }
+});
+
+it('S3-US4-AC7: cartão de mundo livre identifica o sensor de borda indisponível', () => {
+  const session = mount();
+  act(() => session.chooseWorld('sala'));
+  inspect();
+  expect(screen.getByText('Indisponível no modo livre')).toBeTruthy();
 });

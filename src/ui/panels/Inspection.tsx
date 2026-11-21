@@ -1,4 +1,7 @@
+import { Fragment } from 'react';
+import { readEdge } from '../../core';
 import type {
+  EdgeReading,
   Pose,
   RobotConfig,
   RobotState,
@@ -14,6 +17,13 @@ const formats = [1, 2, 3].map(
       maximumFractionDigits: digits,
     }),
 );
+const edgeSides = [
+  ['front', 'Frente'],
+  ['rear', 'Traseira'],
+  ['left', 'Esquerda'],
+  ['right', 'Direita'],
+] as const;
+
 const degreesPerRadian = 180 / Math.PI;
 
 export function formatNumber(value: number, digits: 1 | 2 | 3): string {
@@ -58,7 +68,9 @@ function poseLabel(pose: Pose) {
 function SensorCard({
   robot,
   config,
+  edge,
 }: {
+  edge: EdgeReading | null;
   robot: RobotState;
   config: RobotConfig;
 }) {
@@ -90,6 +102,21 @@ function SensorCard({
           {bumper ? 'ativo' : 'inativo'}
         </dd>
       </dl>
+      <section aria-label="Sensor de borda">
+        <strong>Sensor de borda</strong>
+        {edge ? (
+          <dl className="sensor-values">
+            {edgeSides.map(([key, label]) => (
+              <Fragment key={key}>
+                <dt>{label}</dt>
+                <dd>{edge[key] ? 'Na borda' : 'Interior'}</dd>
+              </Fragment>
+            ))}
+          </dl>
+        ) : (
+          <p className="muted">Indisponível no modo livre</p>
+        )}
+      </section>
       {laser ? (
         <table className="laser-table">
           <caption>Laser</caption>
@@ -145,6 +172,7 @@ export function Inspection({
           key={robot.id}
           robot={robot}
           config={world.robots[index]!}
+          edge={readEdge(world, robot.pose, world.robots[index]!.radius)}
         />
       ))}
     </section>
