@@ -216,7 +216,7 @@ os IDs recém-desativados. A fachada recria o runner no reset.
    assíncronas e importações do FR-009 antes da avaliação. Avalia o nível superior uma vez
    por carga em um compartimento próprio. Captura `setup` e `loop`, preserva suas variáveis
    e valida os callbacks antes de publicar o tick 0. O perfil abaixo vale desde a carga.
-4. Somente depois da avaliação, vincular no compartimento as sete funções da API. Cada função
+4. Somente depois da avaliação, vincular no compartimento as funções previstas no contrato da API. Cada função
    recebe dados por cópia ou primitivo e opera com o quadro da chamada corrente. Revogar o
    quadro em `finally`. `createInitialState` publica as poses iniciais e o primeiro laser.
 5. `reset()` percorre o mesmo carregamento com as fontes aceitas, ressemeia o PRNG,
@@ -235,7 +235,7 @@ os IDs recém-desativados. A fachada recria o runner no reset.
   `Compartment` para impedir avaliação dinâmica e criação de novos compartimentos pelo
   script. Os bloqueios são propriedades do ambiente do controlador, inclusive no reset.
   Preservar a supressão de `SharedArrayBuffer` e `Atomics` já feita por SES, assim como
-  o bloqueio de hora corrente e de `Math.random`. Expor apenas as sete funções da API durante
+  o bloqueio de hora corrente e de `Math.random`. Expor apenas as funções previstas no contrato da API durante
   as chamadas autorizadas e não passar objetos do host com capacidades de agendamento.
 - A verificação de disponibilidade deve abranger os globais e `Array.fromAsync`.
   Rodar o mesmo mundo, scripts e semente em lote e em passos separados por pontos de
@@ -372,3 +372,7 @@ etapa seguinte.
 O estado opcional stall guarda prazo, tick de referência e centros. Inicializar junto com o mundo e atualizar somente a partir das poses corrigidas do passo. A política fica em core/match. Avaliar o prazo após as condições ordinárias. O chamador headless decide o que fazer com o resultado terminal.
 
 No giro conjunto (ADR-019), a regra de sumô recebe as poses finais, os raios e o contato robô–robô já resolvido naquele passo. Tangência também inicia o intervalo. Contato com a parede por si só não inicia o giro. O início efetivo do impasse é o mais antigo dos intervalos ativos. Cada avanço produz um snapshot imutável.
+
+## Sensor de borda de quatro lados (ADR-020)
+
+Implementar uma função pura no núcleo, compartilhada pela API e pela inspeção. Usar o raio configurado do próprio robô e o vetor de frente (cos θ, sen θ). Rotacionar esse vetor em +90° para a esquerda. Traseira e direita usam os vetores opostos. Somar cada deslocamento ao centro físico e comparar a distância radial com o raio interno da faixa. Compartilhar o fator 0.975 com o desenho. Derivar no momento da consulta evita memória entre ticks e novos campos no mundo ou nas gravações.

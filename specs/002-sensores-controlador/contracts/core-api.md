@@ -57,3 +57,7 @@ e permanece em andamento. Ver [estado](state.md) e [CLI](cli.md).
 ## Detector de impasse
 
 As opções de `createSimulation`, `prepareSimulation` e `runHeadless` aceitam `stallSeconds` com valor 5, 10 ou 30. Em `createInitialState(world, stallSeconds?)`, o prazo é o segundo argumento. Omissão desliga a regra. Valor diferente gera `RangeError`. O monitor atua no sumô. O reset recarrega o mesmo prazo.
+
+## Geometria da borda
+
+A biblioteca exporta `readEdge(world, pose, robotRadius): EdgeReading | null`. Usa uma pose física em metros e radianos e o raio do robô em metros. `ARENA_EDGE_INNER_RATIO` vale 0.975. O [contrato do controlador](controller-api.md) define a função sem argumentos que já recebe o contexto do próprio robô.

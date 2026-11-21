@@ -71,3 +71,7 @@ eventos, concatenar o lote uma vez na publicação e manter intactos os snapshot
 `StallState` acompanha o snapshot do sumô. Guarda o prazo em segundos, o tick do último deslocamento e os dois centros que iniciam o intervalo. Poses são reais, em metros. Durante imobilidade, os snapshots compartilham a referência imutável do monitor.
 
 No detector da ADR-019, `StallState.pair` é opcional. Guarda `center` (ponto médio de referência em metros) e `sinceTick` (início do intervalo conjunto). `StallState.sinceTick` continua sendo a referência individual. `StallState.pairContact` vale `true` apenas quando o resolvedor detecta colisão entre os robôs naquele passo. Ausência indica falso.
+
+## Leitura derivada de borda
+
+`EdgeReading.front`, `EdgeReading.rear`, `EdgeReading.left` e `EdgeReading.right` são booleanos independentes. A leitura inteira vale `null` em modo livre. Suas entradas são `World.match.mode`, `World.arena.radius`, `RobotConfig.radius` e `RobotState.pose` do tick observado. Nenhuma posição física é exposta ao controlador por essa função.

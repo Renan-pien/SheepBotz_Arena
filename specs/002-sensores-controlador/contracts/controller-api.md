@@ -1,4 +1,4 @@
-# Contrato da API do controlador · v1
+# Contrato da API do controlador · v2
 
 O controlador é um script JavaScript síncrono em modo estrito. Declara `loop()` e pode declarar `setup()`.
 Instruções no nível superior são avaliadas uma vez por carga, inclusive no reset, sem acesso
@@ -28,6 +28,7 @@ produzem os mesmos estados, eventos e histórico para as mesmas entradas.
 | Função | Retorno e efeito |
 |---|---|
 | `readLaser()` | Cópia mutável de `number[]` na ordem do raio 0 ao último. Lista vazia sem laser. |
+| `readEdge()` | Em sumô, novo objeto `{ front, rear, left, right }` de booleanos por chamada. Em modo livre, `null`. Disponível desde o primeiro `setup()`, inclusive sem laser. |
 | `readBumper()` | Booleano com o contato registrado no estado observado. Falso no tick 0. |
 | `readOdometry()` | Cópia de `{ x, y, theta }` em metros e radianos. |
 | `getInfo()` | Cópia de `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }`. `tick` e `time` são observados. `laser` é `{ rays, fov, maxRange }` ou `null` e `arenaRadius` é o raio em metros ou `null`. |
@@ -47,3 +48,7 @@ Para uma exceção com `message`, use seu texto. Sem `message`, converta o valor
 
 A [pesquisa R4](../research.md#r4--sequência-pseudoaleatória-por-robô) fixa o algoritmo e os
 vetores do gerador. Os scripts fornecidos como exemplo são os do Anexo D da [spec](../spec.md).
+
+## Sensor de borda (ADR-020)
+
+A partir da pose física do tick observado, cada ponto fica a um raio de robô do centro. Os ângulos relativos para frente, traseira, esquerda e direita são 0, π, +π/2 e −π/2. Cada valor é verdadeiro desde a margem interna da faixa (0.975 × raio da arena, inclusive) para fora. A revisão v2 acrescenta essa função às estratégias predefinidas e personalizadas.
