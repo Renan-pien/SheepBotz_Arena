@@ -247,6 +247,7 @@ export class ArenaSession {
 
   #liveRecording(tick: number): Recording {
     return {
+      version: this.#view.world.match.mode === 'sumo' ? 3 : 1,
       ...(this.#view.world.match.mode === 'sumo' && {
         stallSeconds: this.#view.stallSeconds,
       }),

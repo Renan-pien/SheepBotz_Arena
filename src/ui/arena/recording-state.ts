@@ -163,8 +163,9 @@ export function readStates(
   world: World,
   events: readonly SimEvent[],
   stallSeconds?: StallSeconds,
+  includePair = false,
 ): SimState[] {
-  let stall = stallSeconds && initialStall(world, stallSeconds);
+  let stall = stallSeconds && initialStall(world, stallSeconds, includePair);
   let end = 0;
   let prefix: readonly SimEvent[] = [];
   let finishEvents = 0;
@@ -205,7 +206,24 @@ export function readStates(
     );
     if (prefix.length !== end) prefix = events.slice(0, end);
 
-    if (stall && tick > 0) stall = advanceStall(stall, states, tick);
+    if (includePair && value.pairContact !== undefined) {
+      requireField(
+        value.pairContact === true &&
+          tick > 0 &&
+          states.every((robot) => robot.bumper),
+        path + '.pairContact',
+        'contato do par incompatível com o tick ou com os robôs',
+      );
+    }
+    if (stall && tick > 0) {
+      stall = advanceStall(
+        stall,
+        states,
+        tick,
+        includePair ? world : undefined,
+        includePair && value.pairContact === true,
+      );
+    }
     const snapshot: SimState = {
       tick,
       time: value.time,

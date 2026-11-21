@@ -1,4 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { stallStartTick } from '../core';
 import { speeds, startTicker, type PlaybackSpeed } from './arena/clock';
 import { ArenaSession } from './arena/session';
 import { worldPresets, type WorldPreset } from './arena/catalog';
@@ -362,7 +363,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           </button>
           {!replay && world.match.mode === 'sumo' && (
             <label>
-              Limite sem progresso{' '}
+              Regra de Tempo{' '}
               <select
                 value={view.stallSeconds}
                 disabled={running || view.roundStarted}
@@ -405,7 +406,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
                 Math.max(
                   0,
                   snapshot.stall.limitSeconds -
-                    (snapshot.tick - snapshot.stall.sinceTick) * world.dt,
+                    (snapshot.tick - stallStartTick(snapshot.stall)) * world.dt,
                 ),
                 2,
               )}{' '}

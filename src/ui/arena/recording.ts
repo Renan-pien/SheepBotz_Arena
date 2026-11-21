@@ -17,6 +17,7 @@ export const lastRecordedTick = 100_000;
 const format = 'sheepbotz-arena';
 
 export interface Recording {
+  readonly version: 1 | 2 | 3;
   readonly stallSeconds?: StallSeconds;
   readonly world: string;
   readonly controllers: Readonly<Record<string, string>>;
@@ -34,14 +35,15 @@ type DecodeResult =
 export function encodeRecording(recording: Recording): string {
   return JSON.stringify({
     format,
-    version: recording.stallSeconds === undefined ? 1 : 2,
+    version: recording.version,
     stallSeconds: recording.stallSeconds,
     world: recording.world,
     controllers: recording.controllers,
     createdAt: recording.createdAt,
     events: recording.states.at(-1)!.events,
     states: recording.states.map(
-      ({ tick, time, robots, status, resultado, events }) => ({
+      ({ tick, time, robots, status, resultado, events, stall }) => ({
+        ...(stall?.pairContact && { pairContact: true }),
         tick,
         time,
         robots,
@@ -81,7 +83,7 @@ export function decodeRecording(text: string): DecodeResult {
     requireField(object(data), '', 'esperado um objeto de gravação');
     requireField(data.format === format, 'format', 'formato desconhecido');
     requireField(
-      data.version === 1 || data.version === 2,
+      data.version === 1 || data.version === 2 || data.version === 3,
       'version',
       'versão não suportada',
     );
@@ -126,11 +128,18 @@ export function decodeRecording(text: string): DecodeResult {
     const boundSources = sources(controllers, parsed.world);
     const list = readEvents(events, parsed.world, states.length - 1);
     const limit = isStallSeconds(stallSeconds) ? stallSeconds : undefined;
-    const snapshots = readStates(states, parsed.world, list, limit);
+    const snapshots = readStates(
+      states,
+      parsed.world,
+      list,
+      limit,
+      data.version === 3,
+    );
     return {
       ok: true,
       world: parsed.world,
       recording: {
+        version: data.version,
         ...(limit && { stallSeconds: limit }),
         world: worldText,
         controllers: boundSources,
