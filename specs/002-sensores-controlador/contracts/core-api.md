@@ -18,6 +18,7 @@ type ControllerOptions =
 type HeadlessInput = {
   readonly world: string;
   readonly commands?: Readonly<Record<string, Command>>;
+  readonly stallSeconds?: 5 | 10 | 30;
   readonly ticks: number;
   readonly history?: boolean;
 } & ControllerOptions;
@@ -52,3 +53,7 @@ function runHeadless(input: HeadlessInput): HeadlessResult;
 Os nomes, unidades e campos da S1 permanecem, e os campos da S2 são aditivos. Em `sumo`, a
 execução passa a respeitar o encerramento da S2. Em `free`, ela devolve o estado no tick solicitado
 e permanece em andamento. Ver [estado](state.md) e [CLI](cli.md).
+
+## Detector de impasse
+
+As opções de `createSimulation`, `prepareSimulation` e `runHeadless` aceitam `stallSeconds` com valor 5, 10 ou 30. Em `createInitialState(world, stallSeconds?)`, o prazo é o segundo argumento. Omissão desliga a regra. Valor diferente gera `RangeError`. O monitor atua no sumô. O reset recarrega o mesmo prazo.

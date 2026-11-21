@@ -8,7 +8,7 @@ são emitidos também em `free` e nas simulações com comandos constantes.
 |---|---|
 | Robô | `laser: number[]` e `situacao: "ativo"` ou `"desativado"`. `laser` é vazio sem sensor e corresponde à pose publicada. |
 | Estado | `status: "em_andamento"` ou `"finalizada"`, `resultado: MatchResult \| null` e `events: SimEvent[]`. |
-| Resultado | `{ vencedor: string \| null, motivo, tick }`. Os motivos são `saida_da_arena`, `ambos_sairam` e `tempo_esgotado`. |
+| Resultado | `{ vencedor: string \| null, motivo, tick }`. Os motivos são `saida_da_arena`, `ambos_sairam`, `tempo_esgotado` e, com o detector, `falta_de_progresso`. |
 | Evento | `{ type, tick, robotId: string \| null, message: string }`. `type` é `log`, `erro_controlador`, `limite_de_logs` ou `fim_da_luta`. |
 
 No tick 0, todos os robôs estão ativos, `events` é `[]`, `resultado` é `null` e
@@ -37,7 +37,7 @@ resultado. Em uma vitória por saída, por exemplo:
 }
 ```
 
-As mensagens de empate são `Fim da luta: empate por tempo esgotado.` e
+Para impasse, a mensagem é `Fim da luta: empate por falta de progresso.`. Nos outros empates, as mensagens são `Fim da luta: empate por tempo esgotado.` e
 `Fim da luta: empate. Os dois robôs saíram da arena.`, conforme o motivo. O último estado
 guarda as leituras das poses finais. Um avanço posterior não publica outro evento nem amplia
 o histórico.
@@ -48,3 +48,7 @@ O filtro por robô usa `robotId`. O aviso de resultado usa `resultado.vencedor` 
 O replay preserva os estados publicados e sua ordem, inclusive os eventos acumulados e
 `robotId: null`. A especificação do arquivo de gravação e o limite de 100 000 ticks pertencem
 à S3. [Spec 003, §4.5 e §4.6](../../003-visualizacao-operacao/spec.md)
+
+## Sumô com detector (ADR-018)
+
+SimState.stall é opcional: { limitSeconds, sinceTick, centers: [{ x, y }, ...] }. Centros em metros na ordem do mundo. No tick 0 correspondem às posições iniciais. O motivo falta_de_progresso exige vencedor nulo e um único evento terminal.

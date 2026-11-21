@@ -366,3 +366,7 @@ os IDs recém-desativados. A fachada recria o runner no reset.
 Nenhuma exceção. O plano separa o adaptador de JavaScript para manter o núcleo determinístico
 e reutiliza as interfaces, geometria e automação da S1. A decomposição em tasks pertence à
 etapa seguinte.
+
+## Impasse (ADR-018)
+
+O estado opcional stall guarda prazo, tick de referência e centros. Inicializar junto com o mundo e atualizar somente a partir das poses corrigidas do passo. A política fica em core/match. Avaliar o prazo após as condições ordinárias. O chamador headless decide o que fazer com o resultado terminal.

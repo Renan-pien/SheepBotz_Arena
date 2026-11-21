@@ -26,3 +26,7 @@ um tick menor. Os exemplos e verificações estão no [quickstart](../quickstart
 A falha de leitura de um controlador usa
 `Não foi possível ler o arquivo de controlador '<caminho>'.` em stderr,
 com stdout vazio. O diagnóstico distingue controlador de mundo.
+
+## Impasse opcional
+
+A opção `--stall-seconds` aceita `5`, `10` ou `30` e solicita detecção durante a execução headless. Omissão mantém o comportamento anterior. Argumento inválido é erro de uso (saída 2). A CLI devolve o estado terminal sem iniciar outra rodada.
