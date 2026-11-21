@@ -1,4 +1,9 @@
 export type * from './types';
+export {
+  readEdge,
+  ARENA_EDGE_INNER_RATIO,
+  type EdgeReading,
+} from './sensors/edge';
 export { angleDiff, normalizeAngle } from './math/angle';
 export {
   isStallSeconds,

@@ -24,6 +24,7 @@ export default defineConfig(
         log: 'readonly',
         random: 'readonly',
         readBumper: 'readonly',
+        readEdge: 'readonly',
         readLaser: 'readonly',
         readOdometry: 'readonly',
         setSpeed: 'readonly',

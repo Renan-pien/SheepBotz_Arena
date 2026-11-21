@@ -1,4 +1,5 @@
 import type { Command, RobotState, SimEvent, World } from '../types';
+import { readEdge } from '../sensors/edge';
 import { createControllerRandom } from './random';
 import { errorDetail, type ControllerBindings } from './runtime';
 
@@ -30,6 +31,7 @@ export function createControllerScope(world: World, index: number) {
       return draw();
     },
     readLaser: () => [...frame().robot.laser],
+    readEdge: () => readEdge(world, frame().robot.pose, config.radius),
     readBumper: () => frame().robot.bumper,
     readOdometry: () => ({ ...frame().robot.odometry }),
     getInfo() {
