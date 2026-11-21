@@ -69,3 +69,5 @@ eventos, concatenar o lote uma vez na publicação e manter intactos os snapshot
 ## Monitor opcional de progresso
 
 `StallState` acompanha o snapshot do sumô. Guarda o prazo em segundos, o tick do último deslocamento e os dois centros que iniciam o intervalo. Poses são reais, em metros. Durante imobilidade, os snapshots compartilham a referência imutável do monitor.
+
+No detector da ADR-019, `StallState.pair` é opcional. Guarda `center` (ponto médio de referência em metros) e `sinceTick` (início do intervalo conjunto). `StallState.sinceTick` continua sendo a referência individual. `StallState.pairContact` vale `true` apenas quando o resolvedor detecta colisão entre os robôs naquele passo. Ausência indica falso.

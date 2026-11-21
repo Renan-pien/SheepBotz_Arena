@@ -52,3 +52,5 @@ O replay preserva os estados publicados e sua ordem, inclusive os eventos acumul
 ## Sumô com detector (ADR-018)
 
 SimState.stall é opcional: { limitSeconds, sinceTick, centers: [{ x, y }, ...] }. Centros em metros na ordem do mundo. No tick 0 correspondem às posições iniciais. O motivo falta_de_progresso exige vencedor nulo e um único evento terminal.
+
+Com a ADR-019, `stall.pair` pode conter `{center: {x, y}, sinceTick}` e `stall.pairContact` registra colisão entre os robôs no passo. A tangência geométrica inicia a contagem inclusive no tick 0. O início efetivo é o menor dos ticks de referência ativos. As distâncias usam os raios configurados no mundo.
