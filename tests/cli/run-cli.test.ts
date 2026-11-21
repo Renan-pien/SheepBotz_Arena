@@ -201,3 +201,17 @@ it.each(
   expect(run.stdout).toBe('');
   expect(run.stderr).toMatch(/Uso:|Não foi possível ler/);
 });
+
+it('S2-US3-AC13: CLI ativa impasse por opção e rejeita prazo inválido', () => {
+  const args = [
+    '--world',
+    'exemplo.json',
+    '--ticks',
+    '3000',
+    '--stall-seconds',
+  ];
+  expect(
+    JSON.parse(invoke([...args, '5'], duel).stdout).state.resultado,
+  ).toEqual({ motivo: 'falta_de_progresso', vencedor: null, tick: 250 });
+  expect(invoke([...args, '7'], duel).code).toBe(2);
+});
