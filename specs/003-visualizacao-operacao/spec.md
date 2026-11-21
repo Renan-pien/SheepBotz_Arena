@@ -80,6 +80,8 @@ Como membro da equipe, quero executar, pausar, avançar tick a tick e reiniciar 
 11. **Dado** o Duelo parado no tick 10, **Quando** o usuário clica duas vezes em “Voltar 1 Tick”, ao lado de “Avançar 1 tick”, **Então** cena, inspeção, eventos e gravação corrente terminam no tick 8. No tick 0 e durante a execução o botão fica desabilitado.
 12. **Dado** um controlador com memória, registros e sorteios, **Quando** a sessão volta e retoma por passo ou execução contínua, **Então** todos os estados e eventos são idênticos aos de uma execução contínua com as mesmas entradas, inclusive em ticks novos. Voltar do fim da luta remove o resultado até avançar de novo ao tick final.
 13. **Dado** um mundo livre além de 100 000 ticks, **Quando** o usuário retrocede e avança através desse limite, **Então** cada ação percorre exatamente um tick e a gravação vai do tick 0 ao menor entre o tick exibido e 100 000.
+14. **Dado** prazo de 5 s no Duelo, **Quando** houver pausa, retrocesso e retomada, **Então** o tempo segue os ticks observados, e a escolha só reabre ao começar outra rodada.
+15. **Dado** o tick 249 sem progresso, **Quando** um passo ou um lote atingir o tick 250, **Então** registrar um empate, descartar o saldo do lote e publicar a próxima rodada pausada no tick 0. Pulsos adicionais deixam o tick em zero. Novo avanço explícito reproduz o primeiro passo original.
 
 ---
 
@@ -145,6 +147,7 @@ Como membro da equipe, quero rever qualquer momento da luta, avançando e voltan
 9. **Dado** o modo replay, **Quando** o usuário clica em "Sair do replay", **Então** volta ao modo ao vivo pausado no tick 0, com o mundo e os controladores da gravação. Se houver falha na preparação ao vivo, os erros são exibidos e o replay permanece disponível no mesmo tick.
 10. **Dado** uma execução livre no tick 100 000, **Quando** ela chega ao tick 100 001, **Então** o estado ao vivo avança, a tela informa "limite de gravação atingido" e a gravação contém exatamente 100 001 estados, do tick 0 ao 100 000.
 11. **Dado** o replay no primeiro ou último tick gravado, **Quando** o usuário tenta ir além da extremidade correspondente, **Então** o cursor permanece naquela posição. A reprodução contínua para ao atingir o último tick.
+12. **Dada** uma gravação legada ou uma rodada empatada, **Quando** o replay alcança o último tick, **Então** conserva o último estado e não prepara uma nova batalha.
 
 ---
 
@@ -240,6 +243,8 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 - **FR-037:** Todos os controles DEVEM ser acessíveis por teclado, com foco visível e rótulo textual (inclusive botões com ícone). *(RB-20, Constituição VIII)*
 - **FR-038:** Textos e controles DEVEM ter contraste mínimo de 4,5:1 com o fundo. *(RB-20, Constituição VIII)*
 - **FR-039:** O layout DEVE funcionar a partir de 1024 px de largura, com a cena ao centro e o painel lateral recolhível; abaixo disso, o painel passa para baixo da cena. *(RB-20)*
+- **FR-040:** Conforme ADR-018, no sumô ao vivo, selecionar 5, 10 ou 30 segundos de tolerância temporal, inicialmente 10, junto aos controles. Fixar a escolha a partir do primeiro passo, inclusive após retroceder a zero. Pausa conserva o tempo restante. Retroceder recupera a contagem do tick observado. Um empate por impasse encerra a rodada sem pontos, registra seu número, motivo, tick e tempo e restaura o estado inicial com as mesmas fontes aplicadas, semente e prazo. A rodada seguinte fica pausada no tick 0, aguardando Executar ou Avançar 1 tick.
+- **FR-041:** Conforme ADR-018, mostrar o último empate e disponibilizar o replay da última rodada empatada até o limite de gravação já definido. Cada rodada começa com histórico próprio. Gravações anteriores continuam legíveis e o replay termina no último estado gravado, inclusive quando o motivo é impasse.
 
 ---
 
@@ -321,6 +326,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 | RB-22 | FR-019 a FR-022 |
 | RB-23 | FR-023 a FR-025 |
 | RB-24 | FR-012 a FR-018 |
+| ADR-018 | FR-040, FR-041 |
 | RB-28 | FR-001, FR-002, FR-004 |
 | RB-37 | FR-007, FR-008 |
 | RB-39 | FR-026 a FR-028 |
