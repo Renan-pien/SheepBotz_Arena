@@ -1,28 +1,28 @@
 {
   "total": {
     "lines": {
-      "total": 1277,
-      "covered": 1135,
+      "total": 1295,
+      "covered": 1153,
       "skipped": 0,
-      "pct": 88.88
+      "pct": 89.03
     },
     "statements": {
-      "total": 1384,
-      "covered": 1220,
+      "total": 1401,
+      "covered": 1237,
       "skipped": 0,
-      "pct": 88.15
+      "pct": 88.29
     },
     "functions": {
-      "total": 312,
-      "covered": 289,
+      "total": 317,
+      "covered": 294,
       "skipped": 0,
-      "pct": 92.62
+      "pct": 92.74
     },
     "branches": {
-      "total": 923,
-      "covered": 799,
+      "total": 971,
+      "covered": 848,
       "skipped": 0,
-      "pct": 86.56
+      "pct": 87.33
     },
     "branchesTrue": {
       "total": 0,
@@ -345,26 +345,26 @@
   },
   "src/core/match/sumo.ts": {
     "lines": {
-      "total": 25,
-      "covered": 25,
+      "total": 38,
+      "covered": 38,
       "skipped": 0,
       "pct": 100
     },
     "functions": {
-      "total": 7,
-      "covered": 7,
+      "total": 11,
+      "covered": 11,
       "skipped": 0,
       "pct": 100
     },
     "statements": {
-      "total": 28,
-      "covered": 28,
+      "total": 41,
+      "covered": 41,
       "skipped": 0,
       "pct": 100
     },
     "branches": {
-      "total": 21,
-      "covered": 21,
+      "total": 54,
+      "covered": 54,
       "skipped": 0,
       "pct": 100
     }
@@ -605,8 +605,8 @@
   },
   "src/core/sim/step.ts": {
     "lines": {
-      "total": 21,
-      "covered": 21,
+      "total": 22,
+      "covered": 22,
       "skipped": 0,
       "pct": 100
     },
@@ -617,8 +617,8 @@
       "pct": 100
     },
     "statements": {
-      "total": 23,
-      "covered": 23,
+      "total": 24,
+      "covered": 24,
       "skipped": 0,
       "pct": 100
     },
@@ -891,28 +891,28 @@
   },
   "src/ui/arena/recording-state.ts": {
     "lines": {
-      "total": 70,
-      "covered": 70,
-      "skipped": 0,
-      "pct": 100
-    },
-    "functions": {
-      "total": 15,
-      "covered": 15,
-      "skipped": 0,
-      "pct": 100
-    },
-    "statements": {
       "total": 74,
       "covered": 74,
       "skipped": 0,
       "pct": 100
     },
-    "branches": {
-      "total": 97,
-      "covered": 94,
+    "functions": {
+      "total": 16,
+      "covered": 16,
       "skipped": 0,
-      "pct": 96.9
+      "pct": 100
+    },
+    "statements": {
+      "total": 77,
+      "covered": 77,
+      "skipped": 0,
+      "pct": 100
+    },
+    "branches": {
+      "total": 109,
+      "covered": 106,
+      "skipped": 0,
+      "pct": 97.24
     }
   },
   "src/ui/arena/recording.ts": {
@@ -935,10 +935,10 @@
       "pct": 100
     },
     "branches": {
-      "total": 29,
-      "covered": 28,
+      "total": 30,
+      "covered": 30,
       "skipped": 0,
-      "pct": 96.55
+      "pct": 100
     }
   },
   "src/ui/arena/session.ts": {
@@ -961,10 +961,10 @@
       "pct": 92.98
     },
     "branches": {
-      "total": 112,
-      "covered": 98,
+      "total": 114,
+      "covered": 100,
       "skipped": 0,
-      "pct": 87.5
+      "pct": 87.71
     }
   },
   "src/ui/panels/CodeEditor.tsx": {

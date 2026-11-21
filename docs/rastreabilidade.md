@@ -146,3 +146,11 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 | ADR-018, RB-25 | S2-FR-037 | S2-T043 (`3bbd567`, `96b23d8`) | [S2-US3-AC11 a AC13](../tests/core/acceptance/s2/us3-impasse.test.ts), [CLI](../tests/cli/run-cli.test.ts) | Verificado |
 | ADR-018, RB-24 | S3-FR-040 | S3-T022 (`c07d3f3`, `07368f8`) | [S3-US2-AC14](../tests/ui/s3/us2-impasse.test.tsx), [S3-US2-AC15](../tests/runtime/stall-reset.test.ts) | Verificado |
 | ADR-018, RB-40 | S3-FR-041 | S3-T022 (`c07d3f3`, `07368f8`) | [S3-US5-AC12](../tests/ui/s3/us2-impasse.test.tsx) | Verificado |
+
+## Regra de Tempo no giro conjunto — ADR-019
+
+| Origem | Requisito | Tarefa e commit | Testes de aceitação | Estado |
+|---|---|---|---|---|
+| ADR-019, RB-25 | S2-FR-037 | S2-T044 (`3dc6c45`) | [S2-US3-AC14 e AC15 · Caçadores, contato, empurrão e separação](../tests/core/acceptance/s2/us3-impasse.test.ts) | Validado localmente |
+| ADR-019, RB-24 | S3-FR-040 | S3-T023 (`add5249`) | [S3-US2-AC16 · seletor, contagem e ação explícita](../tests/ui/s3/us2-impasse.test.tsx), [retrocesso com os controladores reais](../tests/runtime/stall-reset.test.ts) | Validado localmente |
+| ADR-019, RB-40 | S3-FR-041 | S3-T023 (`add5249`) | [S3-US5-AC13 · preservação de v2 e replay do giro](../tests/runtime/stall-reset.test.ts), [validação da gravação v3](../tests/ui/s3/us2-impasse.test.tsx) | Validado localmente |

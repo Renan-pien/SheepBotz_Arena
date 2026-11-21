@@ -484,3 +484,9 @@ ensaio foi descartada. O fechamento é rastreado pelo PR #6 e pela tag
 As tarefas S2-T043 e S3-T022 passaram na suíte de 337 testes em 50 arquivos. Lint e build de produção passaram. A cobertura de linhas foi 88.88%. No Windows x64 com Node 24.22.3 e Intel Core i5-1335U, o benchmark S2 sem detector encerrou por `tempo_esgotado` no tick 3000 em 60.64 ms.
 
 No navegador, o Duelo com Parado × Girador, prazo de 5 s e velocidade de reprodução 4× registrou empate no tick 250 (5.00 s simulados). O painel mostrou o replay do empate e a nova rodada pausada no tick 0, com Executar habilitado e Pausar desabilitado. [Testes e cobertura](cobertura/resumo.md) · [Matriz de rastreabilidade](rastreabilidade.md#incremento-de-impasse--adr-018)
+
+## Giro conjunto no Duelo padrão · 2026-11-21
+
+Com o Caçador de exemplo aplicado aos dois robôs, o primeiro contato ocorreu no tick 8. Os três testes de aceitação encerraram a rodada no tick 258 (5 s após o contato), 508 (10 s) e 1508 (30 s). No teste de interface, retroceder do tick 507 para o 506 fez o tempo restante passar de 0.02 s para 0.04 s. A rodada ficou pausada no tick 0 após o empate e avançou apenas após um clique.
+
+A suíte completa passou com 346 testes em 50 arquivos e 89.03% de cobertura de linhas. Lint e build de produção passaram. O benchmark S2 sem detector percorreu os 3000 ticks em 67.76 ms no Windows x64 com Node 24.22.3. O teste de gravação v2 conservou o resultado por tempo e o mesmo documento na reexportação. [Cobertura](cobertura/resumo.md) · [Rastreabilidade](rastreabilidade.md#regra-de-tempo-no-giro-conjunto--adr-019)
