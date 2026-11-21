@@ -282,3 +282,14 @@
 - **Motivo:** a análise de uma colisão ou do fim da luta precisa preservar o estado da estratégia, seus sorteios e os eventos de cada passo.
 - **Consequências:** revisão de S3-FR-012 e do contrato de operação da S3. O limite do arquivo de gravação e a API das estratégias continuam os definidos nas specs.
 - **Aprovado por:** solicitante, no pedido de implementação do retrocesso ao vivo.
+
+## ADR-018 — Empate por falta de progresso no sumô
+
+- **Data** 2026-11-21. **Status** aceita pelo administrador na aprovação da funcionalidade.
+- **Contexto** Um robô pode continuar acionando os motores contra outro corpo ou girando no lugar.
+- **Opções consideradas** Comparar a odometria, comparar poses entre ticks adjacentes ou acompanhar os centros físicos desde o último progresso.
+- **Decisão** Usar o deslocamento dos centros físicos após os contatos. A margem de 0.001 m corresponde à tolerância de aceitação S1-FR-040 e a 1% do diâmetro no Duelo padrão. O prazo fixo por rodada é 5, 10 ou 30 s de simulação. A interface inicia com 10 s. O administrador determinou reset automático com espera por ação explícita no tick zero.
+- **Consequências** A S2 aceita o detector opcional. A S3 o ativa no sumô ao vivo, conserva o último empate e lê gravações anteriores. A biblioteca e a CLI mantêm o cenário histórico S2-SC-003 quando a opção é omitida.
+
+- **Motivo** Comparar com o último centro de referência detecta movimento lento acumulado e conta o deslocamento provocado por empurrão.
+- **Aprovado por** Wesley, administrador do projeto, em 2026-11-21.

@@ -123,6 +123,9 @@ Como membro da equipe, quero colocar duas estratégias para lutar e saber quem v
 8. **Dado** o "Duelo padrão" com os dois robôs em "Parado", `match.maxTicks` = 100 e histórico habilitado, **Quando** se solicitam 110 ticks na execução sem interface, **Então** o estado devolvido tem `tick = 100` e `status = "finalizada"`. O histórico contém 101 estados, em ordem do tick 0 ao 100, e sua última entrada é o estado devolvido.
 9. **Dado** o mundo-base em modo `sumo`, com arena de raio 0,5 m, `dt` = 0,0625 s e `match.maxTicks` = 2, ambos os robôs com θ = 0 rad, `vermelho` em (0,4375 m, 0 m) com "Avança" e `azul` em (−0,25 m, 0 m) com "Parado", **Quando** se executa o primeiro tick, **Então** o centro de `vermelho` chega a (0,5 m, 0 m), `status` permanece `em_andamento` e `resultado` vale `null`.
 10. **Dado** o estado do tick 1 do cenário anterior, **Quando** se executa o tick 2, **Então** o centro de `vermelho` chega a (0,5625 m, 0 m), ultrapassando o raio da arena no mesmo tick em que o limite é alcançado. A luta termina no tick 2 com `resultado.vencedor = "azul"` e motivo `saida_da_arena`.
+11. **Dado** sumô com dt = 0.02 s e centros parados, **Quando** transcorrerem 250, 500 ou 1500 ticks respectivamente para 5, 10 ou 30 s, **Então** ocorre um único empate, inclusive com giro no eixo ou motores bloqueados.
+12. **Dado** movimento de 0.0004 m por passo, **Quando** o centro acumula 0.0012 m no terceiro passo, **Então** este é o novo tick de referência. Um empurrão também conta. Até 0.001 m inclusive, a referência permanece.
+13. **Dado** impasse no mesmo tick de um resultado ordinário, **Quando** encerrar a luta, **Então** vale o resultado ordinário. Sem opção, Parado × Girador continua até o tick 3000 do benchmark.
 
 ---
 
@@ -231,6 +234,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
   1. Se exatamente um robô estiver fora, a luta termina com vitória do outro, motivo `saida_da_arena`.
   2. Se os dois estiverem fora, a luta termina em empate, motivo `ambos_sairam`.
   3. Senão, se o tick atual for igual a `match.maxTicks`, a luta termina em empate, motivo `tempo_esgotado`.
+  4. Se o detector estiver habilitado e o prazo de FR-037 vencer, a luta termina em empate por `falta_de_progresso` (ADR-018).
 - **FR-031:** O estado DEVE incluir `status` (`em_andamento` ou `finalizada`) e `resultado`. Enquanto a luta estiver em andamento, `resultado` DEVE ser `null`. Ao terminar, `resultado` DEVE conter `{ vencedor, motivo, tick }`, com `resultado.vencedor` igual ao `id` do vencedor ou `null` em empate. No tick final, o sistema DEVE registrar um único evento `fim_da_luta` da partida, sem robô associado em qualquer desfecho. *(RB-25, ADR-013)*
 - **FR-032:** Um pedido de avanço que alcance ou ultrapasse o fim da luta DEVE devolver o estado final. Pedidos posteriores DEVEM devolver o mesmo estado e preservar o histórico. Quando habilitado, o histórico devolvido por `runHeadless()` e por `getHistory()` DEVE conter o estado inicial do tick 0 e um estado por tick efetivamente executado, em ordem, com uma única entrada para o tick final. *(RB-43, ADR-011)*
 - **FR-033:** No modo `free`, o status DEVE permanecer `em_andamento` e o resultado `null`, inclusive quando a execução sem interface devolve o estado no tick solicitado. *(RB-25, ADR-003)*
@@ -240,6 +244,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - **FR-034:** O estado de cada robô DEVE acrescentar aos campos da Spec 001 as leituras do laser da pose publicada (FR-008) e a situação (`ativo` ou `desativado`). O estado da simulação DEVE acrescentar status, resultado e a lista de eventos ocorridos até aquele tick, em ordem. *(RB-43, RB-45)*
 - **FR-035:** O sistema DEVE oferecer os mundos de exemplo "Duelo padrão" (Spec 001, Anexo A) e "Sala com obstáculos" (Anexo C). *(RB-25)*
 - **FR-036:** O sistema DEVE oferecer os controladores de exemplo do Anexo D, com exatamente o comportamento descrito. *(RB-25)*
+- **FR-037:** Quando solicitado em sumô por 5, 10 ou 30 s (ADR-018), contar o tempo desde o tick 0 ou o último progresso. Após resolver todos os contatos, comparar cada centro físico (x, y) com sua própria referência. Se qualquer distância euclidiana exceder 0.001 m, atualizar ambas as referências e zerar a contagem naquele tick. Orientação, comandos e odometria não entram na medida. No primeiro tick em que (tick − último progresso) × dt atingir o prazo, encerrar com vencedor nulo, motivo falta_de_progresso e um único evento fim_da_luta. Saída da arena, saída simultânea e limite de ticks mantêm precedência. O modo livre e a execução sem opção seguem as regras anteriores.
 
 ---
 
@@ -251,7 +256,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 | **Leituras do laser** | lista de N distâncias, do raio 0 ao raio N−1 |
 | **Controlador** | `id` do robô, texto do código |
 | **Evento** | tipo (`log`, `erro_controlador`, `limite_de_logs`, `fim_da_luta`), tick, mensagem e `id` do robô quando associado. `fim_da_luta` pertence à partida e não tem robô associado. |
-| **Resultado da luta** | vencedor (`id` ou nulo), motivo (`saida_da_arena`, `ambos_sairam`, `tempo_esgotado`), tick |
+| **Resultado da luta** | vencedor (`id` ou nulo), motivo (`saida_da_arena`, `ambos_sairam`, `tempo_esgotado`, `falta_de_progresso`), tick |
 | **Estado do robô** (acréscimos) | leituras do laser correspondentes ao estado publicado (FR-008), situação (ativo ou desativado) |
 | **Estado da simulação** (acréscimos) | status, resultado, eventos |
 | **Histórico** | lista opcional de estados em ordem, do tick 0 até o último tick executado (FR-032) |
@@ -262,7 +267,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 
 - **SC-001:** 100% dos cenários de aceitação desta spec passam dentro da tolerância da Spec 001 (FR-040 de lá).
 - **SC-002:** Duas execuções da mesma luta, com os mesmos controladores e a mesma semente, produzem estados e eventos idênticos em todos os ticks.
-- **SC-003:** O "Duelo padrão", com "Parado" em `vermelho` e "Girador" em `azul`, DEVE terminar no tick 3 000 com motivo `tempo_esgotado`, em menos de 2 s no ambiente de referência da Spec 001 (Intel Core i5-1334U, Linux x64 e Node 24.22.3). A medição cobre uma chamada sem interface de 3 000 ticks com o histórico desabilitado, desde a entrada com mundo e controladores em memória até o retorno do estado final. A inicialização do processo e a leitura de arquivos ficam fora da medição. [Ambiente de referência](../../docs/registro-de-consolidacao.md#evidências-para-o-pr-da-spec-001)
+- **SC-003:** Sem solicitar a detecção de impasse, o "Duelo padrão", com "Parado" em `vermelho` e "Girador" em `azul`, DEVE terminar no tick 3 000 com motivo `tempo_esgotado`, em menos de 2 s no ambiente de referência da Spec 001 (Intel Core i5-1334U, Linux x64 e Node 24.22.3). A medição cobre uma chamada sem interface de 3 000 ticks com o histórico desabilitado, desde a entrada com mundo e controladores em memória até o retorno do estado final. A inicialização do processo e a leitura de arquivos ficam fora da medição. [Ambiente de referência](../../docs/registro-de-consolidacao.md#evidências-para-o-pr-da-spec-001)
 - **SC-004:** Cada falha de carregamento devolve um erro estruturado e impede o início da simulação. Na execução sem interface, todas as falhas de carregamento são devolvidas na mesma resposta (FR-012). Todos os casos de erro durante `setup()` ou `loop()` desativam o robô e registram um evento conforme FR-026, preservando a execução do tick.
 - **SC-005:** Um membro da equipe consegue, partindo do "Caçador", escrever uma estratégia própria e colocá-la para lutar em menos de 15 minutos, consultando apenas o Anexo B.
 
@@ -287,7 +292,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - Sonar, câmera, sensor de cor ou de borda.
 - Ruído nas leituras.
 - Controladores em Portugol (B-001) e controle remoto via WebSocket (B-002).
-- Contagem regressiva de início de luta, rounds múltiplos e placar entre lutas.
+- Contagem regressiva de início de luta e pontuação entre lutas. A operação da rodada seguinte após impasse pertence à S3 (ADR-018).
 - Regras de sumô com mais de dois robôs.
 
 ---
@@ -433,6 +438,7 @@ Com um mundo válido, o resultado sem interface reúne as ocorrências desta tab
 |---|---|
 | RB-23, RB-35 | FR-009 a FR-027 |
 | RB-25 | FR-027 a FR-033, FR-035, FR-036 |
+| ADR-018 | FR-037 |
 | RB-27 | FR-007, FR-021, FR-023, FR-024 |
 | RB-31 | FR-027 |
 | RB-32 | FR-001 a FR-008, FR-016 |
