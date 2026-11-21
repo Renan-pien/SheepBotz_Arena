@@ -43,3 +43,5 @@ A v2 registra a configuração em `stallSeconds`. Na leitura, reconstruir os cen
 ## Extensão v3 (ADR-019)
 
 Na v3, um estado pode incluir `pairContact: true` para registrar colisão entre os robôs. Se presente, requer tick positivo e ambos os bumpers ativos. Omissão significa falso. A leitura reconstrói as duas contagens sequencialmente, usando esse sinal, os raios do mundo e as poses gravadas. O resultado deve coincidir com a regra da versão do arquivo. Ao salvar um replay importado, preservar a versão original.
+
+A inspeção de borda da ADR-020 deriva as leituras do mundo e da pose gravada em cada tick. Isso se aplica às versões 1, 2 e 3, inclusive a arquivos gravados antes da revisão da API. Exibir a leitura dispensa executar o controlador.

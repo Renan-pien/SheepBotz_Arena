@@ -37,3 +37,7 @@ da gravação corrente. Um snapshot entregue à interface nunca é editado.
 A seleção do prazo e o bloqueio após o primeiro avanço pertencem à sessão. O cursor lê o monitor do snapshot observado. A sessão retém um único registro do último empate com número de rodada, resultado, tempo e gravação limitada ao tick 100 000. O reset por impasse substitui a gravação corrente e os eventos pela nova rodada pausada. A gravação anterior é somente leitura.
 
 `Recording.version` distingue ausência de detector (1), critério individual (2) e critério individual com giro conjunto (3). A sessão conserva a versão ao reexportar um replay.
+
+## Inspeção do sensor de borda
+
+O cartão associa o robô do snapshot ao raio da configuração do mesmo robô no mundo e apresenta a leitura derivada [EdgeReading](../002-sensores-controlador/data-model.md#leitura-derivada-de-borda). A fonte dos dados é idêntica na sessão ao vivo e no replay.

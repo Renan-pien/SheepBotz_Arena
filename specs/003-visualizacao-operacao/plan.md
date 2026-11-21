@@ -296,3 +296,7 @@ misturar o relógio em tempo real com a suíte determinística.
 O núcleo decide o resultado. A sessão guarda a última gravação e resumo do impasse, reinicia pelo reset da simulação e publica o tick zero pausado em uma transição. O lote termina com a rodada. O cursor de retrocesso publica a contagem contida no snapshot. Guardar apenas uma rodada anterior. A importação deriva os dados do detector das poses gravadas sem executar estratégias.
 
 A sessão ao vivo grava sumô com detector em v3. O leitor seleciona a regra histórica pelo número da versão. A UI e o núcleo usam o mesmo cálculo de tempo de impasse, a partir das referências do snapshot.
+
+## Borda no cartão de inspeção
+
+Consultar o sensor da S2 com a pose do snapshot exibido, o raio do robô correspondente e o mundo. Usar essa leitura em pausa, retrocesso e replay. O raio interno da faixa desenhada e o limiar físico usam a mesma proporção.
