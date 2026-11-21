@@ -478,3 +478,9 @@ ensaio foi descartada. O fechamento é rastreado pelo PR #6 e pela tag
 `spec-003-fechada`.
 [Ensaio 3](ensaio-regeneracao.md#ensaio-3--2026-11-18) ·
 [PR #6](https://github.com/Renan-pien/SheepBotz_Arena/pull/6)
+
+## Validação do impasse no sumô · 2026-11-21
+
+As tarefas S2-T043 e S3-T022 passaram na suíte de 337 testes em 50 arquivos. Lint e build de produção passaram. A cobertura de linhas foi 88.88%. No Windows x64 com Node 24.22.3 e Intel Core i5-1335U, o benchmark S2 sem detector encerrou por `tempo_esgotado` no tick 3000 em 60.64 ms.
+
+No navegador, o Duelo com Parado × Girador, prazo de 5 s e velocidade de reprodução 4× registrou empate no tick 250 (5.00 s simulados). O painel mostrou o replay do empate e a nova rodada pausada no tick 0, com Executar habilitado e Pausar desabilitado. [Testes e cobertura](cobertura/resumo.md) · [Matriz de rastreabilidade](rastreabilidade.md#incremento-de-impasse--adr-018)

@@ -1,6 +1,6 @@
 # SheepBotz Arena
 
-**322 testes · 88% de cobertura**
+**337 testes · 88% de cobertura**
 
 Métricas geradas a partir dos relatórios com `npm run stats`.
 
@@ -14,7 +14,7 @@ O núcleo 2D aceita mundos JSON e controladores JavaScript.
 |---|---|---|
 | [001](specs/001-nucleo-simulacao/spec.md) | Mundo e núcleo de simulação | Spec oficial, [checklist](specs/001-nucleo-simulacao/checklists/requirements.md), [plan](specs/001-nucleo-simulacao/plan.md), contratos, [tasks](specs/001-nucleo-simulacao/tasks.md) e anexos |
 | [002](specs/002-sensores-controlador/spec.md) | Laser, controladores e sumô pela biblioteca e pela CLI | [Plano](specs/002-sensores-controlador/plan.md), [contratos](specs/002-sensores-controlador/contracts/core-api.md), [tasks](specs/002-sensores-controlador/tasks.md) e [quickstart](specs/002-sensores-controlador/quickstart.md) |
-| [003](specs/003-visualizacao-operacao/spec.md) | Visualização 3D, operação e replay | [Plano](specs/003-visualizacao-operacao/plan.md), [gravação v1](specs/003-visualizacao-operacao/contracts/gravacao.md), [tarefas](specs/003-visualizacao-operacao/tasks.md) e [quickstart](specs/003-visualizacao-operacao/quickstart.md) |
+| [003](specs/003-visualizacao-operacao/spec.md) | Visualização 3D, operação e replay | [Plano](specs/003-visualizacao-operacao/plan.md), [gravações v1 e v2](specs/003-visualizacao-operacao/contracts/gravacao.md), [tarefas](specs/003-visualizacao-operacao/tasks.md) e [quickstart](specs/003-visualizacao-operacao/quickstart.md) |
 
 ## Como rodar
 
@@ -29,6 +29,11 @@ npm run dev
 A tela abre o **Duelo padrão** com Caçador e Girador. Clique em **Executar**
 para ver a luta. Use **Inspeção** para consultar os sensores e **Ver replay**
 para voltar a um tick. Os controles de gravação usam arquivos JSON locais.
+
+No sumô ao vivo, **Limite sem progresso** permite escolher 5, 10 ou 30 s antes do
+primeiro passo. Se os dois centros ficarem dentro da margem de 1 mm durante o
+prazo, a rodada empata. A próxima fica pausada no tick 0, com as estratégias e
+o prazo preservados. **Ver replay do empate** abre a gravação da última rodada.
 
 Para usar o núcleo pelo terminal, execute:
 

@@ -138,3 +138,11 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 | RB-20, Constituição VIII | S3-FR-038 | S3-T016 (`2be4b5f`), S3-T017 (`7573965`), S3-T018 (`755c56c`) | [S3-US6-AC3](../tests/ui/s3/us6-apresentacao.test.tsx), [Quickstart em Chromium](../specs/003-visualizacao-operacao/quickstart.md#medição-de-referência-da-implementação) | Validado localmente |
 | RB-20 | S3-FR-039 | S3-T016 (`2be4b5f`), S3-T017 (`7573965`), S3-T018 (`755c56c`) | [S3-US6-AC3](../tests/ui/s3/us6-apresentacao.test.tsx), [Quickstart em Chromium](../specs/003-visualizacao-operacao/quickstart.md#medição-de-referência-da-implementação) | Validado localmente |
 | RB-24, RB-28, RB-40, ADR-017 | S3-FR-002, S3-FR-012, S3-FR-029 | S3-T021 | [S3-US2-AC11](../tests/ui/s3/us2-operacao.test.tsx), [S3-US2-AC12](../tests/runtime/rewind.test.ts), [S3-US2-AC13](../tests/ui/s3/us5-recording.test.tsx) | Retrocesso ao vivo, retomada e limite de gravação verificados |
+
+## Incremento de impasse — ADR-018
+
+| Origem | Requisito | Tarefa | Testes | Status |
+|---|---|---|---|---|
+| ADR-018, RB-25 | S2-FR-037 | S2-T043 (`3bbd567`, `96b23d8`) | [S2-US3-AC11 a AC13](../tests/core/acceptance/s2/us3-impasse.test.ts), [CLI](../tests/cli/run-cli.test.ts) | Verificado |
+| ADR-018, RB-24 | S3-FR-040 | S3-T022 (`c07d3f3`, `07368f8`) | [S3-US2-AC14](../tests/ui/s3/us2-impasse.test.tsx), [S3-US2-AC15](../tests/runtime/stall-reset.test.ts) | Verificado |
+| ADR-018, RB-40 | S3-FR-041 | S3-T022 (`c07d3f3`, `07368f8`) | [S3-US5-AC12](../tests/ui/s3/us2-impasse.test.tsx) | Verificado |
