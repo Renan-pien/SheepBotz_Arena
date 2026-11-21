@@ -53,6 +53,10 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 - [X] T019 Atualizar README, rodar `npm run stats`, versionar métricas e conferir workflow em push e PR, rastrear os 39 requisitos — `README.md`, `docs/cobertura/resumo.md`, `docs/cobertura/coverage-summary.json`, `docs/rastreabilidade.md` — RB-08, RB-09, RB-12, S3-FR-001. **Dep.** T018. **Pronto** Métricas reproduzíveis e matriz preenchida.
 - [X] T020 Registrar a demonstração aprovada de SC-003 e SC-006. Cronometrar a troca por um exemplo e a conclusão do Duelo. Conferir vencedor e motivo no placar, sem consultar o código — `docs/registro-de-consolidacao.md`, `specs/003-visualizacao-operacao/spec.md` — S3-SC-003, S3-SC-006, RB-17, S3-FR-021, S3-FR-028. **Dep.** T018. **Pronto** Exceção, duração, vencedor e motivo registrados.
 
+## Incremento · Retrocesso ao vivo
+
+- [ ] T021 [US2] Verificar e implementar o retrocesso ao vivo, a continuação determinística e a gravação até o cursor — `src/ui/App.tsx`, `src/ui/arena/session.ts`, testes S3-US2-AC11 a AC13 e matriz de rastreabilidade — S3-FR-002, S3-FR-012, S3-FR-029. **Dep.** T015. **Pronto** Passos repetidos, desfecho, memória, sorteios, logs e limite da gravação conferidos em comparação com a execução contínua.
+
 ## Dependências e cobertura
 
 Fluxo por fase T001 → T002 → T003 (RED) → T004 → pares de US1 a US6 → T018
@@ -64,7 +68,7 @@ A sessão e o App são compartilhados e seguem a sequência da tabela.
 | História | Cenários | Teste | Implementação |
 |---|---:|---|---|
 | US1 · Cena | S3-US1-AC1 a S3-US1-AC10 | T005 | T006 |
-| US2 · Tempo | S3-US2-AC1 a S3-US2-AC10 | T007 | T008 |
+| US2 · Tempo | S3-US2-AC1 a S3-US2-AC13 | T007, T021 | T008, T021 |
 | US3 · Cargas | S3-US3-AC1 a S3-US3-AC9 | T009 | T010 |
 | US4 · Observação | S3-US4-AC1 a S3-US4-AC6 | T011 | T012 |
 | US5 · Replay | S3-US5-AC1 a S3-US5-AC11 | T013 | T014, T015 |
