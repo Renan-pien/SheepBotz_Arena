@@ -240,6 +240,16 @@ luta segue em andamento e a frase completa de desfecho ao terminar.
 
 ### Gravação e observação
 
+No modo ao vivo, o tick do snapshot publicado é o cursor. A sessão guarda o motor
+e seus controladores no último tick calculado. Retroceder ou revisitar um tick da
+gravação usa seu snapshot completo. O motor só calcula um passo novo ao alcançar
+o próprio estado, preservando closures, sorteios e contadores de log. A gravação
+exporta somente o prefixo até o cursor. Reinício e troca de configuração abrem
+um histórico novo. Após o limite da gravação, uma janela circular conserva os
+estados recentes. Para recuperar um estado fora da janela, a sessão reconstrói
+o motor com o mundo, fontes aplicadas e semente originais e reconstitui a janela
+até o tick pedido. A sessão publica apenas o estado de destino.
+
 ```ts
 // arena/recording.ts
 export interface Recording {

@@ -21,7 +21,7 @@
 | Executar | Ativo para pronta ou pausada | Ativo antes do último tick. |
 | Pausar | Ativo durante execução | Ativo durante execução. |
 | Avançar 1 tick | Ativo parada e sem resultado final | Ativo parada e antes do último tick. |
-| Voltar 1 tick | Indisponível | Ativo parada e após o tick 0. |
+| Voltar 1 Tick | Ao lado de Avançar. Ativo parada e após o tick 0, inclusive no fim da luta. Publica o estado anterior e pausa. | Ativo parada e após o tick 0. |
 | Reiniciar | Recarrega mundo e controladores no tick 0 | Volta ao primeiro estado gravado, sem executar scripts. |
 | Linha do tempo | Indisponível | Seleciona e pausa no tick observado. |
 | Aplicar controlador / Abrir mundo | Prepara e troca sessão no sucesso | Bloqueado. |
