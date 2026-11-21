@@ -1,8 +1,9 @@
-import type { Command, SimState, World } from '../types';
+import type { Command, SimState, StallSeconds, World } from '../types';
 import { createInitialState } from './state';
 import { step } from './step';
 
 export interface SimulationOptions {
+  readonly stallSeconds?: StallSeconds;
   readonly commands?: Readonly<Record<string, Command>>;
   readonly history?: boolean;
 }
@@ -34,7 +35,7 @@ export function createSimulation(
       { ...command },
     ]),
   );
-  return assembleSimulation(world, options.history, (state) =>
+  return assembleSimulation(world, options, (state) =>
     step(world, state, commands),
   );
 }
@@ -43,12 +44,13 @@ type AdvanceTick = (state: SimState) => SimState;
 
 export function assembleSimulation(
   world: World,
-  recordHistory: boolean | undefined,
+  options: SimulationOptions,
   firstTick: AdvanceTick,
   reload: () => AdvanceTick = () => firstTick,
 ): Simulation {
   let advanceTick = firstTick;
-  let current = createInitialState(world);
+  const { history: recordHistory, stallSeconds } = options;
+  let current = createInitialState(world, stallSeconds);
   let history = recordHistory ? [current] : undefined;
 
   function advance(): SimState {
@@ -74,7 +76,7 @@ export function assembleSimulation(
     },
     reset() {
       const next = reload();
-      const initial = createInitialState(world);
+      const initial = createInitialState(world, stallSeconds);
       advanceTick = next;
       current = initial;
       if (history) history = [current];

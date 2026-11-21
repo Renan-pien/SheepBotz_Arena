@@ -58,19 +58,14 @@ export function prepareSimulation(
       }
     : { commands: first.commands };
 
-  const simulation = assembleSimulation(
-    world,
-    options.history,
-    first.advance,
-    () => {
-      const next = prepareTick(world, inputs);
-      if (!next.ok) {
-        throw new Error(
-          `Falha ao recarregar a simulação: ${next.errors.map((error) => error.message).join(' ')}`,
-        );
-      }
-      return next.advance;
-    },
-  );
+  const simulation = assembleSimulation(world, options, first.advance, () => {
+    const next = prepareTick(world, inputs);
+    if (!next.ok) {
+      throw new Error(
+        `Falha ao recarregar a simulação: ${next.errors.map((error) => error.message).join(' ')}`,
+      );
+    }
+    return next.advance;
+  });
   return { ok: true, simulation };
 }

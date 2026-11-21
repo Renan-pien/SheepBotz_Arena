@@ -58,9 +58,18 @@ export interface RobotState {
   readonly situacao: 'ativo' | 'desativado';
 }
 
+export type StallSeconds = 5 | 10 | 30;
+
+export interface StallState {
+  readonly limitSeconds: StallSeconds;
+  readonly sinceTick: number;
+  readonly centers: readonly Pick<Pose, 'x' | 'y'>[];
+}
+
 export interface MatchResult {
   readonly vencedor: string | null;
-  readonly motivo: 'saida_da_arena' | 'ambos_sairam' | 'tempo_esgotado';
+  readonly motivo:
+    'saida_da_arena' | 'ambos_sairam' | 'tempo_esgotado' | 'falta_de_progresso';
   readonly tick: number;
 }
 
@@ -72,6 +81,7 @@ export interface SimEvent {
 }
 
 export interface SimState {
+  readonly stall?: StallState;
   readonly tick: number; // 0 no estado inicial
   readonly time: number; // tick × dt
   readonly robots: readonly RobotState[]; // mesma ordem de world.robots
@@ -115,6 +125,7 @@ export type ControllerOptions =
     };
 
 export type HeadlessInput = ControllerOptions & {
+  readonly stallSeconds?: StallSeconds;
   readonly world: string; // texto do arquivo de mundo
   readonly commands?: Readonly<Record<string, Command>>; // comando constante por id
   readonly ticks: number; // inteiro ≥ 0

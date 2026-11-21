@@ -1,5 +1,12 @@
+import { initialStall, isStallSeconds } from '../match/sumo';
 import { readLasers } from '../sensors/laser';
-import type { MatchResult, RobotState, SimState, World } from '../types';
+import type {
+  MatchResult,
+  RobotState,
+  SimState,
+  StallSeconds,
+  World,
+} from '../types';
 
 export function completeMatch(
   state: SimState,
@@ -8,6 +15,7 @@ export function completeMatch(
   const message = {
     saida_da_arena: `Fim da luta: vitória de '${resultado.vencedor}' por saída da arena.`,
     ambos_sairam: 'Fim da luta: empate. Os dois robôs saíram da arena.',
+    falta_de_progresso: 'Fim da luta: empate por falta de progresso.',
     tempo_esgotado: 'Fim da luta: empate por tempo esgotado.',
   }[resultado.motivo];
   return {
@@ -32,8 +40,19 @@ export function withLaser(
   return robots.map((robot, index) => ({ ...robot, laser: readings[index]! }));
 }
 
-export function createInitialState(world: World): SimState {
+export function createInitialState(
+  world: World,
+  stallSeconds?: StallSeconds,
+): SimState {
+  if (stallSeconds !== undefined && !isStallSeconds(stallSeconds))
+    throw new RangeError(
+      'O limite sem progresso deve ser 5, 10 ou 30 segundos.',
+    );
   return {
+    ...(world.match.mode === 'sumo' &&
+      stallSeconds !== undefined && {
+        stall: initialStall(world, stallSeconds),
+      }),
     tick: 0,
     time: 0,
     status: 'em_andamento',

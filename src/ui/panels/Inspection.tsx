@@ -23,6 +23,7 @@ export function formatNumber(value: number, digits: 1 | 2 | 3): string {
 const reason = {
   saida_da_arena: 'saída da arena',
   ambos_sairam: 'os dois saíram da arena',
+  falta_de_progresso: 'falta de progresso',
   tempo_esgotado: 'tempo esgotado',
 };
 

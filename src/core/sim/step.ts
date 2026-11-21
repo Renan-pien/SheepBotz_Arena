@@ -6,7 +6,7 @@ import type {
   SimState,
   World,
 } from '../types';
-import { evaluateSumo } from '../match/sumo';
+import { advanceStall, evaluateSumo } from '../match/sumo';
 import { resolveRobotContacts } from './contacts';
 import { integratePose, saturate } from './kinematics';
 import { resolveObstaclesAndWalls } from './obstacles';
@@ -87,6 +87,7 @@ export function step(
   const tick = state.tick + 1;
   const next: SimState = {
     ...state,
+    ...(state.stall && { stall: advanceStall(state.stall, robots, tick) }),
     tick,
     time: tick * world.dt,
     robots: withLaser(world, robots),

@@ -1,5 +1,11 @@
 export type * from './types';
 export { angleDiff, normalizeAngle } from './math/angle';
+export {
+  isStallSeconds,
+  initialStall,
+  advanceStall,
+  evaluateSumo,
+} from './match/sumo';
 export { loadWorld } from './world/load-world';
 export { createInitialState } from './sim/state';
 export { step } from './sim/step';

@@ -223,4 +223,4 @@ Setup T001–T002 → Fundação T003–T008 → US1 T009–T016 → US2 T017–
 3. Fechar as validações da CLI, navegador, desempenho e cobertura na fase final. O ensaio de regeneração, o merge e a tag seguem o fechamento separado do AGENTS.md §15 e §18.
 
 ## Incremento de sumô
-- [ ] T043 [US3] Testar S2-US3-AC11 a AC13, implementar estado de progresso, regra de empate, opções de biblioteca e CLI — src/core/{match,sim,api}, src/cli/run-cli.ts, testes de sumô e CLI — S2-FR-037. Pronto com casos físicos e benchmark legado verificados.
+- [X] T043 [US3] Testar S2-US3-AC11 a AC13, implementar estado de progresso, regra de empate, opções de biblioteca e CLI — src/core/{match,sim,api}, src/cli/run-cli.ts, testes de sumô e CLI — S2-FR-037. Pronto com casos físicos e benchmark legado verificados.
