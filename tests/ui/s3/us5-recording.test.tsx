@@ -27,6 +27,7 @@ it('S3-US5-AC8: a gravação é igual à reexecução com mesmas entradas', () =
   const recording = duel().recording();
   const result = runHeadless({
     world: recording.world,
+    stallSeconds: recording.stallSeconds,
     controllers: recording.controllers,
     controllerEngine: testEngine,
     ticks: 34,
@@ -109,7 +110,7 @@ function replaceAt(data: unknown, path: readonly string[], value: unknown) {
 
 it.each<[string, unknown]>([
   ['format', 'outro'],
-  ['version', 2],
+  ['version', 99],
   ['createdAt', 'inválido'],
   ['world', '{'],
   ['world', {}],
