@@ -2,6 +2,9 @@ import {
   loadWorld,
   prepareSimulation,
   type ControllerEngine,
+  type MatchResult,
+  type StallSeconds,
+  isStallSeconds,
   type SimState,
   type Simulation,
   type World,
@@ -53,7 +56,17 @@ function sourcesFrom(drafts: Drafts): Sources {
   );
 }
 
+interface DrawRecord {
+  readonly round: number;
+  readonly result: MatchResult;
+  readonly time: number;
+  readonly recording: Recording;
+}
+
 export interface SessionView {
+  readonly lastDraw: DrawRecord | null;
+  readonly stallSeconds: StallSeconds;
+  readonly roundStarted: boolean;
   readonly world: World;
   readonly worldText: string;
   readonly controllers: Sources;
@@ -91,10 +104,14 @@ export class ArenaSession {
     const prepared = prepareSimulation(world.world, {
       controllers,
       controllerEngine: engine,
+      stallSeconds: 10,
     });
     if (!prepared.ok) throw new Error(JSON.stringify(prepared.errors));
     this.#simulation = prepared.simulation;
     this.#view = {
+      stallSeconds: 10,
+      roundStarted: false,
+      lastDraw: null,
       world: world.world,
       worldText,
       controllers,
@@ -181,10 +198,12 @@ export class ArenaSession {
     controllers: Sources,
     drafts: Drafts,
     preset: WorldPreset | '',
+    patch: Partial<SessionView> = {},
   ) {
     const prepared = prepareSimulation(world, {
       controllers,
       controllerEngine: this.#engine,
+      stallSeconds: patch.stallSeconds ?? this.#view.stallSeconds,
     });
     if (!prepared.ok) {
       this.#publish({ errors: prepared.errors });
@@ -197,6 +216,7 @@ export class ArenaSession {
       controllers,
       drafts,
       preset,
+      ...patch,
     });
   }
 
@@ -208,24 +228,32 @@ export class ArenaSession {
     this.#replay = null;
     this.#createdAt = new Date().toISOString();
     this.#publish({
-      ...patch,
       mode: 'live',
+      roundStarted: false,
+      lastDraw: null,
       replayLast: null,
       status: 'pronta',
       snapshot,
       behind: false,
       limitReached: false,
       errors: [],
+      ...patch,
     });
   }
 
   recording(): Recording {
-    if (this.#replay) return this.#replay;
+    return this.#replay ?? this.#liveRecording(this.#view.snapshot.tick);
+  }
+
+  #liveRecording(tick: number): Recording {
     return {
+      ...(this.#view.world.match.mode === 'sumo' && {
+        stallSeconds: this.#view.stallSeconds,
+      }),
       world: this.#view.worldText,
       controllers: this.#view.controllers,
       createdAt: this.#createdAt,
-      states: this.history(),
+      states: this.#history.slice(0, tick + 1),
     };
   }
 
@@ -236,6 +264,12 @@ export class ArenaSession {
 
   enterReplay() {
     this.#showReplay(this.#view.world, this.recording());
+  }
+
+  replayLastDraw() {
+    const draw = this.#view.lastDraw;
+    if (draw && !this.#replay)
+      this.#showReplay(this.#view.world, draw.recording);
   }
 
   openRecording(text: string) {
@@ -264,6 +298,8 @@ export class ArenaSession {
     );
     this.#publish({
       mode: 'replay',
+      lastDraw: null,
+      stallSeconds: recording.stallSeconds ?? this.#view.stallSeconds,
       world,
       worldText: recording.world,
       controllers: recording.controllers,
@@ -337,6 +373,27 @@ export class ArenaSession {
     this.#publish({ status: 'pausada', behind: false });
   }
 
+  setStallSeconds(seconds: number) {
+    const view = this.#view;
+    if (
+      !isStallSeconds(seconds) ||
+      this.#replay ||
+      view.world.match.mode !== 'sumo' ||
+      view.roundStarted ||
+      view.status === 'executando' ||
+      seconds === view.stallSeconds
+    )
+      return;
+    this.#replace(
+      view.world,
+      view.worldText,
+      view.controllers,
+      view.drafts,
+      view.preset,
+      { stallSeconds: seconds, lastDraw: view.lastDraw, status: view.status },
+    );
+  }
+
   setSpeed(speed: PlaybackSpeed) {
     this.#publish({ speed });
   }
@@ -390,7 +447,21 @@ export class ArenaSession {
     ) {
       snapshot = this.#liveStateAt(snapshot.tick + 1);
     }
+    if (snapshot.resultado?.motivo === 'falta_de_progresso') {
+      const draw: DrawRecord = {
+        round: (this.#view.lastDraw?.round ?? 0) + 1,
+        result: snapshot.resultado,
+        time: snapshot.time,
+        recording: this.#liveRecording(snapshot.tick),
+      };
+      this.#startNewRun(this.#simulation.reset(), {
+        status: 'pausada',
+        lastDraw: draw,
+      });
+      return;
+    }
     this.#publish({
+      roundStarted: this.#view.roundStarted || snapshot.tick > 0,
       snapshot,
       status: snapshot.status === 'finalizada' ? 'finalizada' : status,
       behind: snapshot.status !== 'finalizada' && behind,

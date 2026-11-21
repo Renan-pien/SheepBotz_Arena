@@ -1,4 +1,10 @@
-import { loadWorld, type SimState, type World } from '../../core';
+import {
+  isStallSeconds,
+  loadWorld,
+  type SimState,
+  type StallSeconds,
+  type World,
+} from '../../core';
 import {
   object,
   readEvents,
@@ -9,9 +15,9 @@ import {
 
 export const lastRecordedTick = 100_000;
 const format = 'sheepbotz-arena';
-const version = 1;
 
 export interface Recording {
+  readonly stallSeconds?: StallSeconds;
   readonly world: string;
   readonly controllers: Readonly<Record<string, string>>;
   readonly createdAt: string;
@@ -28,15 +34,22 @@ type DecodeResult =
 export function encodeRecording(recording: Recording): string {
   return JSON.stringify({
     format,
-    version,
+    version: recording.stallSeconds === undefined ? 1 : 2,
+    stallSeconds: recording.stallSeconds,
     world: recording.world,
     controllers: recording.controllers,
     createdAt: recording.createdAt,
     events: recording.states.at(-1)!.events,
-    states: recording.states.map(({ events, ...state }) => ({
-      ...state,
-      eventCount: events.length,
-    })),
+    states: recording.states.map(
+      ({ tick, time, robots, status, resultado, events }) => ({
+        tick,
+        time,
+        robots,
+        status,
+        resultado,
+        eventCount: events.length,
+      }),
+    ),
   });
 }
 
@@ -67,7 +80,11 @@ export function decodeRecording(text: string): DecodeResult {
     const data: unknown = JSON.parse(text);
     requireField(object(data), '', 'esperado um objeto de gravação');
     requireField(data.format === format, 'format', 'formato desconhecido');
-    requireField(data.version === version, 'version', 'versão não suportada');
+    requireField(
+      data.version === 1 || data.version === 2,
+      'version',
+      'versão não suportada',
+    );
     const { world: worldText, controllers, createdAt, states, events } = data;
     requireField(
       typeof worldText === 'string',
@@ -98,13 +115,23 @@ export function decodeRecording(text: string): DecodeResult {
       'states',
       'esperada uma lista de 1 a 100 001 estados',
     );
+    const stallSeconds = data.stallSeconds;
+    requireField(
+      data.version === 1
+        ? stallSeconds === undefined
+        : isStallSeconds(stallSeconds) && parsed.world.match.mode === 'sumo',
+      'stallSeconds',
+      'limite incompatível com a versão ou modalidade',
+    );
     const boundSources = sources(controllers, parsed.world);
     const list = readEvents(events, parsed.world, states.length - 1);
-    const snapshots = readStates(states, parsed.world, list);
+    const limit = isStallSeconds(stallSeconds) ? stallSeconds : undefined;
+    const snapshots = readStates(states, parsed.world, list, limit);
     return {
       ok: true,
       world: parsed.world,
       recording: {
+        ...(limit && { stallSeconds: limit }),
         world: worldText,
         controllers: boundSources,
         createdAt,

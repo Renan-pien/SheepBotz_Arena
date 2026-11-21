@@ -291,6 +291,18 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           )}
         </section>
       )}
+      {view.lastDraw && (
+        <section className="match-result" aria-label="Último empate">
+          <strong>
+            Rodada {view.lastDraw.round} · Empate por falta de progresso · tick{' '}
+            {view.lastDraw.result.tick} · {formatNumber(view.lastDraw.time, 2)}{' '}
+            s
+          </strong>
+          <button type="button" onClick={() => session.replayLastDraw()}>
+            Ver replay do empate
+          </button>
+        </section>
+      )}
       <footer className="transport" aria-label="Controles de tempo">
         {replay && (
           <label className="timeline">
@@ -348,6 +360,24 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           <button type="button" onClick={() => session.reset()}>
             Reiniciar
           </button>
+          {!replay && world.match.mode === 'sumo' && (
+            <label>
+              Limite sem progresso{' '}
+              <select
+                value={view.stallSeconds}
+                disabled={running || view.roundStarted}
+                onChange={(event) =>
+                  session.setStallSeconds(Number(event.target.value))
+                }
+              >
+                {[5, 10, 30].map((seconds) => (
+                  <option key={seconds} value={seconds}>
+                    {seconds} s
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <label>
             Velocidade{' '}
             <select
@@ -368,6 +398,20 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           <span data-testid="current-tick">Tick {snapshot.tick}</span>
           <span>{formatNumber(snapshot.time, 2)} s</span>
           <span>{status}</span>
+          {snapshot.stall && (
+            <span>
+              Tempo até impasse:{' '}
+              {formatNumber(
+                Math.max(
+                  0,
+                  snapshot.stall.limitSeconds -
+                    (snapshot.tick - snapshot.stall.sinceTick) * world.dt,
+                ),
+                2,
+              )}{' '}
+              s
+            </span>
+          )}
           {replay && <span>Replay</span>}
           {view.limitReached && (
             <span role="status">limite de gravação atingido</span>

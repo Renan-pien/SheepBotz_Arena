@@ -1,4 +1,6 @@
+import { advanceStall, initialStall, evaluateSumo } from '../../core';
 import type {
+  StallSeconds,
   MatchResult,
   RobotConfig,
   RobotState,
@@ -128,6 +130,7 @@ function readResult(
   world: World,
   tick: number,
   path: string,
+  stallSeconds?: StallSeconds,
 ): MatchResult {
   requireField(
     object(value) && value.tick === tick,
@@ -146,7 +149,8 @@ function readResult(
   }
   requireField(
     ((motivo === 'tempo_esgotado' && tick === world.match.maxTicks) ||
-      motivo === 'ambos_sairam') &&
+      motivo === 'ambos_sairam' ||
+      (stallSeconds !== undefined && motivo === 'falta_de_progresso')) &&
       vencedor === null,
     path,
     'motivo, vencedor ou tick incompatível com empate',
@@ -158,7 +162,9 @@ export function readStates(
   values: readonly unknown[],
   world: World,
   events: readonly SimEvent[],
+  stallSeconds?: StallSeconds,
 ): SimState[] {
+  let stall = stallSeconds && initialStall(world, stallSeconds);
   let end = 0;
   let prefix: readonly SimEvent[] = [];
   let finishEvents = 0;
@@ -199,6 +205,17 @@ export function readStates(
     );
     if (prefix.length !== end) prefix = events.slice(0, end);
 
+    if (stall && tick > 0) stall = advanceStall(stall, states, tick);
+    const snapshot: SimState = {
+      tick,
+      time: value.time,
+      robots: states,
+      events: prefix,
+      status: 'em_andamento',
+      resultado: null,
+      ...(stall && { stall }),
+    };
+    const expected = stall && tick > 0 ? evaluateSumo(world, snapshot) : null;
     if (status === 'finalizada') {
       requireField(
         world.match.mode === 'sumo' &&
@@ -209,17 +226,27 @@ export function readStates(
         path,
         'luta finalizada fora do último tick ou sem evento final válido',
       );
-      return {
+      const result = readResult(
+        resultado,
+        world,
         tick,
-        time: value.time,
-        robots: states,
-        status,
-        resultado: readResult(resultado, world, tick, path + '.resultado'),
-        events: prefix,
-      };
+        path + '.resultado',
+        stallSeconds,
+      );
+      requireField(
+        !stall ||
+          (expected?.motivo === result.motivo &&
+            expected.vencedor === result.vencedor),
+        path + '.resultado',
+        'resultado incompatível com as poses e o prazo',
+      );
+      return { ...snapshot, status, resultado: result };
     }
     requireField(
-      status === 'em_andamento' && resultado === null && finishEvents === 0,
+      status === 'em_andamento' &&
+        resultado === null &&
+        finishEvents === 0 &&
+        expected === null,
       path,
       'estado em andamento incompatível com resultado ou eventos',
     );
@@ -228,13 +255,6 @@ export function readStates(
       path,
       'uma luta em andamento excede o limite de ticks',
     );
-    return {
-      tick,
-      time: value.time,
-      robots: states,
-      status,
-      resultado,
-      events: prefix,
-    };
+    return snapshot;
   });
 }
