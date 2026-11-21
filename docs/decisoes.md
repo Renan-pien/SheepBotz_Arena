@@ -271,3 +271,14 @@
   A CLI e a S3 compartilham a mesma validação de controladores. Os testes conferem rejeição
   antes do tick 0, disponibilidade de recursos e paridade entre as formas de avanço.
 - **Aprovação.** Correções de C01 e C02 autorizadas pelo usuário.
+
+## ADR-017 — Retrocesso de um tick na execução ao vivo
+
+- **Data:** 2026-11-21
+- **Status:** aceita
+- **Contexto:** a equipe quer examinar uma batalha passo a passo nos dois sentidos.
+- **Opções consideradas:** navegação exclusiva no replay ou retrocesso também na sessão ao vivo.
+- **Decisão:** oferecer “Voltar 1 Tick” ao lado de “Avançar 1 tick” na sessão ao vivo parada, inclusive após o resultado. A continuação deve reproduzir a trajetória original.
+- **Motivo:** a análise de uma colisão ou do fim da luta precisa preservar o estado da estratégia, seus sorteios e os eventos de cada passo.
+- **Consequências:** revisão de S3-FR-012 e do contrato de operação da S3. O limite do arquivo de gravação e a API das estratégias continuam os definidos nas specs.
+- **Aprovado por:** solicitante, no pedido de implementação do retrocesso ao vivo.

@@ -77,6 +77,9 @@ Como membro da equipe, quero executar, pausar, avançar tick a tick e reiniciar 
 8. **Dado** a simulação finalizada, **Quando** o usuário olha os controles, **Então** "Executar" e "Avançar 1 tick" estão desabilitados e "Reiniciar" está habilitado.
 9. **Dado** o foco fora de campos de texto, do editor e de controles que usam a tecla pressionada, **Quando** o usuário pressiona Espaço, **Então** alterna entre executar e pausar. Seta para a direita avança 1 tick quando a simulação está parada e R reinicia. Com o foco no editor, essas teclas conservam sua função de edição.
 10. **Dado** a execução, **Quando** a aba fica em segundo plano e volta à frente, **Então** a simulação permanece pausada no último estado, sem avançar ticks pelo tempo fora da aba.
+11. **Dado** o Duelo parado no tick 10, **Quando** o usuário clica duas vezes em “Voltar 1 Tick”, ao lado de “Avançar 1 tick”, **Então** cena, inspeção, eventos e gravação corrente terminam no tick 8. No tick 0 e durante a execução o botão fica desabilitado.
+12. **Dado** um controlador com memória, registros e sorteios, **Quando** a sessão volta e retoma por passo ou execução contínua, **Então** todos os estados e eventos são idênticos aos de uma execução contínua com as mesmas entradas, inclusive em ticks novos. Voltar do fim da luta remove o resultado até avançar de novo ao tick final.
+13. **Dado** um mundo livre além de 100 000 ticks, **Quando** o usuário retrocede e avança através desse limite, **Então** cada ação percorre exatamente um tick e a gravação vai do tick 0 ao menor entre o tick exibido e 100 000.
 
 ---
 
@@ -134,7 +137,7 @@ Como membro da equipe, quero rever qualquer momento da luta, avançando e voltan
 1. **Dado** uma execução no modo ao vivo, **Quando** os ticks avançam, **Então** todos os estados, desde o tick 0, ficam gravados automaticamente.
 2. **Dado** uma luta encerrada no tick 34, **Quando** o usuário clica em "Ver replay", **Então** a tela entra no modo replay pausada no tick 0, com a linha do tempo de 0 a 34 e a edição de mundo e de controladores bloqueada.
 3. **Dado** o modo replay, **Quando** o usuário arrasta a linha do tempo até o tick 20, **Então** a cena, o contador e o painel de inspeção mostram exatamente o estado 20 gravado.
-4. **Dado** o modo replay no tick 20, **Quando** o usuário usa "Voltar 1 tick" (ou a seta para a esquerda) e "Avançar 1 tick", **Então** vai ao tick 19 e ao tick 20, respectivamente; "Executar" reproduz a gravação na velocidade escolhida.
+4. **Dado** o modo replay no tick 20, **Quando** o usuário usa "Voltar 1 Tick" (ou a seta para a esquerda) e "Avançar 1 tick", **Então** vai ao tick 19 e ao tick 20, respectivamente; "Executar" reproduz a gravação na velocidade escolhida.
 5. **Dado** uma gravação, **Quando** o usuário clica em "Exportar gravação", **Então** o navegador baixa um arquivo com o mundo, os controladores e todos os estados.
 6. **Dado** o arquivo exportado, **Quando** o usuário clica em "Abrir gravação" e o escolhe, **Então** a tela entra no modo replay pausada no tick 0 e reproduz exatamente os estados exportados, inclusive quando a gravação é parcial.
 7. **Dado** um arquivo de gravação corrompido ou de outro tipo, **Quando** o usuário tenta abri-lo, **Então** aparece o erro `GRAVACAO_INVALIDA` com a explicação, e a tela continua como estava.
@@ -194,7 +197,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 
 ### 4.3 Controles de tempo
 
-- **FR-012:** A tela DEVE oferecer "Executar", "Pausar", "Avançar 1 tick" e "Reiniciar", com habilitação coerente ao estado (por exemplo, "Avançar 1 tick" só com a simulação pausada; "Executar" e "Avançar" desabilitados após o fim da luta). *(RB-24)*
+- **FR-012:** A tela DEVE oferecer "Executar", "Pausar", "Avançar 1 tick", "Voltar 1 Tick" e "Reiniciar". Os dois comandos de passo ficam adjacentes e disponíveis com a sessão parada quando existe um passo naquela direção. Retroceder deixa a sessão pausada no estado anterior completo. Retomar reproduz a trajetória, incluindo a memória e os sorteios de cada estratégia. "Executar" e "Avançar" ficam desabilitados após o fim da luta. *(RB-24, ADR-017)*
 - **FR-013:** A tela DEVE exibir o tick atual, o tempo atual (em segundos, 2 casas decimais) e o status ("pronta", "executando", "pausada", "finalizada"). "Pronta" identifica uma sessão parada no tick 0 após carregar ou reiniciar. *(RB-24)*
 - **FR-014:** A tela DEVE oferecer as velocidades 0,25×, 0,5×, 1×, 2× e 4×; em 1×, o tempo simulado acompanha o tempo real dentro da resolução de um passo, se o computador acompanhar. *(RB-24)*
 - **FR-015:** Nenhum tick DEVE ser pulado; quando o computador não acompanhar a velocidade escolhida, a execução desacelera e o aviso "abaixo do tempo real" é mostrado. *(RB-24, RB-27)*
@@ -222,7 +225,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 
 - **FR-029:** Toda execução no modo ao vivo DEVE ser gravada automaticamente, desde o tick 0, até 100 000 ticks. *(RB-40)*
 - **FR-030:** A gravação DEVE conter: identificação do formato e sua versão, o mundo (texto original), os controladores de cada robô (texto), a data de criação e a lista de estados completos e consecutivos, a partir do tick 0, incluindo eventos e resultado. *(RB-40)*
-- **FR-031:** O modo replay DEVE exibir exclusivamente os estados gravados, sem executar o núcleo nem os controladores; DEVE oferecer linha do tempo, "Executar", "Pausar", "Avançar 1 tick", "Voltar 1 tick" e as mesmas velocidades do modo ao vivo; e DEVE bloquear a edição de mundo e de controladores. *(RB-40)*
+- **FR-031:** O modo replay DEVE exibir exclusivamente os estados gravados, sem executar o núcleo nem os controladores; DEVE oferecer linha do tempo, "Executar", "Pausar", "Avançar 1 tick", "Voltar 1 Tick" e as mesmas velocidades do modo ao vivo; e DEVE bloquear a edição de mundo e de controladores. *(RB-40)*
 - **FR-032:** A tela DEVE permitir "Exportar gravação" (baixar arquivo `.json` com nome `sheepbotz-<nome do mundo>-<AAAA-MM-DD-HHmm>.json`) e "Abrir gravação". *(RB-40)*
 - **FR-033:** Ao abrir uma gravação inválida (estrutura incorreta, versão desconhecida, mundo inválido ou estados incompatíveis com o mundo), a tela DEVE mostrar o erro `GRAVACAO_INVALIDA` com a explicação e manter o estado anterior. *(RB-40)*
 - **FR-034:** Reexecutar no núcleo o mundo e os controladores de uma gravação produzida pela aplicação, com a mesma semente e até seu último tick gravado, DEVE produzir estados idênticos aos gravados. *(RB-27, RB-40)*
