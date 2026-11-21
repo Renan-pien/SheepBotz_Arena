@@ -325,22 +325,26 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           >
             Pausar
           </button>
-          <button
-            type="button"
-            disabled={running || stopped}
-            onClick={() => session.step()}
+          <div
+            className="tick-controls"
+            role="group"
+            aria-label="Passo a passo"
           >
-            Avançar 1 tick
-          </button>
-          {replay && (
+            <button
+              type="button"
+              disabled={running || stopped}
+              onClick={() => session.step()}
+            >
+              Avançar 1 tick
+            </button>
             <button
               type="button"
               disabled={running || snapshot.tick === 0}
               onClick={() => session.back()}
             >
-              Voltar 1 tick
+              Voltar 1 Tick
             </button>
-          )}
+          </div>
           <button type="button" onClick={() => session.reset()}>
             Reiniciar
           </button>

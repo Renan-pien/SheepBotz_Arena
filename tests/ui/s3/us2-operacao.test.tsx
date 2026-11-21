@@ -21,6 +21,43 @@ function button(name: string) {
   return screen.getByRole<HTMLButtonElement>('button', { name });
 }
 
+it('S3-US2-AC11: volta ao vivo até zero e pode percorrer de novo o fim da luta', () => {
+  const session = mount();
+  const back = button('Voltar 1 Tick');
+  const forward = button('Avançar 1 tick');
+  expect(forward.nextElementSibling).toBe(back);
+  expect(back.disabled).toBe(true);
+  fireEvent.click(button('Executar'));
+  act(() => session.pulse(200));
+  expect(back.disabled).toBe(true);
+  fireEvent.click(button('Pausar'));
+  const first = session.history();
+  for (let tick = 9; tick >= 0; tick--) {
+    fireEvent.click(back);
+    expect(session.getSnapshot().snapshot).toEqual(first[tick]);
+    expect(session.recording().states).toHaveLength(tick + 1);
+    expect(screen.getByRole('region', { name: 'Cena 3D' }).dataset.tick).toBe(
+      String(tick),
+    );
+  }
+  expect(back.disabled).toBe(true);
+  fireEvent.click(forward);
+  expect(session.getSnapshot().snapshot).toEqual(first[1]);
+  fireEvent.click(button('Executar'));
+  act(() => session.pulse(800));
+  const end = session.getSnapshot().snapshot;
+  expect(end.resultado?.vencedor).toBe('vermelho');
+  fireEvent.click(back);
+  expect(session.getSnapshot().status).toBe('pausada');
+  expect(screen.queryByRole('region', { name: 'Resultado' })).toBeNull();
+  expect(forward.disabled).toBe(false);
+  fireEvent.click(forward);
+  expect(session.getSnapshot().snapshot).toEqual(end);
+  expect(forward.disabled).toBe(true);
+  fireEvent.click(button('Reiniciar'));
+  expect(back.disabled).toBe(true);
+});
+
 it('S3-US2-AC1: executar avança ticks fixos e atualiza contador e cena', () => {
   const session = mount();
   fireEvent.click(button('Executar'));

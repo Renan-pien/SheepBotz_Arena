@@ -50,7 +50,7 @@ it('S3-US5-AC8: a gravação é igual à reexecução com mesmas entradas', () =
   );
 });
 
-it('S3-US5-AC10: para de registrar no tick 100 000 e continua a execução', () => {
+it('S3-US5-AC10 / S3-US2-AC13: preserva o limite da gravação ao avançar e retroceder', () => {
   const session = new ArenaSession(idleEngine);
   session.openWorld(
     JSON.stringify({
@@ -70,6 +70,16 @@ it('S3-US5-AC10: para de registrar no tick 100 000 e continua a execução', () 
   const states = session.recording().states;
   expect(states).toHaveLength(100_001);
   expect(states.at(-1)?.tick).toBe(100_000);
+  session.pause();
+  for (let i = 0; i < 600; i++) session.step();
+  for (let i = 0; i < 600; i++) session.back();
+  expect(session.getSnapshot().snapshot).toEqual(view.snapshot);
+  for (let tick = view.snapshot.tick; tick > 99_999; tick--) session.back();
+  expect(session.getSnapshot().limitReached).toBe(false);
+  expect(session.recording().states.at(-1)).toEqual(states[99_999]);
+  for (let tick = 100_000; tick <= view.snapshot.tick; tick++) session.step();
+  expect(session.getSnapshot().snapshot).toEqual(view.snapshot);
+  expect(session.recording().states).toHaveLength(100_001);
 });
 
 it('aceita gravação parcial no tick zero sem executar scripts', () => {

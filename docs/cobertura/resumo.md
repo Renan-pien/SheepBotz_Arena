@@ -1,10 +1,10 @@
 # Cobertura de testes
 
-**320 testes · 88% de cobertura**
+**322 testes · 88% de cobertura**
 
 | Métrica | Cobertos | Total | Percentual |
 |---|---:|---:|---:|
-| Linhas | 1072 | 1214 | 88.3% |
-| Instruções | 1150 | 1315 | 87.45% |
-| Funções | 275 | 299 | 91.97% |
-| Ramos | 701 | 825 | 84.96% |
+| Linhas | 1094 | 1235 | 88.58% |
+| Instruções | 1177 | 1341 | 87.77% |
+| Funções | 277 | 300 | 92.33% |
+| Ramos | 711 | 835 | 85.14% |

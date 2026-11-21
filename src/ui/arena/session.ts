@@ -32,6 +32,9 @@ export interface Draft {
 
 type Drafts = Readonly<Record<string, Draft>>;
 
+// Guarda passos recentes após o limite do arquivo, inclusive em mundos livres.
+const recentTickCount = 512;
+
 function initialDrafts(
   world: World,
   defaults: Readonly<Record<string, ControllerPreset>>,
@@ -74,6 +77,7 @@ export class ArenaSession {
   #listeners = new Set<() => void>();
   #clock = new TickClock();
   #history: SimState[];
+  #recent: SimState[] = [];
   #replay: Recording | null = null;
   #createdAt = new Date().toISOString();
 
@@ -200,6 +204,7 @@ export class ArenaSession {
     this.#revision += 1;
     this.#clock.clear();
     this.#history = [snapshot];
+    this.#recent = [];
     this.#replay = null;
     this.#createdAt = new Date().toISOString();
     this.#publish({
@@ -225,7 +230,8 @@ export class ArenaSession {
   }
 
   history(): readonly SimState[] {
-    return (this.#replay?.states ?? this.#history).slice();
+    if (this.#replay) return this.#replay.states.slice();
+    return this.#history.slice(0, this.#view.snapshot.tick + 1);
   }
 
   enterReplay() {
@@ -244,6 +250,7 @@ export class ArenaSession {
   #showReplay(world: World, recording: Recording) {
     this.#replay = recording;
     this.#history = [];
+    this.#recent = [];
     this.#revision += 1;
     this.#clock.clear();
     const drafts = Object.fromEntries(
@@ -292,9 +299,20 @@ export class ArenaSession {
   }
 
   back() {
-    if (this.#view.status !== 'executando' && this.#view.snapshot.tick > 0) {
-      this.seek(this.#view.snapshot.tick - 1);
+    const { status, snapshot } = this.#view;
+    if (status === 'executando' || snapshot.tick === 0) return;
+    const target = snapshot.tick - 1;
+    if (this.#replay) {
+      this.seek(target);
+      return;
     }
+    this.#clock.clear();
+    this.#publish({
+      snapshot: this.#liveStateAt(target),
+      status: 'pausada',
+      behind: false,
+      limitReached: target >= lastRecordedTick,
+    });
   }
 
   #publish(patch: Partial<SessionView>) {
@@ -370,8 +388,7 @@ export class ArenaSession {
       index < ticks && snapshot.status !== 'finalizada';
       index += 1
     ) {
-      snapshot = this.#simulation.step();
-      if (snapshot.tick <= lastRecordedTick) this.#history.push(snapshot);
+      snapshot = this.#liveStateAt(snapshot.tick + 1);
     }
     this.#publish({
       snapshot,
@@ -379,5 +396,23 @@ export class ArenaSession {
       behind: snapshot.status !== 'finalizada' && behind,
       limitReached: snapshot.tick >= lastRecordedTick,
     });
+  }
+
+  #liveStateAt(tick: number): SimState {
+    const cached = this.#history[tick] ?? this.#recent[tick % recentTickCount];
+    if (cached?.tick === tick) return cached;
+
+    // O cursor pode estar atrás das closures e do PRNG preservados no motor.
+    // Só recalculamos o passado se o tick já saiu da janela e da gravação.
+    let state = this.#simulation.getState();
+    if (tick < state.tick) state = this.#simulation.reset();
+    const skip = tick - recentTickCount - state.tick;
+    if (skip > 0) state = this.#simulation.stepN(skip);
+    while (state.tick < tick && state.status !== 'finalizada') {
+      state = this.#simulation.step();
+      if (state.tick <= lastRecordedTick) this.#history[state.tick] = state;
+      else this.#recent[state.tick % recentTickCount] = state;
+    }
+    return state;
   }
 }

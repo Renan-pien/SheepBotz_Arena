@@ -146,6 +146,10 @@ button.primary:enabled {
 button.primary:enabled:hover {
   background: #adf3e2;
 }
+.tick-controls {
+  display: flex;
+  gap: inherit;
+}
 
 .world-actions,
 .card-actions {

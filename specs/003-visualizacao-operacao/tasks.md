@@ -55,7 +55,7 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 
 ## Incremento · Retrocesso ao vivo
 
-- [ ] T021 [US2] Verificar e implementar o retrocesso ao vivo, a continuação determinística e a gravação até o cursor — `src/ui/App.tsx`, `src/ui/arena/session.ts`, testes S3-US2-AC11 a AC13 e matriz de rastreabilidade — S3-FR-002, S3-FR-012, S3-FR-029. **Dep.** T015. **Pronto** Passos repetidos, desfecho, memória, sorteios, logs e limite da gravação conferidos em comparação com a execução contínua.
+- [X] T021 [US2] Verificar e implementar o retrocesso ao vivo, a continuação determinística e a gravação até o cursor — `src/ui/App.tsx`, `src/ui/arena/session.ts`, testes S3-US2-AC11 a AC13 e matriz de rastreabilidade — S3-FR-002, S3-FR-012, S3-FR-029. **Dep.** T015. **Pronto** Passos repetidos, desfecho, memória, sorteios, logs e limite da gravação conferidos em comparação com a execução contínua.
 
 ## Dependências e cobertura
 

@@ -105,7 +105,7 @@ it('S3-US3-AC4: escolher exemplo preenche o editor do robô correto', async () =
       editor.querySelectorAll('.cm-line'),
       (line) => line.textContent,
     );
-    expect(lines.join('\n')).toBe(controllerPresets.avanca.source);
+    expect(lines).toEqual(controllerPresets.avanca.source.split(/\r?\n/));
   });
   expect(session.getSnapshot().drafts.azul?.source).toBe(
     controllerPresets.girador.source,
