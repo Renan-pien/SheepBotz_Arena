@@ -1,16 +1,17 @@
-# Contrato de gravação · v1
+# Contrato de gravação · v1 e v2
 
 Arquivo JSON UTF-8, independente do estado atual da tela.
 
 | Chave | Tipo e invariante |
 |---|---|
 | `format` | Constante `sheepbotz-arena`. |
-| `version` | Inteiro `1`. |
+| `version` | Inteiro `1` sem detector, `2` com detector. |
+| `stallSeconds` | Exclusivo da v2. Inteiro 5, 10 ou 30 em sumô. |
 | `world` | Texto original do mundo, aceito pelo validador da S1. |
 | `controllers` | Objeto com o texto do controlador aplicado de cada ID, exatamente na mesma associação do mundo. |
 | `createdAt` | Data UTC em ISO 8601 no formato de `Date.toISOString()`. |
 | `events` | Lista em ordem acumulada, com os campos do estado da S2. Eventos de partida têm ID nulo. |
-| `states` | De 1 a 100 001 objetos. Cada um contém todos os campos de `SimState`, com a lista `events` representada por `eventCount`. |
+| `states` | De 1 a 100 001 objetos. Cada um guarda tick, tempo, robôs, status, resultado e o prefixo de eventos por `eventCount`. O monitor da v2 é derivado das poses. |
 
 `states[k]` representa o tick `k`, tempo `k × dt`, robôs na mesma ordem
 e com os IDs do mundo. `eventCount` é o comprimento do prefixo de `events`
@@ -34,3 +35,7 @@ preserva a sessão anterior. A UI gera o nome
 `sheepbotz-<nome>-<AAAA-MM-DD-HHmm>.json` com o tempo UTC de criação.
 No nome, transliterar acentos e substituir espaços ou caracteres fora de
 letras e dígitos por hífen, com `mundo` como componente padrão.
+
+## Extensão v2 (ADR-018)
+
+A v2 registra a configuração em `stallSeconds`. Na leitura, reconstruir os centros de referência e o tempo sem progresso em ordem de tick a partir das poses gravadas, conforme S2-FR-037. Conferir o resultado com o prazo escolhido. A v1 mantém os motivos de encerramento anteriores à ADR-018.

@@ -31,3 +31,7 @@ os [contratos da S1](../001-nucleo-simulacao/contracts/world.md) e o
 O relógio e o ciclo de desenho leem a sessão, que é a única dona do avanço
 ao vivo. Apenas a sessão mantém a lista mutável de referências a snapshots
 da gravação corrente. Um snapshot entregue à interface nunca é editado.
+
+## Rodada ao vivo
+
+A seleção do prazo e o bloqueio após o primeiro avanço pertencem à sessão. O cursor lê o monitor do snapshot observado. A sessão retém um único registro do último empate com número de rodada, resultado, tempo e gravação limitada ao tick 100 000. O reset por impasse substitui a gravação corrente e os eventos pela nova rodada pausada. A gravação anterior é somente leitura.

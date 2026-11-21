@@ -256,6 +256,7 @@ export interface Recording {
   readonly world: string;
   readonly controllers: Readonly<Record<string, string>>;
   readonly createdAt: string;
+  readonly stallSeconds?: 5 | 10 | 30;
   readonly states: readonly SimState[];
 }
 type DecodeResult =
@@ -268,7 +269,7 @@ export function recordingName(name: string, createdAt: string): string;
 
 O discriminador e a versão entram na serialização. Em memória, cada
 estado possui seu prefixo de `events`. Estados cuja contagem não muda
-reutilizam a referência do prefixo. O codec valida o [formato v1](contracts/gravacao.md).
+reutilizam a referência do prefixo. O codec valida os [formatos v1 e v2](contracts/gravacao.md).
 
 A região de cena publica `data-tick`, `data-rays` e `data-labels`.
 A região de inspeção publica `data-tick`. O tick é uma string decimal
@@ -288,3 +289,7 @@ inspecionáveis. O quickstart mede em Chromium o percurso completo sem
 misturar o relógio em tempo real com a suíte determinística.
 
 [Pesquisa](research.md) · [Modelo](data-model.md) · [Quickstart](quickstart.md)
+
+## Transição por impasse
+
+O núcleo decide o resultado. A sessão guarda a última gravação e resumo do impasse, reinicia pelo reset da simulação e publica o tick zero pausado em uma transição. O lote termina com a rodada. O cursor de retrocesso publica a contagem contida no snapshot. Guardar apenas uma rodada anterior. A importação deriva os dados do detector das poses gravadas sem executar estratégias.
