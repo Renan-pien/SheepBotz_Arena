@@ -154,3 +154,10 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 | ADR-019, RB-25 | S2-FR-037 | S2-T044 (`3dc6c45`) | [S2-US3-AC14 e AC15 · Caçadores, contato, empurrão e separação](../tests/core/acceptance/s2/us3-impasse.test.ts) | Validado localmente |
 | ADR-019, RB-24 | S3-FR-040 | S3-T023 (`add5249`) | [S3-US2-AC16 · seletor, contagem e ação explícita](../tests/ui/s3/us2-impasse.test.tsx), [retrocesso com os controladores reais](../tests/runtime/stall-reset.test.ts) | Validado localmente |
 | ADR-019, RB-40 | S3-FR-041 | S3-T023 (`add5249`) | [S3-US5-AC13 · preservação de v2 e replay do giro](../tests/runtime/stall-reset.test.ts), [validação da gravação v3](../tests/ui/s3/us2-impasse.test.tsx) | Validado localmente |
+
+## Sensor de borda — ADR-020
+
+| Origem | Requisito | Tarefa e commit | Testes de aceitação | Estado |
+|---|---|---|---|---|
+| Q-007, B-003, ADR-020, RB-35 | S2-FR-038 | S2-T045 (`f680f40`) | [S2-US2-AC13 e AC14 · lados, limites, empurrão e reset](../tests/core/acceptance/s2/us2-borda.test.ts), [estratégia personalizada aplicada à sessão](../tests/runtime/edge-strategy.test.ts) | Validado localmente |
+| ADR-020, RB-39 | S3-FR-042 | S3-T024 (`7ae5d5d`) | [S3-US4-AC7 · inspeção, retrocesso, reset e replays](../tests/ui/s3/us4-inspecao.test.tsx) | Validado localmente |

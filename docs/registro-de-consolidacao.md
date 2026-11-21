@@ -490,3 +490,9 @@ No navegador, o Duelo com Parado × Girador, prazo de 5 s e velocidade de reprod
 Com o Caçador de exemplo aplicado aos dois robôs, o primeiro contato ocorreu no tick 8. Os três testes de aceitação encerraram a rodada no tick 258 (5 s após o contato), 508 (10 s) e 1508 (30 s). No teste de interface, retroceder do tick 507 para o 506 fez o tempo restante passar de 0.02 s para 0.04 s. A rodada ficou pausada no tick 0 após o empate e avançou apenas após um clique.
 
 A suíte completa passou com 346 testes em 50 arquivos e 89.03% de cobertura de linhas. Lint e build de produção passaram. O benchmark S2 sem detector percorreu os 3000 ticks em 67.76 ms no Windows x64 com Node 24.22.3. O teste de gravação v2 conservou o resultado por tempo e o mesmo documento na reexportação. [Cobertura](cobertura/resumo.md) · [Rastreabilidade](rastreabilidade.md#regra-de-tempo-no-giro-conjunto--adr-019)
+
+## Sensor de borda universal · 2026-11-21
+
+A suíte passou com 361 testes em 52 arquivos e 89.11% de cobertura de linhas. O sensor passou nos quatro sentidos, no limiar exato, além da faixa, em lados simultâneos, com raios diferentes e em modo livre. Após um empurrão lateral, a estratégia detectou a borda pela pose real enquanto a odometria continuava em y = 0.32 m. Uma estratégia personalizada aplicada à sessão comandou recuo após ler a borda frontal. O painel acompanhou avanço, retrocesso, reset e os replays v1, v2 e v3.
+
+Build de produção e lint passaram, inclusive a verificação de um script personalizado com `readEdge()` pelos mesmos globais dos exemplos. O benchmark S2 completou 3000 ticks em 128.80 ms e encerrou por tempo esgotado em Windows x64 com Node 24.22.3. [Cobertura](cobertura/resumo.md) · [Matriz de rastreabilidade](rastreabilidade.md#sensor-de-borda--adr-020)

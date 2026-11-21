@@ -1,6 +1,6 @@
 # SheepBotz Arena
 
-**346 testes · 89% de cobertura**
+**361 testes · 89% de cobertura**
 
 Métricas geradas a partir dos relatórios com `npm run stats`.
 
@@ -35,6 +35,17 @@ primeiro passo. A rodada empata se os dois robôs ficarem parados ou se, após
 se tocarem, continuarem girando juntos com folga de até 2 mm entre eles e
 deslocamento de até 1 mm do ponto médio durante todo o prazo. A próxima fica pausada no tick 0, com as estratégias e
 o prazo preservados. **Ver replay do empate** abre a gravação da última rodada.
+
+No sumô, qualquer estratégia pode consultar `readEdge()` em `setup()` ou `loop()`. O retorno tem quatro lados relativos ao próprio robô: `front`, `rear`, `left` e `right`. Cada lado vale `true` a partir da borda interna da faixa branca. Em modo livre, a função retorna `null`. A aba **Inspeção** mostra as quatro leituras do tick exibido.
+
+Exemplo de estratégia que avança e recua ao detectar a borda à frente:
+
+```js
+function loop() {
+  const borda = readEdge();
+  setSpeed(borda?.front ? -0.3 : 0.3, 0);
+}
+```
 
 Para usar o núcleo pelo terminal, execute:
 
