@@ -124,6 +124,7 @@ Como membro da equipe, quero ver em números o que cada robô está sentindo e f
 4. **Dado** a aba "Eventos", **Quando** ocorrem logs, erros de controlador ou o fim da luta, **Então** cada evento aparece com tick, robô, tipo e mensagem, em ordem, com erros destacados. É possível filtrar por robô e por tipo. O evento da luta aparece como "Partida", sem associação ao vencedor. Dos eventos que atendem aos filtros, aparecem os 500 mais recentes em ordem e a quantidade oculta.
 5. **Dado** os controladores padrão, **Quando** a luta termina, **Então** aparece o aviso de resultado "Vitória de vermelho — saída da arena · tick 34 · 0,68 s", com os botões "Reiniciar" e "Ver replay".
 6. **Dado** uma luta que termina por tempo, **Quando** ela termina, **Então** o aviso diz "Empate — tempo esgotado"; se os dois saírem juntos, "Empate — os dois saíram da arena".
+7. **Dado** um robô de sumô que cruza a faixa entre dois ticks, **Quando** a inspeção avança, retrocede, reinicia ou exibe uma gravação v1, v2 ou v3, **Então** as quatro leituras correspondem ao tick mostrado. No modo livre, a inspeção informa que a borda está indisponível.
 
 ---
 
@@ -225,6 +226,8 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 - **FR-026:** A aba "Inspeção" DEVE ter um cartão por robô com: situação; pose real (x e y em metros com 3 casas; θ em graus com 1 casa); odometria no mesmo formato; diferença entre pose real e odometria (em metros); comando efetivo (v em m/s e w em rad/s, com 2 casas); bumper ("ativo"/"inativo", com ícone); e tabela do laser (número do raio, ângulo relativo em graus e distância com 3 casas), acompanhada de um gráfico de barras das distâncias. *(RB-39)*
 - **FR-027:** A aba "Eventos" DEVE listar os eventos (tick, robô, tipo, mensagem) em ordem, com filtro por robô e por tipo, destacando erros; DEVE exibir os 500 mais recentes e informar quantos foram ocultados. *(RB-39, ADR-013)*
 - **FR-028:** Ao fim de uma luta, a tela DEVE mostrar um aviso de resultado com vencedor (ou empate), motivo em pt-BR ("saída da arena", "tempo esgotado", "os dois saíram da arena"), tick e tempo, e os botões "Reiniciar" e "Ver replay". *(RB-25)*
+
+- **FR-042:** A inspeção DEVE identificar Frente, Traseira, Esquerda e Direita de cada robô de sumô e exibir em texto se cada lado está na borda ou no interior, conforme S2-FR-038. A leitura acompanha o tick exibido, inclusive em replay de gravações anteriores. No modo livre informa indisponibilidade. *(RB-39, ADR-020)*
 
 ### 4.6 Gravação e replay
 
@@ -329,6 +332,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 | RB-23 | FR-023 a FR-025 |
 | RB-24 | FR-012 a FR-018 |
 | ADR-018, ADR-019 | FR-040, FR-041 |
+| RB-39, ADR-020 | FR-042 |
 | RB-28 | FR-001, FR-002, FR-004 |
 | RB-37 | FR-007, FR-008 |
 | RB-39 | FR-026 a FR-028 |

@@ -100,6 +100,8 @@ Como membro da equipe, quero escrever em JavaScript a lógica do meu robô, usan
 10. **Dado** dois robôs cujos controladores chamam `random()` 10 vezes cada, **Quando** a simulação é executada duas vezes com a mesma semente, **Então** cada robô recebe a mesma sequência nas duas execuções; **e Quando** a semente muda, **Então** as sequências mudam.
 11. **Dado** um controlador que chama `log("olá", 42)` no tick 0, **Quando** se passa 1 tick, **Então** há um evento do tipo `log` com o `id` do robô, tick 1 e mensagem "olá 42".
 12. **Dado** um controlador que inicializa `contador` em 0 e o incrementa no nível superior, registra o valor em `setup()` e a cada `loop()` incrementa e registra o contador, **Quando** se executam dois ticks, **Então** os logs têm mensagens "1" e "2" no tick 1 e "3" no tick 2. Após o reset, o primeiro tick volta a registrar "1" e "2".
+13. **Dado** raio de arena 0.385 m e raio de robô 0.05 m em (0.33, 0.00) m, **Quando** sua orientação for 0, π, −π/2 ou π/2 rad, **Então** só frente, traseira, esquerda ou direita, respectivamente, está ativa. Com θ = 0 rad a frente ativa exatamente em x = 0.325375 m, segue ativa além da faixa e desativa ao retornar ao interior.
+14. **Dado** um controlador personalizado, **Quando** consultar a borda em setup, em loop após um empurrão lateral e após um reset, **Então** ele recebe as leituras da pose física do tick observado e pode reagir. Alterar a leitura devolvida não interfere na próxima chamada. Em modo livre recebe nulo.
 
 ---
 
@@ -194,7 +196,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - **FR-001:** Cada robô PODE ter um laser, configurado no mundo por número de raios N, campo de visão `fov` e alcance máximo (Spec 001, Anexo B). *(RB-32)*
 - **FR-002:** O ângulo do raio k em relação à frente do robô DEVE ser `α_k = −fov/2 + k · fov/(N−1)` para N > 1, e `α_0 = 0` para N = 1. A direção absoluta é `θ + α_k`. *(RB-32)*
 - **FR-003:** Todos os raios DEVEM partir do centro do robô. *(RB-32)*
-- **FR-004:** A leitura de um raio DEVE ser a menor distância `t ≥ 0`, ao longo do raio, até: as paredes do mapa, os obstáculos e o corpo (círculo) dos **outros** robôs. O próprio robô é ignorado. A borda da arena **não** é detectada. *(RB-32, ADR-003)*
+- **FR-004:** A leitura de um raio DEVE ser a menor distância `t ≥ 0`, ao longo do raio, até: as paredes do mapa, os obstáculos e o corpo (círculo) dos **outros** robôs. O próprio robô é ignorado. O laser ignora a borda da arena. *(RB-32, ADR-003)*
 - **FR-005:** Se nada for atingido até o alcance máximo, ou se a menor distância for maior que ele, a leitura DEVE ser igual ao alcance máximo. *(RB-32)*
 - **FR-006:** Se a origem do raio estiver dentro de um obstáculo ou de outro robô, a leitura DEVE ser 0. *(RB-32)*
 - **FR-007:** No passo 1 da transição do tick `k` para `k + 1`, as leituras disponibilizadas aos controladores DEVEM corresponder às poses de todos os robôs no estado do tick `k`, antes de qualquer execução de controlador no passo 2 (Spec 001, FR-017). *(RB-27, ADR-009)*
@@ -221,6 +223,8 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - **FR-022:** `log(...valores)` DEVE registrar um evento do tipo `log` com o `id` do robô, o tick em execução e a mensagem formada pelos valores convertidos em texto e separados por um espaço. Máximo de 1 000 eventos de log por robô por simulação; os excedentes são ignorados e um único evento `limite_de_logs` é registrado. *(RB-35)*
 - **FR-023:** O tick registrado em eventos DEVE ser o tick em execução (o estado resultante daquele passo); o primeiro tick é 1. *(RB-27)*
 - **FR-024:** A API do Anexo B DEVE estar disponível apenas durante a execução síncrona de `setup()` e `loop()`, inclusive para as funções auxiliares chamadas por elas. O acesso do controlador aos dados do simulador DEVE ficar restrito a essa API. O ambiente do controlador NÃO DEVE oferecer acesso ao relógio real, aleatoriedade sem semente, APIs do host, agendamento de trabalho ou avaliação dinâmica de código. Após a carga, o estado do controlador só DEVE mudar durante suas chamadas síncronas. Avançar em lote ou um tick por vez com as mesmas entradas DEVE produzir os mesmos estados, eventos e histórico, quando habilitado. *(RB-27, RB-35, ADR-010, ADR-016)*
+
+- **FR-038:** Todo controlador de sumô, de exemplo ou criado pelo usuário, DEVE poder chamar `readEdge()` sem argumentos em setup e loop. Cada chamada devolve uma nova leitura de quatro booleanos (frente, traseira, esquerda e direita relativas ao robô). Cada ponto está no perímetro, a um raio do centro, na direção correspondente. O ponto está ativo se sua distância à origem da arena for maior ou igual a 0.975 vezes o raio da arena. Ele volta a ficar inativo abaixo desse limiar. A pose usada é a pose física do tick observado, inclusive no tick 0 e após a resolução dos empurrões. No modo livre o retorno é nulo, mesmo se houver arena. A estratégia escolhe a reação. *(RB-35, ADR-020)*
 
 ### 4.4 Controlador: erros
 
@@ -282,16 +286,16 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 
 ## 7. Premissas e decisões
 
-- Convenções C5, C6, C13, C14, C15, C22 e C23 do AGENTS.md §10 foram fixadas nesta spec (ADR-007, aceita).
+- Convenções C5, C6, C13, C14, C15, C22 e C23 do AGENTS.md §10 foram fixadas nesta spec (ADR-007, com C23 atualizada pela ADR-020).
 - Laser em vez de sonar (proposta padrão de Q-008).
 - Enquanto a forma de chamada da suíte externa aguarda confirmação do professor (Q-001), os contratos da S2 partem das duas entradas da Spec 001: API de biblioteca e comando sem interface. [Q-001](../../docs/perguntas.md#q-001--como-a-suíte-oculta-interage-com-o-código-regenerado)
-- Sem sensor de borda (proposta padrão de Q-007); o controlador pode usar a odometria e `arenaRadius`. O sensor de borda está no backlog (B-003).
+- Sensor de borda universal de quatro lados em sumô (Q-007, ADR-020).
 - Controladores executam no mesmo processo do simulador; o isolamento do FR-024 é de **acesso a dados**, não de segurança contra código malicioso (a equipe executa o próprio código).
 
 ## 8. Fora do escopo
 
 - Proteção contra laços infinitos ou controladores lentos (exigiria limite de tempo real, o que quebraria o determinismo).
-- Sonar, câmera, sensor de cor ou de borda.
+- Sonar, câmera e sensor de cor de uso geral.
 - Ruído nas leituras.
 - Controladores em Portugol (B-001) e controle remoto via WebSocket (B-002).
 - Contagem regressiva de início de luta e pontuação entre lutas. A operação da rodada seguinte após impasse pertence à S3 (ADR-018).
@@ -321,6 +325,7 @@ do controlador ocorre durante uma chamada síncrona prevista no FR-024.
 | Função | Devolve | Descrição |
 |---|---|---|
 | `readLaser()` | lista de números | Cópia das leituras do início do passo, do raio 0 (direita) ao raio N−1 (esquerda). Lista vazia sem laser. |
+| `readEdge()` | `{ front, rear, left, right }` ou `null` | Quatro booleanos independentes no perímetro do próprio robô (FR-038). |
 | `readBumper()` | verdadeiro/falso | Se houve contato no tick anterior |
 | `readOdometry()` | `{ x, y, theta }` | Pose estimada pela odometria |
 | `setSpeed(v, w)` | nada | Define velocidade linear (m/s) e angular (rad/s); exige dois números finitos; saturada pelos limites do robô |
@@ -441,6 +446,7 @@ Com um mundo válido, o resultado sem interface reúne as ocorrências desta tab
 | RB-23, RB-35 | FR-009 a FR-027 |
 | RB-25 | FR-027 a FR-033, FR-035, FR-036 |
 | ADR-018, ADR-019 | FR-037 |
+| RB-35, ADR-020 | FR-038 |
 | RB-27 | FR-007, FR-021, FR-023, FR-024 |
 | RB-31 | FR-027 |
 | RB-32 | FR-001 a FR-008, FR-016 |

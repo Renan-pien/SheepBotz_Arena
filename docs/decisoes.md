@@ -301,3 +301,12 @@
 - **Decisão** Contar também o tempo desde o contato físico dos dois robôs enquanto a folga for de até 2 mm e o ponto médio ficar a até 1 mm da referência. Um empurrão que ultrapasse a margem do ponto médio reinicia esse intervalo. Separação maior descarta o intervalo até novo contato. O critério individual da ADR-018 continua independente.
 - **Alternativas** Medir apenas os dois centros perdeu o giro observado. Exigir contato em todos os ticks interromperia a contagem nos pequenos afastamentos. Contar desde a aproximação anteciparia o início do prazo.
 - **Consequências** S2-FR-037 e S3-FR-040/041 passam a contemplar o giro. O seletor se chama “Regra de Tempo”. A versão 3 da gravação identifica a nova regra e permite reproduzir o contato observado. A versão 2 conserva a regra original.
+
+## ADR-020 — Sensor de borda nos quatro lados do robô
+
+- **Data e aprovação** 2026-11-21, Wesley. Decisão aceita. Substitui a decisão C23 da ADR-007.
+- **Contexto** Na Q-007, o time deixou a detecção de borda no backlog. A odometria pode divergir da pose física durante um empurrão.
+- **Opções consideradas** Estimar a aproximação por odometria ou oferecer a leitura do chão em pontos do próprio robô.
+- **Decisão** Todo controlador de sumô pode consultar `readEdge()` dentro de `setup()` e `loop()`. Quatro pontos no perímetro acompanham frente, traseira, esquerda e direita. Cada ponto sinaliza a partir de 97.5% do raio da arena, inclusive para além da faixa branca. Em modo livre a leitura é nula.
+- **Motivo** Os lados distinguem uma aproximação de frente de um empurrão lateral. A faixa já desenhada dá uma referência visível e a pose física mantém a leitura coerente com colisões.
+- **Consequências** O contrato da API do controlador ganha uma revisão aditiva. O painel de inspeção deriva a mesma leitura do tick observado, inclusive em replays antigos. A decisão de reagir cabe a cada estratégia. Origem de S2-FR-038 e S3-FR-042.

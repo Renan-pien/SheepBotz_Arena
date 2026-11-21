@@ -12,7 +12,7 @@
 | Q-004 | O repositório é por dupla ou por grupo? | Professor | Setup do repositório | Aberta |
 | Q-005 | Qual formato de relatório de cobertura é aceito? | Professor | CI e README | Aberta |
 | Q-006 | A SheepBotz compete em sumô? Em qual categoria? | Time | Dimensões da arena (C20) | Proposta padrão adotada nas specs (ADR-007) |
-| Q-007 | Haverá sensor de borda? | Time | Spec 002 (C23) | Proposta padrão adotada nas specs (ADR-007) |
+| Q-007 | Haverá sensor de borda? | Time | Spec 002 (C23) | Resolvida (ADR-020) |
 | Q-008 | Laser ou sonar? | Time | Spec 002 (C13, C14) | Proposta padrão adotada nas specs (ADR-007) |
 | Q-009 | Arquivo de mundo em YAML ou JSON? | Time | Spec 001 | Proposta padrão adotada nas specs (ADR-007) |
 | Q-010 | Quais leituras de laser devem aparecer no estado publicado ao fim de cada tick? | Time | Estado, inspeção e replay (S2, S3) | Resolvida (ADR-009) |
@@ -91,8 +91,8 @@
 - **Opções:** A) Não ter sensor de borda; o controlador usa odometria e o raio da arena. B) Ter um sensor de borda simples.
 - **Impacto se não respondida:** API do controlador e estratégias de exemplo da Spec 002.
 - **Proposta padrão:** A) Sem sensor de borda no escopo; o sensor fica em `docs/backlog.md`.
-- **Resposta:** —
-- **Virou:** —
+- **Resposta:** Em 2026-11-21, Wesley aprovou a opção B com quatro lados para todas as estratégias de sumô.
+- **Virou:** ADR-020, S2-FR-038 e S3-FR-042.
 
 ## Q-008 — Laser ou sonar?
 - **Data:** 2026-11-11
