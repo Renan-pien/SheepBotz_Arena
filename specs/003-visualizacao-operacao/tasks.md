@@ -79,3 +79,6 @@ A sessão e o App são compartilhados e seguem a sequência da tabela.
 A entrega mínima reúne cena, controles de tempo, mundos e scripts no
 navegador. A seguir entram inspeção e replay. A apresentação vem por
 último. A publicação, a regeneração e a tag pertencem ao fechamento.
+
+## Incremento de operação do sumô
+- [ ] T022 [US2, US5] Testar S3-US2-AC14/15 e S3-US5-AC12, integrar seleção, reset pausado, registro do empate e leitura v1/v2 — src/ui/{arena,panels,App.tsx}, testes de sessão, UI e replay, métricas e matriz — S3-FR-040, S3-FR-041. Depende de S2-T043. Pronto com suíte, build, lint e cobertura aprovados.
