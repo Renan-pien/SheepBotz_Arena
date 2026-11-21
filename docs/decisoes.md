@@ -293,3 +293,11 @@
 
 - **Motivo** Comparar com o último centro de referência detecta movimento lento acumulado e conta o deslocamento provocado por empurrão.
 - **Aprovado por** Wesley, administrador do projeto, em 2026-11-21.
+
+## ADR-019 — Impasse durante o giro conjunto
+
+- **Data e aprovação** 2026-11-21, Wesley. Decisão aceita como extensão da ADR-018.
+- **Contexto** No Duelo padrão, dois Caçadores se encontram no tick 8. Enquanto giram, cada centro percorre um arco, o ponto médio fica estável e a folga entre os corpos chega a 1.92 mm.
+- **Decisão** Contar também o tempo desde o contato físico dos dois robôs enquanto a folga for de até 2 mm e o ponto médio ficar a até 1 mm da referência. Um empurrão que ultrapasse a margem do ponto médio reinicia esse intervalo. Separação maior descarta o intervalo até novo contato. O critério individual da ADR-018 continua independente.
+- **Alternativas** Medir apenas os dois centros perdeu o giro observado. Exigir contato em todos os ticks interromperia a contagem nos pequenos afastamentos. Contar desde a aproximação anteciparia o início do prazo.
+- **Consequências** S2-FR-037 e S3-FR-040/041 passam a contemplar o giro. O seletor se chama “Regra de Tempo”. A versão 3 da gravação identifica a nova regra e permite reproduzir o contato observado. A versão 2 conserva a regra original.

@@ -126,6 +126,8 @@ Como membro da equipe, quero colocar duas estratégias para lutar e saber quem v
 11. **Dado** sumô com dt = 0.02 s e centros parados, **Quando** transcorrerem 250, 500 ou 1500 ticks respectivamente para 5, 10 ou 30 s, **Então** ocorre um único empate, inclusive com giro no eixo ou motores bloqueados.
 12. **Dado** movimento de 0.0004 m por passo, **Quando** o centro acumula 0.0012 m no terceiro passo, **Então** este é o novo tick de referência. Um empurrão também conta. Até 0.001 m inclusive, a referência permanece.
 13. **Dado** impasse no mesmo tick de um resultado ordinário, **Quando** encerrar a luta, **Então** vale o resultado ordinário. Sem opção, Parado × Girador continua até o tick 3000 do benchmark.
+14. **Dado** o Duelo padrão com Caçador nos dois robôs e primeiro contato no tick 8, **Quando** o prazo for 5, 10 ou 30 s, **Então** o giro conjunto termina em empate respectivamente no tick 258, 508 ou 1508. O tick anterior segue em andamento.
+15. **Dado** um par em contato, **Quando** o ponto médio se deslocar mais de 0.001 m, **Então** reiniciar o prazo conjunto naquele tick. Com folga superior a 0.002 m, descartar o intervalo. Voltar a uma folga pequena só inicia outro intervalo quando houver novo contato.
 
 ---
 
@@ -244,7 +246,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - **FR-034:** O estado de cada robô DEVE acrescentar aos campos da Spec 001 as leituras do laser da pose publicada (FR-008) e a situação (`ativo` ou `desativado`). O estado da simulação DEVE acrescentar status, resultado e a lista de eventos ocorridos até aquele tick, em ordem. *(RB-43, RB-45)*
 - **FR-035:** O sistema DEVE oferecer os mundos de exemplo "Duelo padrão" (Spec 001, Anexo A) e "Sala com obstáculos" (Anexo C). *(RB-25)*
 - **FR-036:** O sistema DEVE oferecer os controladores de exemplo do Anexo D, com exatamente o comportamento descrito. *(RB-25)*
-- **FR-037:** Quando solicitado em sumô por 5, 10 ou 30 s (ADR-018), contar o tempo desde o tick 0 ou o último progresso. Após resolver todos os contatos, comparar cada centro físico (x, y) com sua própria referência. Se qualquer distância euclidiana exceder 0.001 m, atualizar ambas as referências e zerar a contagem naquele tick. Orientação, comandos e odometria não entram na medida. No primeiro tick em que (tick − último progresso) × dt atingir o prazo, encerrar com vencedor nulo, motivo falta_de_progresso e um único evento fim_da_luta. Saída da arena, saída simultânea e limite de ticks mantêm precedência. O modo livre e a execução sem opção seguem as regras anteriores.
+- **FR-037:** Quando solicitado em sumô por 5, 10 ou 30 s (ADR-018), contar o tempo desde o tick 0 ou o último progresso. Após resolver todos os contatos, comparar cada centro físico (x, y) com sua própria referência. Se qualquer distância euclidiana exceder 0.001 m, atualizar ambas as referências e zerar a contagem naquele tick. Orientação, comandos e odometria não entram na medida. Em paralelo, iniciar uma contagem conjunta no contato entre os robôs (inclusive tangência inicial). Usar o ponto médio dos centros físicos após todos os contatos. Enquanto a folga entre as superfícies for de até 0.002 m, manter a referência do par até o deslocamento do ponto médio exceder 0.001 m. Nesse tick, usar o novo ponto médio e reiniciar a contagem conjunta. Acima da folga, descartar a contagem conjunta até novo contato. Aproximar-se sem tocar não inicia a contagem. No primeiro tick em que qualquer um dos dois intervalos atingir o prazo em tempo simulado (ADR-019), encerrar com vencedor nulo, motivo falta_de_progresso e um único evento fim_da_luta. Saída da arena, saída simultânea e limite de ticks mantêm precedência. O modo livre e a execução sem opção seguem as regras anteriores.
 
 ---
 
@@ -438,7 +440,7 @@ Com um mundo válido, o resultado sem interface reúne as ocorrências desta tab
 |---|---|
 | RB-23, RB-35 | FR-009 a FR-027 |
 | RB-25 | FR-027 a FR-033, FR-035, FR-036 |
-| ADR-018 | FR-037 |
+| ADR-018, ADR-019 | FR-037 |
 | RB-27 | FR-007, FR-021, FR-023, FR-024 |
 | RB-31 | FR-027 |
 | RB-32 | FR-001 a FR-008, FR-016 |
