@@ -82,3 +82,5 @@ navegador. A seguir entram inspeção e replay. A apresentação vem por
 
 ## Incremento de operação do sumô
 - [X] T022 [US2, US5] Testar S3-US2-AC14/15 e S3-US5-AC12, integrar seleção, reset pausado, registro do empate e leitura v1/v2 — src/ui/{arena,panels,App.tsx}, testes de sessão, UI e replay, métricas e matriz — S3-FR-040, S3-FR-041. Depende de S2-T043. Pronto com suíte, build, lint e cobertura aprovados.
+
+- [ ] T023 [US2, US5] Exibir Regra de Tempo e a contagem efetiva, preservar o reset pausado e implementar leitura e exportação conforme [Recording.version](data-model.md) — App, sessão, codec, testes S3-US2-AC16 e S3-US5-AC13, matriz e métricas — S3-FR-040, S3-FR-041, ADR-019. Depende de S2-T044. Pronto com retrocesso, v1/v2/v3, build, lint e cobertura verificados.

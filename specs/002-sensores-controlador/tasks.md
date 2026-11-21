@@ -224,3 +224,5 @@ Setup T001–T002 → Fundação T003–T008 → US1 T009–T016 → US2 T017–
 
 ## Incremento de sumô
 - [X] T043 [US3] Testar S2-US3-AC11 a AC13, implementar estado de progresso, regra de empate, opções de biblioteca e CLI — src/core/{match,sim,api}, src/cli/run-cli.ts, testes de sumô e CLI — S2-FR-037. Pronto com casos físicos e benchmark legado verificados.
+
+- [ ] T044 [US3] Testar S2-US3-AC14/15 e implementar o giro após contato, limites inclusivos e encerramento determinístico — `src/core/match/sumo.ts`, `src/core/sim/step.ts`, `src/core/types.ts`, `src/core/index.ts`, testes de impasse — S2-FR-037, ADR-019. Campos [StallState.pair, StallState.sinceTick, StallState.pairContact](data-model.md). Pronto com o duelo e as fronteiras verificados.
