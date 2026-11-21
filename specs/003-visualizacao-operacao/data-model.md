@@ -35,3 +35,5 @@ da gravação corrente. Um snapshot entregue à interface nunca é editado.
 ## Rodada ao vivo
 
 A seleção do prazo e o bloqueio após o primeiro avanço pertencem à sessão. O cursor lê o monitor do snapshot observado. A sessão retém um único registro do último empate com número de rodada, resultado, tempo e gravação limitada ao tick 100 000. O reset por impasse substitui a gravação corrente e os eventos pela nova rodada pausada. A gravação anterior é somente leitura.
+
+`Recording.version` distingue ausência de detector (1), critério individual (2) e critério individual com giro conjunto (3). A sessão conserva a versão ao reexportar um replay.

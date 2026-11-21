@@ -1,12 +1,12 @@
-# Contrato de gravação · v1 e v2
+# Contrato de gravação · v1, v2 e v3
 
 Arquivo JSON UTF-8, independente do estado atual da tela.
 
 | Chave | Tipo e invariante |
 |---|---|
 | `format` | Constante `sheepbotz-arena`. |
-| `version` | Inteiro `1` sem detector, `2` com detector. |
-| `stallSeconds` | Exclusivo da v2. Inteiro 5, 10 ou 30 em sumô. |
+| `version` | Inteiro `1` sem detector, `2` com critério individual ou `3` com os critérios individual e conjunto. |
+| `stallSeconds` | Obrigatório na v2 e na v3. Inteiro 5, 10 ou 30 em sumô. |
 | `world` | Texto original do mundo, aceito pelo validador da S1. |
 | `controllers` | Objeto com o texto do controlador aplicado de cada ID, exatamente na mesma associação do mundo. |
 | `createdAt` | Data UTC em ISO 8601 no formato de `Date.toISOString()`. |
@@ -38,4 +38,8 @@ letras e dígitos por hífen, com `mundo` como componente padrão.
 
 ## Extensão v2 (ADR-018)
 
-A v2 registra a configuração em `stallSeconds`. Na leitura, reconstruir os centros de referência e o tempo sem progresso em ordem de tick a partir das poses gravadas, conforme S2-FR-037. Conferir o resultado com o prazo escolhido. A v1 mantém os motivos de encerramento anteriores à ADR-018.
+A v2 registra a configuração em `stallSeconds`. Na leitura, reconstruir os centros de referência e o tempo sem progresso em ordem de tick a partir das poses gravadas, conforme a regra individual da ADR-018. Conferir o resultado com o prazo escolhido. A v1 mantém os motivos de encerramento anteriores à ADR-018.
+
+## Extensão v3 (ADR-019)
+
+Na v3, um estado pode incluir `pairContact: true` para registrar colisão entre os robôs. Se presente, requer tick positivo e ambos os bumpers ativos. Omissão significa falso. A leitura reconstrói as duas contagens sequencialmente, usando esse sinal, os raios do mundo e as poses gravadas. O resultado deve coincidir com a regra da versão do arquivo. Ao salvar um replay importado, preservar a versão original.

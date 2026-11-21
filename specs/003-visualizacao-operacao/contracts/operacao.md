@@ -82,4 +82,4 @@ O aviso de limite dos eventos usa “1 evento oculto” no singular e
 
 ## Rodadas de sumô
 
-“Limite sem progresso” contém 5 s, 10 s e 30 s. Disponível antes do primeiro avanço da rodada ao vivo parada. Exibir “Tempo até impasse” em segundos com duas casas, calculado pelo prazo menos (tick − sinceTick) × dt, no mínimo zero. Durante o replay, mostrar a contagem apenas para gravações com detector. Após o empate mostrar último resultado e acesso à gravação anterior, inclusive quando o novo histórico só contém o tick 0. Reinício manual ou troca de mundo/controlador inicia uma sessão de rodadas nova.
+“Regra de Tempo” contém 5 s, 10 s e 30 s. Disponível antes do primeiro avanço da rodada ao vivo parada. Exibir “Tempo até impasse” em segundos com duas casas, calculado pelo prazo menos (tick − início do intervalo ativo mais antigo) × dt, no mínimo zero. Durante o replay, mostrar a contagem apenas para gravações com detector. Após o empate mostrar último resultado e acesso à gravação anterior, inclusive quando o novo histórico só contém o tick 0. Reinício manual ou troca de mundo/controlador inicia uma sessão de rodadas nova.
