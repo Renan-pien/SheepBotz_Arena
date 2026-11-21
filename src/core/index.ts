@@ -4,6 +4,7 @@ export {
   isStallSeconds,
   initialStall,
   advanceStall,
+  stallStartTick,
   evaluateSumo,
 } from './match/sumo';
 export { loadWorld } from './world/load-world';

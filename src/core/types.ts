@@ -61,6 +61,11 @@ export interface RobotState {
 export type StallSeconds = 5 | 10 | 30;
 
 export interface StallState {
+  readonly pair?: {
+    readonly center: Pick<Pose, 'x' | 'y'>;
+    readonly sinceTick: number;
+  };
+  readonly pairContact?: true;
   readonly limitSeconds: StallSeconds;
   readonly sinceTick: number;
   readonly centers: readonly Pick<Pose, 'x' | 'y'>[];

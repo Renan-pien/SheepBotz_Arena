@@ -1,5 +1,8 @@
+import { readFileSync } from 'node:fs';
 import { expect, it } from 'vitest';
+import { initializeControllerEngine } from '../../../../src/runtime/controller-engine';
 import {
+  advanceStall,
   createSimulation,
   loadWorld,
   runHeadless,
@@ -123,4 +126,80 @@ it('S2-US3-AC11: prazo não divisível por dt encerra no primeiro tick que o alc
     tick: 167,
     vencedor: null,
   });
+});
+
+it.each([5, 10, 30] as const)(
+  'S2-US3-AC14: dois Caçadores empatam %i s após o contato no tick 8',
+  (stallSeconds) => {
+    const hunter = readFileSync(
+      new URL('../../../../examples/controllers/cacador.js', import.meta.url),
+      'utf8',
+    );
+    const end = 8 + stallSeconds * 50;
+    const result = runHeadless({
+      world: duel,
+      controllers: { vermelho: hunter, azul: hunter },
+      controllerEngine: initializeControllerEngine(),
+      stallSeconds,
+      history: true,
+      ticks: end + 10,
+    });
+    if (!result.ok) throw Error(JSON.stringify(result.errors));
+    expect(result.history![7]!.stall?.pair).toBeUndefined();
+    expect(result.history![8]!.stall?.pair?.sinceTick).toBe(8);
+    expect(result.history![end - 1]!.resultado).toBeNull();
+    expect(result.state.resultado).toEqual({
+      vencedor: null,
+      motivo: 'falta_de_progresso',
+      tick: end,
+    });
+    expect(
+      result.state.events.filter((event) => event.type === 'fim_da_luta'),
+    ).toHaveLength(1);
+  },
+);
+
+it('S2-US3-AC15: só contato inicia o giro e as duas tolerâncias têm fronteiras inclusivas', () => {
+  // Raios diferentes e ponto médio fora da origem.
+  const sim = simulate(
+    arena([
+      robot({ id: 'a', x: 0, radius: 0.04 }),
+      robot({ id: 'b', x: 0.2, radius: 0.06 }),
+    ]),
+    5,
+  );
+  const base = sim.getState();
+  let monitor = base.stall!;
+  let tick = 0;
+  function observe(mid: number, gap: number, pairContact = false) {
+    const half = (0.1 + gap) / 2;
+    const robots = base.robots.map((robot, i) => ({
+      ...robot,
+      pose: { ...robot.pose, x: mid + (i ? half : -half) },
+      bumper: true,
+    }));
+    monitor = advanceStall(monitor, robots, ++tick, sim.world, pairContact);
+    return monitor.pair?.sinceTick;
+  }
+  expect(observe(0.2, 0.001)).toBeUndefined();
+  expect(observe(0.2, 0)).toBe(2);
+  expect(observe(0.201, 0.002)).toBe(2);
+  expect(observe(0.2011, 0.002)).toBe(4);
+  expect(observe(0.2011, 0.0021)).toBeUndefined();
+  expect(observe(0.2011, 0.001)).toBeUndefined();
+  // Colisão oblíqua detectada pelo resolvedor, com pequena folga após correção.
+  expect(observe(0.2011, 0.001, true)).toBe(7);
+  expect(observe(0.2011, 0.0021, true)).toBeUndefined();
+});
+
+it('S2-US3-AC15: dupla tangente no estado inicial usa o tick zero', () => {
+  const sim = simulate(
+    arena([robot({ id: 'a', x: -0.1 }), robot({ id: 'b', x: 0.1 })]),
+    5,
+  );
+  expect(sim.getState().stall?.pair).toEqual({
+    center: { x: 0, y: 0 },
+    sinceTick: 0,
+  });
+  expect(sim.stepN(250).resultado?.tick).toBe(250);
 });

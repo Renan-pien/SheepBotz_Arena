@@ -81,13 +81,22 @@ export function step(
       contacted: false,
     };
   });
-  const robots = resolveEnvironment(resolveContacts(candidates), world).map(
-    (robot) => updateMeasurements(robot, world.dt),
+  const contacts = resolveContacts(candidates);
+  const robots = resolveEnvironment(contacts, world).map((robot) =>
+    updateMeasurements(robot, world.dt),
   );
   const tick = state.tick + 1;
   const next: SimState = {
     ...state,
-    ...(state.stall && { stall: advanceStall(state.stall, robots, tick) }),
+    ...(state.stall && {
+      stall: advanceStall(
+        state.stall,
+        robots,
+        tick,
+        world,
+        contacts[0]!.contacted,
+      ),
+    }),
     tick,
     time: tick * world.dt,
     robots: withLaser(world, robots),
