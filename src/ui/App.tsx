@@ -1,5 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { stallStartTick } from '../core';
+import { releaseTick, SUMO_START_SECONDS, stallStartTick } from '../core';
 import { speeds, startTicker, type PlaybackSpeed } from './arena/clock';
 import { ArenaSession } from './arena/session';
 import {
@@ -41,6 +41,8 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const mode = world.match.mode;
   const difficulty =
     mode === 'maze' ? mazeLevelFromText(view.worldText) : undefined;
+  const startTick = snapshot.sumoStartDelay ? releaseTick(world.dt) : 0;
+  const waitingForStart = snapshot.tick < startTick;
   const result = resultLabel(snapshot, difficulty === 'dificil');
   const nextLevel =
     !replay &&
@@ -445,14 +447,21 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           <span data-testid="current-tick">Tick {snapshot.tick}</span>
           <span>{formatNumber(snapshot.time, 2)} s</span>
           <span>{status}</span>
-          {snapshot.stall && (
+          {waitingForStart && !result && (
+            <span>
+              Largada em {formatNumber(SUMO_START_SECONDS - snapshot.time, 2)} s
+            </span>
+          )}
+          {snapshot.stall && !waitingForStart && !snapshot.falseStarters && (
             <span>
               Tempo até impasse:{' '}
               {formatNumber(
                 Math.max(
                   0,
                   snapshot.stall.limitSeconds -
-                    (snapshot.tick - stallStartTick(snapshot.stall)) * world.dt,
+                    (snapshot.tick -
+                      Math.max(startTick, stallStartTick(snapshot.stall))) *
+                      world.dt,
                 ),
                 2,
               )}{' '}

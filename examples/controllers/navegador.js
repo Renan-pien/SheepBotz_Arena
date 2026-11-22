@@ -5,6 +5,7 @@ let heading = 0;
 let target = null;
 
 function loop() {
+  if (getInfo().startReleased === false) return;
   const pose = readOdometry();
   const { dt } = getInfo();
 

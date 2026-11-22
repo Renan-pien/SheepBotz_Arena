@@ -9,9 +9,10 @@ it('S2-US2-AC14: código próprio aplicado no editor lê a borda e decide o movi
   session.openWorld(JSON.stringify(world));
   session.editSource(
     'vermelho',
-    'function loop(){ const edge = readEdge(); log(edge.front); setSpeed(edge.front ? -1 : 1, 0); }',
+    'function loop(){ if(getInfo().startReleased === false)return; const edge = readEdge(); log(edge.front); setSpeed(edge.front ? -1 : 1, 0); }',
   );
   session.apply('vermelho');
+  for (let tick = 0; tick < 250; tick++) session.step();
   session.step();
   session.step();
   const second = session.getSnapshot().snapshot;

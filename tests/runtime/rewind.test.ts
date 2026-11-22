@@ -11,6 +11,7 @@ it('S3-US2-AC12: retomar preserva closures, sorteios, contatos, falhas e logs no
       let offset;
       function setup() { offset = random(); }
       function loop() {
+        if (getInfo().startReleased === false) return;
         log(++count, offset, random(), readBumper());
         setSpeed(1, 0);
       }
@@ -21,6 +22,7 @@ it('S3-US2-AC12: retomar preserva closures, sorteios, contatos, falhas e logs no
       'azul',
       `
       function loop() {
+        if (getInfo().startReleased === false) return;
         if (readBumper()) throw Error('contato');
         setSpeed(0, random());
       }
@@ -31,23 +33,23 @@ it('S3-US2-AC12: retomar preserva closures, sorteios, contatos, falhas e logs no
   }
   const baseline = duel();
   const reviewed = duel();
-  for (let tick = 0; tick < 25; tick++) {
+  for (let tick = 0; tick < 275; tick++) {
     baseline.step();
     reviewed.step();
   }
   const states = baseline.history();
   expect(states.some((s) => s.robots.some((r) => r.bumper))).toBe(true);
-  expect(states[25]!.events.some((e) => e.type === 'erro_controlador')).toBe(
+  expect(states[275]!.events.some((e) => e.type === 'erro_controlador')).toBe(
     true,
   );
-  for (let tick = 24; tick >= 3; tick--) {
+  for (let tick = 274; tick >= 253; tick--) {
     reviewed.back();
     expect(reviewed.getSnapshot().snapshot).toEqual(states[tick]);
   }
   reviewed.play();
   reviewed.pulse(500);
   reviewed.pause();
-  for (let tick = 25; tick < 28; tick++) baseline.step();
+  for (let tick = 275; tick < 278; tick++) baseline.step();
   expect(reviewed.history()).toEqual(baseline.history());
   reviewed.step();
   baseline.step();

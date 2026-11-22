@@ -17,7 +17,7 @@ export const lastRecordedTick = 100_000;
 const format = 'sheepbotz-arena';
 
 export interface Recording {
-  readonly version: 1 | 2 | 3 | 4;
+  readonly version: 1 | 2 | 3 | 4 | 5;
   readonly stallSeconds?: StallSeconds;
   readonly world: string;
   readonly controllers: Readonly<Record<string, string>>;
@@ -42,7 +42,17 @@ export function encodeRecording(recording: Recording): string {
     createdAt: recording.createdAt,
     events: recording.states.at(-1)!.events,
     states: recording.states.map(
-      ({ tick, time, robots, status, resultado, events, stall }) => ({
+      ({
+        tick,
+        time,
+        robots,
+        status,
+        resultado,
+        events,
+        stall,
+        falseStarters,
+      }) => ({
+        ...(falseStarters && { falseStarters }),
         ...(stall?.pairContact && { pairContact: true }),
         tick,
         time,
@@ -86,7 +96,8 @@ export function decodeRecording(text: string): DecodeResult {
       data.version === 1 ||
         data.version === 2 ||
         data.version === 3 ||
-        data.version === 4,
+        data.version === 4 ||
+        data.version === 5,
       'version',
       'versão não suportada',
     );
@@ -141,7 +152,8 @@ export function decodeRecording(text: string): DecodeResult {
       parsed.world,
       list,
       limit,
-      data.version === 3,
+      data.version === 3 || data.version === 5,
+      data.version === 5,
     );
     return {
       ok: true,

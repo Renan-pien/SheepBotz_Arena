@@ -6,12 +6,12 @@ import {
   recordingName,
 } from '../../../src/ui/arena/recording';
 import { ArenaSession } from '../../../src/ui/arena/session';
-import { idleEngine, testEngine } from './support';
+import { idleEngine, testEngine, runDefaultDuel } from './support';
 
 function duel() {
   const session = new ArenaSession(testEngine);
   session.play();
-  session.pulse(800);
+  runDefaultDuel(session);
   return session;
 }
 
@@ -20,7 +20,7 @@ it('S3-US5-AC1: grava tick zero e cada tick de um lote', () => {
     duel()
       .recording()
       .states.map(({ tick }) => tick),
-  ).toEqual(Array.from({ length: 35 }, (_, index) => index));
+  ).toEqual(Array.from({ length: 285 }, (_, index) => index));
 });
 
 it('S3-US5-AC8: a gravação é igual à reexecução com mesmas entradas', () => {
@@ -30,7 +30,8 @@ it('S3-US5-AC8: a gravação é igual à reexecução com mesmas entradas', () =
     stallSeconds: recording.stallSeconds,
     controllers: recording.controllers,
     controllerEngine: testEngine,
-    ticks: 34,
+    sumoStartDelay: true,
+    ticks: 284,
     history: true,
   });
   if (!result.ok) throw new Error(JSON.stringify(result.errors));
@@ -140,10 +141,10 @@ it.each<[string, unknown]>([
   ['states.1.robots.0.situacao', 'parado'],
   ['states.1.resultado', {}],
   ['states.1.status', 'finalizada'],
-  ['states.34.resultado', null],
-  ['states.34.resultado.motivo', 'incorreto'],
-  ['states.34.resultado.vencedor', null],
-  ['states.34.resultado.tick', 33],
+  ['states.284.resultado', null],
+  ['states.284.resultado.motivo', 'incorreto'],
+  ['states.284.resultado.vencedor', null],
+  ['states.284.resultado.tick', 33],
 ])('rejeita incoerência em %s com erro estruturado', (field, value) => {
   const document: unknown = JSON.parse(encodeRecording(duel().recording()));
   replaceAt(document, field.split('.'), value);

@@ -93,4 +93,4 @@ navegador. A seguir entram inspeção e replay. A apresentação vem por
 
 - [X] T027 [US3] Exibir o cursor nativo com contraste no conteúdo editável de todos os controladores. Testar o estilo em `tests/ui/s3/us3-controladores.test.tsx` e verificar clique, setas e digitação no navegador nos três editores — `src/ui/arena.css` — S3-FR-023, S3-FR-038, S3-US3-AC13.
 
-- [ ] T028 [US2] Integrar largada, exemplos, contagem, resultado e gravação v5 em src/ui e examples/controllers. Verificar pausas, rewind, replays anteriores, regressões e atualizar os artefatos — S3-FR-045, S3-US2-AC17.
+- [X] T028 [US2] Integrar largada, exemplos, contagem, resultado e gravação v5 em src/ui e examples/controllers. Verificar pausas, rewind, replays anteriores, regressões e atualizar os artefatos — S3-FR-045, S3-US2-AC17.

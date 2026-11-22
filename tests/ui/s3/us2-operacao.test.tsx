@@ -8,7 +8,7 @@ import {
 import { afterEach, expect, it } from 'vitest';
 import { App } from '../../../src/ui/App';
 import { ArenaSession } from '../../../src/ui/arena/session';
-import { idleEngine, testEngine } from './support';
+import { idleEngine, testEngine, runDefaultDuel } from './support';
 
 afterEach(cleanup);
 
@@ -44,7 +44,7 @@ it('S3-US2-AC11: volta ao vivo até zero e pode percorrer de novo o fim da luta'
   fireEvent.click(forward);
   expect(session.getSnapshot().snapshot).toEqual(first[1]);
   fireEvent.click(button('Executar'));
-  act(() => session.pulse(800));
+  act(() => runDefaultDuel(session));
   const end = session.getSnapshot().snapshot;
   expect(end.resultado?.vencedor).toBe('vermelho');
   fireEvent.click(back);
@@ -102,15 +102,15 @@ it('S3-US2-AC4: reiniciar publica o tick zero e zera a gravação', () => {
 it('S3-US2-AC5: duas execuções padrão terminam com as mesmas poses e resultado', () => {
   const session = new ArenaSession(testEngine);
   session.play();
-  session.pulse(800);
+  runDefaultDuel(session);
   const first = session.getSnapshot().snapshot;
   session.reset();
   session.play();
-  session.pulse(800);
+  runDefaultDuel(session);
   expect(first.resultado).toEqual({
     vencedor: 'vermelho',
     motivo: 'saida_da_arena',
-    tick: 34,
+    tick: 284,
   });
   expect(session.getSnapshot().snapshot).toEqual(first);
 });
@@ -145,7 +145,7 @@ it('S3-US2-AC8: fim da luta desabilita executar e avançar', () => {
   const session = mount();
   act(() => {
     session.play();
-    session.pulse(800);
+    runDefaultDuel(session);
   });
   expect(button('Executar').disabled).toBe(true);
   expect(button('Avançar 1 tick').disabled).toBe(true);

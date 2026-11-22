@@ -9,7 +9,7 @@ import {
 import { afterEach, expect, it } from 'vitest';
 import { App } from '../../../src/ui/App';
 import { ArenaSession } from '../../../src/ui/arena/session';
-import { testEngine } from './support';
+import { testEngine, runDefaultDuel } from './support';
 
 afterEach(cleanup);
 
@@ -25,7 +25,7 @@ it('S3-US6-AC1: apresentação recolhe painéis e exibe placar, tempo e desfecho
   expect(score.getByText('0,00 s')).toBeTruthy();
   act(() => {
     session.play();
-    session.pulse(800);
+    runDefaultDuel(session);
   });
   expect(score.getByText(/Vitória de vermelho/)).toBeTruthy();
 });

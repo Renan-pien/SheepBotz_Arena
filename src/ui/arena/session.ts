@@ -107,6 +107,7 @@ export class ArenaSession {
     const prepared = prepareSimulation(world.world, {
       controllers,
       controllerEngine: engine,
+      sumoStartDelay: true,
       stallSeconds: 10,
     });
     if (!prepared.ok) throw new Error(JSON.stringify(prepared.errors));
@@ -241,6 +242,7 @@ export class ArenaSession {
     const prepared = prepareSimulation(world, {
       controllers,
       controllerEngine: this.#engine,
+      sumoStartDelay: true,
       stallSeconds: patch.stallSeconds ?? this.#view.stallSeconds,
     });
     if (!prepared.ok) {
@@ -289,7 +291,7 @@ export class ArenaSession {
         this.#view.world.match.mode === 'maze'
           ? 4
           : this.#view.world.match.mode === 'sumo'
-            ? 3
+            ? 5
             : 1,
       ...(this.#view.world.match.mode === 'sumo' && {
         stallSeconds: this.#view.stallSeconds,
@@ -511,7 +513,8 @@ export class ArenaSession {
       roundStarted: this.#view.roundStarted || snapshot.tick > 0,
       snapshot,
       status:
-        snapshot.resultado?.motivo === 'saida_alcancada'
+        snapshot.resultado?.motivo === 'saida_alcancada' ||
+        snapshot.falseStarters
           ? 'pausada'
           : snapshot.status === 'finalizada'
             ? 'finalizada'

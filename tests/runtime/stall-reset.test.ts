@@ -8,7 +8,7 @@ it('S3-US2-AC15: rodadas consecutivas restauram sensores, pose, closures e PRNG 
   const session = new ArenaSession();
   session.editSource(
     'vermelho',
-    'let n=0; function setup(){log(random())} function loop(){log(++n, random());setSpeed(0,1)}',
+    'let n=0; function setup(){log(random())} function loop(){log(++n, random());if(getInfo().startReleased === false)return;setSpeed(0,1)}',
   );
   session.apply('vermelho');
   session.setStallSeconds(5);
@@ -16,7 +16,7 @@ it('S3-US2-AC15: rodadas consecutivas restauram sensores, pose, closures e PRNG 
   session.step();
   const first = session.getSnapshot().snapshot;
   for (let round = 1; round <= 2; round++) {
-    for (let tick = 1; tick < 250; tick++) session.step();
+    for (let tick = 1; tick < 500; tick++) session.step();
     const view = session.getSnapshot();
     expect(view.snapshot).toEqual(initial);
     expect(view).toMatchObject({
@@ -24,11 +24,11 @@ it('S3-US2-AC15: rodadas consecutivas restauram sensores, pose, closures e PRNG 
       stallSeconds: 5,
       lastDraw: {
         round,
-        result: { vencedor: null, tick: 250, motivo: 'falta_de_progresso' },
+        result: { vencedor: null, tick: 500, motivo: 'falta_de_progresso' },
       },
     });
     const archive = view.lastDraw!.recording;
-    expect(archive.states).toHaveLength(251);
+    expect(archive.states).toHaveLength(501);
     expect(
       archive.states.at(-1)!.events.filter((e) => e.type === 'fim_da_luta'),
     ).toHaveLength(1);
@@ -41,14 +41,14 @@ it('S3-US2-AC15: rodadas consecutivas restauram sensores, pose, closures e PRNG 
   }
 });
 
-it('S3-US2-AC16: retroceder no giro dos Caçadores reproduz o empate no tick 508 e o reset pausado', () => {
+it('S3-US2-AC16: retroceder no giro dos Caçadores reproduz o empate no tick 758 e o reset pausado', () => {
   const session = new ArenaSession();
   session.selectExample('azul', 'cacador');
   session.apply('azul');
   const initial = session.getSnapshot().snapshot;
-  for (let tick = 1; tick <= 507; tick++) session.step();
+  for (let tick = 1; tick <= 757; tick++) session.step();
   const before = session.getSnapshot().snapshot;
-  expect(before.stall?.pair?.sinceTick).toBe(8);
+  expect(before.stall?.pair?.sinceTick).toBe(258);
   session.back();
   session.step();
   expect(session.getSnapshot().snapshot).toEqual(before);
@@ -58,19 +58,19 @@ it('S3-US2-AC16: retroceder no giro dos Caçadores reproduz o empate no tick 508
   expect(view.status).toBe('pausada');
   expect(view.snapshot).toEqual(initial);
   expect(view.lastDraw?.result).toEqual({
-    tick: 508,
+    tick: 758,
     motivo: 'falta_de_progresso',
     vencedor: null,
   });
   const file = encodeRecording(view.lastDraw!.recording);
   session.openRecording(file);
-  session.seek(507);
+  session.seek(757);
   expect(session.getSnapshot().snapshot).toEqual(before);
   session.step();
   expect(session.getSnapshot()).toMatchObject({
     mode: 'replay',
     status: 'finalizada',
-    snapshot: { tick: 508 },
+    snapshot: { tick: 758 },
   });
 });
 

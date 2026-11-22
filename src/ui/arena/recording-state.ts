@@ -1,5 +1,7 @@
 import {
   advanceStall,
+  createInitialState,
+  releaseTick,
   initialStall,
   evaluateMaze,
   evaluateSumo,
@@ -138,6 +140,7 @@ function readResult(
   tick: number,
   path: string,
   stallSeconds?: StallSeconds,
+  start = 0,
 ): MatchResult {
   requireField(
     object(value) && value.tick === tick,
@@ -158,7 +161,7 @@ function readResult(
     return { motivo, vencedor, tick };
   }
   requireField(
-    ((motivo === 'tempo_esgotado' && tick === world.match.maxTicks) ||
+    ((motivo === 'tempo_esgotado' && tick === start + world.match.maxTicks) ||
       motivo === 'ambos_sairam' ||
       (stallSeconds !== undefined && motivo === 'falta_de_progresso')) &&
       vencedor === null,
@@ -174,7 +177,10 @@ export function readStates(
   events: readonly SimEvent[],
   stallSeconds?: StallSeconds,
   includePair = false,
+  sumoStartDelay = false,
 ): SimState[] {
+  const start = sumoStartDelay ? releaseTick(world.dt) : 0;
+  const grid = sumoStartDelay ? createInitialState(world).robots : undefined;
   let stall = stallSeconds && initialStall(world, stallSeconds, includePair);
   let end = 0;
   let prefix: readonly SimEvent[] = [];
@@ -201,6 +207,44 @@ export function readStates(
       );
       return robot;
     });
+    const waiting = sumoStartDelay && tick <= start;
+    if (waiting) {
+      states.forEach((robot, index) => {
+        const initial = grid![index]!;
+        const samePose = (p: RobotState['pose']) =>
+          p.x === initial.pose.x &&
+          p.y === initial.pose.y &&
+          p.theta === initial.pose.theta;
+        requireField(
+          samePose(robot.pose) &&
+            samePose(robot.odometry) &&
+            !robot.bumper &&
+            robot.command.v === 0 &&
+            robot.command.w === 0 &&
+            robot.laser.every((distance, i) => distance === initial.laser[i]),
+          path + '.robots[' + index + ']',
+          'movimento ou medição incompatível com a largada',
+        );
+      });
+    }
+    let offenders: string[] | undefined;
+    if (value.falseStarters !== undefined) {
+      const ids = value.falseStarters;
+      requireField(
+        waiting && tick > 0 && Array.isArray(ids) && ids.length > 0,
+        path + '.falseStarters',
+        'infratores fora do intervalo de largada',
+      );
+      offenders = world.robots
+        .map((r) => r.id)
+        .filter((id) => ids.includes(id));
+      requireField(
+        offenders.length === ids.length &&
+          offenders.every((id, i) => id === ids[i]),
+        path + '.falseStarters',
+        'esperados infratores distintos na ordem do mundo',
+      );
+    }
     let finishInTick = false;
     while (events[end]?.tick === tick) {
       if (
@@ -228,7 +272,7 @@ export function readStates(
         'contato do par incompatível com o tick ou com os robôs',
       );
     }
-    if (stall && tick > 0) {
+    if (stall && tick > 0 && !waiting) {
       stall = advanceStall(
         stall,
         states,
@@ -244,6 +288,8 @@ export function readStates(
       events: prefix,
       status: 'em_andamento',
       resultado: null,
+      ...(sumoStartDelay && { sumoStartDelay: true }),
+      ...(offenders && { falseStarters: offenders }),
       ...(stall && { stall }),
     };
     const maze = world.match.mode === 'maze';
@@ -262,12 +308,28 @@ export function readStates(
         path,
         'luta finalizada fora do último tick ou sem evento final válido',
       );
+      if (offenders && expected) {
+        const points = object(resultado) ? resultado.pontos : undefined;
+        requireField(
+          object(resultado) &&
+            resultado.tick === tick &&
+            resultado.motivo === expected.motivo &&
+            resultado.vencedor === expected.vencedor &&
+            object(points) &&
+            Object.keys(points).length === world.robots.length &&
+            world.robots.every(({ id }) => points[id] === expected.pontos![id]),
+          path + '.resultado',
+          'resultado ou pontos incompatíveis com os infratores',
+        );
+        return { ...snapshot, status, resultado: expected };
+      }
       const result = readResult(
         resultado,
         world,
         tick,
         path + '.resultado',
         stallSeconds,
+        start,
       );
       requireField(
         (!stall && !maze) ||
@@ -287,7 +349,7 @@ export function readStates(
       'estado em andamento incompatível com resultado ou eventos',
     );
     requireField(
-      world.match.mode !== 'sumo' || tick < world.match.maxTicks,
+      world.match.mode !== 'sumo' || tick < start + world.match.maxTicks,
       path,
       'uma luta em andamento excede o limite de ticks',
     );

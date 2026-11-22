@@ -8,14 +8,14 @@ import {
 } from '@testing-library/react';
 import roomWorld from '../../../examples/worlds/sala-com-obstaculos.json?raw';
 import { afterEach, expect, it } from 'vitest';
-import type { SimEvent } from '../../../src/core';
+import { runHeadless, type SimEvent } from '../../../src/core';
 import { App } from '../../../src/ui/App';
 import { ArenaSession } from '../../../src/ui/arena/session';
 import { Events } from '../../../src/ui/panels/Events';
 import { worldPresets } from '../../../src/ui/arena/catalog';
 import { encodeRecording } from '../../../src/ui/arena/recording';
 import { resultLabel } from '../../../src/ui/panels/Inspection';
-import { testEngine } from './support';
+import { testEngine, runDefaultDuel } from './support';
 
 afterEach(cleanup);
 function mount() {
@@ -67,7 +67,7 @@ it('S3-US4-AC3: informa diferença entre posição resolvida e odometria', () =>
   inspect();
   act(() => {
     session.play();
-    session.pulse(800);
+    runDefaultDuel(session);
   });
   const blue = within(
     screen.getByRole('article', { name: 'Inspeção de azul' }),
@@ -124,10 +124,12 @@ it('S3-US4-AC5: anuncia a vitória do Duelo e identifica as ações', () => {
   const session = mount();
   act(() => {
     session.play();
-    session.pulse(800);
+    runDefaultDuel(session);
   });
   expect(
-    screen.getByText('Vitória de vermelho — saída da arena · tick 34 · 0,68 s'),
+    screen.getByText(
+      'Vitória de vermelho — saída da arena · tick 284 · 5,68 s',
+    ),
   ).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Reiniciar luta' })).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Ver replay' })).toBeTruthy();
@@ -164,6 +166,7 @@ it('S3-US4-AC7: inspeção acompanha os quatro lados ao avançar, voltar, reinic
     session.openWorld(JSON.stringify(duel));
     session.selectExample('vermelho', 'cacador');
     session.apply('vermelho');
+    for (let tick = 0; tick < 250; tick++) session.step();
   });
   inspect();
   function readings(id: string) {
@@ -181,17 +184,29 @@ it('S3-US4-AC7: inspeção acompanha os quatro lados ao avançar, voltar, reinic
   act(() => session.step());
   expect(readings('vermelho')).toEqual(frontActive);
   expect(readings('azul')).toEqual(interior);
-  const file = JSON.parse(encodeRecording(session.recording()));
+  const file = session.recording();
+  const legacy = runHeadless({
+    world: file.world,
+    controllers: file.controllers,
+    controllerEngine: testEngine,
+    ticks: 1,
+    history: true,
+  });
+  if (!legacy.ok) throw Error(JSON.stringify(legacy.errors));
   act(() => session.back());
   expect(readings('vermelho')).toEqual(interior);
   act(() => session.step());
   expect(readings('vermelho')).toEqual(frontActive);
   act(() => session.reset());
   expect(readings('vermelho')).toEqual(interior);
-  for (const version of [1, 2, 3]) {
-    const recording = { ...file, version };
-    if (version === 1) delete recording.stallSeconds;
-    act(() => session.openRecording(JSON.stringify(recording)));
+  for (const version of [1, 2, 3] as const) {
+    const recording = encodeRecording({
+      ...file,
+      version,
+      stallSeconds: version === 1 ? undefined : 10,
+      states: legacy.history!,
+    });
+    act(() => session.openRecording(recording));
     expect(session.getSnapshot().mode).toBe('replay');
     expect(readings('vermelho')).toEqual(interior);
     act(() => session.seek(1));
