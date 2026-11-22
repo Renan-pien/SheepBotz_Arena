@@ -200,5 +200,5 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 
 | Origem | Requisito | Tarefa | Evidência |
 |---|---|---|---|
-| RB-18, RB-41, ADR-025 | S2-FR-041 | S2-T049 | [S2-US2-AC15/16 · módulo íntegro, memória, limites, sensores e comando efetivo](../tests/runtime/portugol.test.ts) |
-| RB-23, RB-41, ADR-025 | S3-FR-046 | S3-T030 | [S3-US3-AC14/15 · rascunhos, arquivos, ajuda acessível, aplicação e replay](../tests/ui/s3/portugol.test.tsx) |
+| RB-18, RB-41, ADR-025 | S2-FR-041 | S2-T049 (`44d8fd2`, `ca2a08b`) | [S2-US2-AC15/16 · módulo íntegro, memória, limites, sensores e comando efetivo](../tests/runtime/portugol.test.ts) |
+| RB-23, RB-41, ADR-025 | S3-FR-046 | S3-T030 (`0759152`) | [S3-US3-AC14/15 · rascunhos, arquivos, ajuda acessível, aplicação e replay](../tests/ui/s3/portugol.test.tsx) |
