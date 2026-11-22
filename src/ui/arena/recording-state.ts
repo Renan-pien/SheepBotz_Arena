@@ -176,9 +176,12 @@ export function readStates(
   world: World,
   events: readonly SimEvent[],
   stallSeconds?: StallSeconds,
-  includePair = false,
-  sumoStartDelay = false,
+  version = 1,
 ): SimState[] {
+  const includePair = version === 3 || version >= 5;
+  const sumoStartDelay = version >= 5;
+  let firstMotionTick: number | undefined;
+  let previousMotion: readonly RobotState[] | undefined;
   const start = sumoStartDelay ? releaseTick(world.dt) : 0;
   const grid = sumoStartDelay ? createInitialState(world).robots : undefined;
   let stall = stallSeconds && initialStall(world, stallSeconds, includePair);
@@ -208,7 +211,7 @@ export function readStates(
       return robot;
     });
     const waiting = sumoStartDelay && tick <= start;
-    if (waiting) {
+    if (waiting && !(version === 6 && value.falseStarters !== undefined)) {
       states.forEach((robot, index) => {
         const initial = grid![index]!;
         const samePose = (p: RobotState['pose']) =>
@@ -231,7 +234,10 @@ export function readStates(
     if (value.falseStarters !== undefined) {
       const ids = value.falseStarters;
       requireField(
-        waiting && tick > 0 && Array.isArray(ids) && ids.length > 0,
+        (waiting || firstMotionTick !== undefined) &&
+          tick > 0 &&
+          Array.isArray(ids) &&
+          ids.length > 0,
         path + '.falseStarters',
         'infratores fora do intervalo de largada',
       );
@@ -245,8 +251,46 @@ export function readStates(
         'esperados infratores distintos na ordem do mundo',
       );
     }
+    if (version === 6 && offenders) {
+      firstMotionTick ??= tick;
+      states.forEach((robot, index) => {
+        const { v, w } = robot.command;
+        const previous = previousMotion?.[index];
+        requireField(
+          (v !== 0 || w !== 0) === offenders.includes(robot.id) &&
+            (!previous ||
+              (v === previous.command.v &&
+                w === previous.command.w &&
+                robot.situacao === previous.situacao)),
+          path + '.robots[' + index + '].command',
+          'comando incompatível com a demonstração da queima',
+        );
+        const priorPose = (previous ?? grid![index]!).pose;
+        requireField(
+          v !== 0 ||
+            robot.bumper ||
+            (robot.pose.x === priorPose.x && robot.pose.y === priorPose.y),
+          path + '.robots[' + index + '].pose',
+          'deslocamento sem tração nem contato',
+        );
+      });
+      previousMotion = states;
+    }
+    requireField(
+      value.falseStartTick === firstMotionTick &&
+        (firstMotionTick === undefined || offenders !== undefined),
+      path + '.falseStartTick',
+      'a demonstração deve conservar o tick e os infratores iniciais',
+    );
     let finishInTick = false;
     while (events[end]?.tick === tick) {
+      requireField(
+        firstMotionTick === undefined ||
+          firstMotionTick === tick ||
+          events[end]!.type === 'fim_da_luta',
+        path + '.eventCount',
+        'controladores encerrados durante a demonstração',
+      );
       if (
         events[end]!.type === 'fim_da_luta' ||
         events[end]!.type === 'fim_do_nivel'
@@ -266,13 +310,14 @@ export function readStates(
     if (includePair && value.pairContact !== undefined) {
       requireField(
         value.pairContact === true &&
+          firstMotionTick === undefined &&
           tick > 0 &&
           states.every((robot) => robot.bumper),
         path + '.pairContact',
         'contato do par incompatível com o tick ou com os robôs',
       );
     }
-    if (stall && tick > 0 && !waiting) {
+    if (stall && tick > 0 && !waiting && firstMotionTick === undefined) {
       stall = advanceStall(
         stall,
         states,
@@ -290,6 +335,7 @@ export function readStates(
       resultado: null,
       ...(sumoStartDelay && { sumoStartDelay: true }),
       ...(offenders && { falseStarters: offenders }),
+      ...(firstMotionTick !== undefined && { falseStartTick: firstMotionTick }),
       ...(stall && { stall }),
     };
     const maze = world.match.mode === 'maze';
@@ -349,7 +395,9 @@ export function readStates(
       'estado em andamento incompatível com resultado ou eventos',
     );
     requireField(
-      world.match.mode !== 'sumo' || tick < start + world.match.maxTicks,
+      firstMotionTick !== undefined ||
+        world.match.mode !== 'sumo' ||
+        tick < start + world.match.maxTicks,
       path,
       'uma luta em andamento excede o limite de ticks',
     );

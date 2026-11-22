@@ -43,6 +43,9 @@ export function projectFrame(world: World, state: SimState) {
       color: disabled ? '#8795a4' : config.color,
       disabled,
       outside,
+      falseStart:
+        state.falseStartTick !== undefined &&
+        state.falseStarters?.includes(robot.id) === true,
       rays,
     };
   });

@@ -291,7 +291,7 @@ export class ArenaSession {
         this.#view.world.match.mode === 'maze'
           ? 4
           : this.#view.world.match.mode === 'sumo'
-            ? 5
+            ? 6
             : 1,
       ...(this.#view.world.match.mode === 'sumo' && {
         stallSeconds: this.#view.stallSeconds,
@@ -514,7 +514,7 @@ export class ArenaSession {
       snapshot,
       status:
         snapshot.resultado?.motivo === 'saida_alcancada' ||
-        snapshot.falseStarters
+        (snapshot.falseStarters && snapshot.status === 'finalizada')
           ? 'pausada'
           : snapshot.status === 'finalizada'
             ? 'finalizada'

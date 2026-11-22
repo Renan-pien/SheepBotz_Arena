@@ -98,7 +98,7 @@ it('S3-US5-AC12: gravação de impasse reabre sem executar scripts; prazo adulte
   const draw = session.getSnapshot().lastDraw!;
   const text = encodeRecording(draw.recording);
   const data = JSON.parse(text);
-  expect(data.version).toBe(5);
+  expect(data.version).toBe(6);
   expect(
     decodeRecording(JSON.stringify({ ...data, stallSeconds: 30 })).ok,
   ).toBe(false);
@@ -178,7 +178,7 @@ it('S3-US2-AC16: Regra de Tempo mostra o prazo do giro ao retroceder e aguarda a
   expect(screen.getByTestId('current-tick').textContent).toBe('Tick 1');
 });
 
-it.each([3, 5])(
+it.each([3, 5, 6])(
   'S3-US5-AC13: rejeita contato v%s impossível no tick zero ou sem colisão',
   (version) => {
     const session = new ArenaSession(idleEngine);

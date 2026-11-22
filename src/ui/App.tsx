@@ -447,7 +447,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           <span data-testid="current-tick">Tick {snapshot.tick}</span>
           <span>{formatNumber(snapshot.time, 2)} s</span>
           <span>{status}</span>
-          {waitingForStart && !result && (
+          {waitingForStart && !snapshot.falseStarters && !result && (
             <span>
               Largada em {formatNumber(SUMO_START_SECONDS - snapshot.time, 2)} s
             </span>

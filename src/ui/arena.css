@@ -90,6 +90,13 @@ button:disabled {
   background: #112032;
   border: 1px solid #8195aa;
 }
+.robot-caption.false-start {
+  color: #fff4cd;
+  background: #542b0c;
+  border-color: #ffc76b;
+  font-weight: 700;
+  white-space: nowrap;
+}
 .scene-fallback {
   position: absolute;
   inset: 30% 10% auto;

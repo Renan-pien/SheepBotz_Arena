@@ -95,4 +95,4 @@ navegador. A seguir entram inspeção e replay. A apresentação vem por
 
 - [X] T028 [US2] Integrar largada, exemplos, contagem, resultado e gravação v5 em src/ui e examples/controllers. Verificar pausas, rewind, replays anteriores, regressões e atualizar os artefatos — S3-FR-045, S3-US2-AC17.
 
-- [ ] T029 [US2] Exibir “Queimou” junto a cada infrator, preservar operação e replays v1–v6 e verificar pontos, pausa e navegação em `src/ui` e `tests/ui/s3` — S3-FR-045, S3-US2-AC17 e AC18.
+- [X] T029 [US2] Exibir “Queimou” junto a cada infrator, preservar operação e replays v1–v6 e verificar pontos, pausa e navegação em `src/ui` e `tests/ui/s3` — S3-FR-045, S3-US2-AC17 e AC18.
