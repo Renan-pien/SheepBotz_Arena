@@ -524,3 +524,9 @@ Antes do ajuste, o Chrome aplicava preto ao cursor nativo nos editores de vermel
 Nos três editores, dois cliques em posições distintas deslocaram a barra. As setas direita e esquerda moveram um caractere e as setas para baixo e para cima mudaram de linha. As capturas de tela confirmaram a barra clara no ponto do clique e após deslocamentos horizontal e vertical. Uma letra digitada em cada rascunho entrou no ponto esperado.
 
 A suíte passou com 381 testes e 89.59% de cobertura de linhas. Lint e build passaram. [Matriz de rastreabilidade](rastreabilidade.md#cursor-de-inserção-dos-controladores) · [Cobertura](cobertura/resumo.md)
+
+## Largada de sumô · 2026-11-22
+
+O Chrome no Windows executou o Duelo padrão com os exemplos aplicados. O relógio mostrou 5,00 s no início e 4,98 s após um passo. O duelo terminou por saída da arena no tick 284 (5,68 s). Ao aplicar giro imediato só a vermelho, azul recebeu 1 ponto no tick 1. Voltar e avançar, inclusive no replay, recuperou o resultado. Com giro imediato nos dois editores houve empate sem pontos no tick 1.
+
+A suíte completa passou em 393 de 393 testes. A cobertura de linhas foi de 89,97% no projeto e 99,06% no núcleo. ESLint, TypeScript e build Vite passaram. O build emitiu o aviso de tamanho do pacote principal. Com Node 24.22.3 no Windows x64, o benchmark do núcleo executou 3 000 ticks em 32,30 ms e o da S2 em 59,96 ms. [Relatório de cobertura](cobertura/resumo.md)

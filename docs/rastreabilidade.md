@@ -181,3 +181,10 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 | Origem | Requisitos | Tarefa e commit | Verificação | Estado |
 |---|---|---|---|---|
 | RB-23, RB-20 | S3-FR-023, S3-FR-038 | S3-T027 (`06d5d54`) | [S3-US3-AC13 · cor do cursor nos três editores](../tests/ui/s3/us3-controladores.test.tsx) e [clique, setas e inserção no Chrome](registro-de-consolidacao.md#2026-11-22--cursor-nos-editores-de-estratégia) | Validado localmente |
+
+## Largada de sumô · ADR-023
+
+| Origem | Requisito | Tarefa e commit | Testes | Estado |
+|---|---|---|---|---|
+| ADR-023, RB-25, RB-27 | S2-FR-040 | S2-T047 (`d6a6941`) | [S2-US3-AC16 a AC18 · fronteira, empate e vitória](../tests/core/acceptance/s2/us3-largada.test.ts) e [comandos constantes na CLI](../tests/cli/run-cli.test.ts) | Validado localmente |
+| ADR-023, RB-24, RB-40 | S3-FR-045 | S3-T028 (`a82dbb3`) | [S3-US2-AC17 · pausa, pontos da rodada, reinício, rewind e replay v5](../tests/ui/s3/us2-largada.test.tsx) e [verificação no Chrome](registro-de-consolidacao.md#largada-de-sumô--2026-11-22) | Validado localmente |

@@ -1,6 +1,6 @@
 # SheepBotz Arena
 
-**381 testes · 89% de cobertura**
+**393 testes · 89% de cobertura**
 
 Métricas geradas a partir dos relatórios com `npm run stats`.
 
@@ -14,7 +14,7 @@ O núcleo 2D aceita mundos JSON e controladores JavaScript.
 |---|---|---|
 | [001](specs/001-nucleo-simulacao/spec.md) | Mundo e núcleo de simulação | Spec oficial, [checklist](specs/001-nucleo-simulacao/checklists/requirements.md), [plan](specs/001-nucleo-simulacao/plan.md), contratos, [tasks](specs/001-nucleo-simulacao/tasks.md) e anexos |
 | [002](specs/002-sensores-controlador/spec.md) | Laser, controladores e sumô pela biblioteca e pela CLI | [Plano](specs/002-sensores-controlador/plan.md), [contratos](specs/002-sensores-controlador/contracts/core-api.md), [tasks](specs/002-sensores-controlador/tasks.md) e [quickstart](specs/002-sensores-controlador/quickstart.md) |
-| [003](specs/003-visualizacao-operacao/spec.md) | Visualização 3D, operação e replay | [Plano](specs/003-visualizacao-operacao/plan.md), [gravações v1 a v4](specs/003-visualizacao-operacao/contracts/gravacao.md), [tarefas](specs/003-visualizacao-operacao/tasks.md) e [quickstart](specs/003-visualizacao-operacao/quickstart.md) |
+| [003](specs/003-visualizacao-operacao/spec.md) | Visualização 3D, operação e replay | [Plano](specs/003-visualizacao-operacao/plan.md), [gravações v1 a v5](specs/003-visualizacao-operacao/contracts/gravacao.md), [tarefas](specs/003-visualizacao-operacao/tasks.md) e [quickstart](specs/003-visualizacao-operacao/quickstart.md) |
 
 ## Como rodar
 
@@ -32,7 +32,9 @@ para voltar a um tick. Os controles de gravação usam arquivos JSON locais.
 
 Em **Modo**, escolha **Sumô** ou **Labirinto**. O Labirinto abre pausado no **Fácil**. Na lista **Dificuldade**, você pode escolher **Fácil**, **Médio** ou **Difícil**. Cada troca abre o mapa no tick 0 com sua estratégia aplicada. Clique em **Executar** para acompanhar o Navegador ou aplique sua própria estratégia ao `explorador`. A chegada é a área quadriculada. A simulação pausa ao alcançá-la. **Próximo nível** leva a estratégia aplicada ao tick 0 do novo mapa. Também é possível voltar um tick ou rever a chegada no replay. Para explorar a sala livre original, use **Abrir mundo** com [Sala com obstáculos](examples/worlds/sala-com-obstaculos.json).
 
-No sumô ao vivo, **Regra de Tempo** permite escolher 5, 10 ou 30 s antes do
+No **Sumô**, cada rodada começa com **5 segundos de espera** no relógio da simulação. Os sensores já podem ser lidos. Qualquer tentativa de andar ou girar antes da liberação dá **1 ponto da rodada ao adversário**. Se os dois tentarem no mesmo tick, há empate sem pontos. A rodada para no tick da infração para inspeção ou replay.
+
+Após a largada, **Regra de Tempo** permite escolher 5, 10 ou 30 s antes do
 primeiro passo. A rodada empata se os dois robôs ficarem parados ou se, após
 se tocarem, continuarem girando juntos com folga de até 2 mm entre eles e
 deslocamento de até 1 mm do ponto médio durante todo o prazo. A próxima fica pausada no tick 0, com as estratégias e
@@ -44,6 +46,7 @@ Exemplo de estratégia que avança e recua ao detectar a borda à frente:
 
 ```js
 function loop() {
+  if (getInfo().startReleased === false) return;
   const borda = readEdge();
   setSpeed(borda?.front ? -0.3 : 0.3, 0);
 }
