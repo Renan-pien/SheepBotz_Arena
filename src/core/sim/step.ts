@@ -6,6 +6,7 @@ import type {
   SimState,
   World,
 } from '../types';
+import { evaluateMaze } from '../match/maze';
 import { advanceStall, evaluateSumo } from '../match/sumo';
 import { resolveRobotContacts } from './contacts';
 import { integratePose, saturate } from './kinematics';
@@ -101,6 +102,9 @@ export function step(
     time: tick * world.dt,
     robots: withLaser(world, robots),
   };
-  const result = evaluateSumo(world, next);
+  const result =
+    world.match.mode === 'maze'
+      ? evaluateMaze(world, next)
+      : evaluateSumo(world, next);
   return result ? completeMatch(next, result) : next;
 }

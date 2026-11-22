@@ -78,12 +78,21 @@ export interface StallState {
 export interface MatchResult {
   readonly vencedor: string | null;
   readonly motivo:
-    'saida_da_arena' | 'ambos_sairam' | 'tempo_esgotado' | 'falta_de_progresso';
+    | 'saida_da_arena'
+    | 'ambos_sairam'
+    | 'tempo_esgotado'
+    | 'falta_de_progresso'
+    | 'saida_alcancada';
   readonly tick: number;
 }
 
 export interface SimEvent {
-  readonly type: 'log' | 'erro_controlador' | 'limite_de_logs' | 'fim_da_luta';
+  readonly type:
+    | 'log'
+    | 'erro_controlador'
+    | 'limite_de_logs'
+    | 'fim_da_luta'
+    | 'fim_do_nivel';
   readonly tick: number;
   readonly robotId: string | null;
   readonly message: string;

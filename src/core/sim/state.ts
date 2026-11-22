@@ -13,6 +13,7 @@ export function completeMatch(
   resultado: MatchResult,
 ): SimState {
   const message = {
+    saida_alcancada: 'Nível concluído. O robô alcançou a saída.',
     saida_da_arena: `Fim da luta: vitória de '${resultado.vencedor}' por saída da arena.`,
     ambos_sairam: 'Fim da luta: empate. Os dois robôs saíram da arena.',
     falta_de_progresso: 'Fim da luta: empate por falta de progresso.',
@@ -24,7 +25,15 @@ export function completeMatch(
     resultado,
     events: [
       ...state.events,
-      { type: 'fim_da_luta', tick: resultado.tick, robotId: null, message },
+      {
+        type:
+          resultado.motivo === 'saida_alcancada'
+            ? 'fim_do_nivel'
+            : 'fim_da_luta',
+        tick: resultado.tick,
+        robotId: null,
+        message,
+      },
     ],
   };
 }

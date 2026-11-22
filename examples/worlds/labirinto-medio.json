@@ -1,0 +1,142 @@
+{
+  "name": "Labirinto 2 · Médio",
+  "seed": 7,
+  "dt": 0.05,
+  "map": {
+    "width": 3,
+    "height": 2
+  },
+  "match": {
+    "mode": "maze",
+    "exit": {
+      "x": 1.25,
+      "y": 0.75,
+      "width": 0.25,
+      "height": 0.25
+    }
+  },
+  "obstacles": [
+    {
+      "id": "parede-1",
+      "x": -1,
+      "y": -0.75,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-2",
+      "x": 0,
+      "y": -0.75,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-3",
+      "x": 1.25,
+      "y": -0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-4",
+      "x": -0.5,
+      "y": -0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-5",
+      "x": -0.75,
+      "y": 0,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-6",
+      "x": 0.5,
+      "y": -0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-7",
+      "x": 0.25,
+      "y": 0,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-8",
+      "x": 0.75,
+      "y": 0,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-9",
+      "x": -1,
+      "y": 0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-10",
+      "x": -0.75,
+      "y": 0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-11",
+      "x": 0.5,
+      "y": 0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-12",
+      "x": 0.25,
+      "y": 0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-13",
+      "x": 1.25,
+      "y": 0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-14",
+      "x": -1,
+      "y": 0.75,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-15",
+      "x": 0,
+      "y": 0.75,
+      "width": 0.0625,
+      "height": 0.5
+    }
+  ],
+  "robots": [
+    {
+      "id": "explorador",
+      "x": -1.25,
+      "y": -0.75,
+      "theta": 0,
+      "radius": 0.1,
+      "maxLinearSpeed": 1,
+      "maxAngularSpeed": 4,
+      "color": "#43A047",
+      "laser": {
+        "rays": 9,
+        "fov": 3.141592653589793,
+        "maxRange": 1.5
+      }
+    }
+  ]
+}

@@ -12,6 +12,7 @@ export {
   stallStartTick,
   evaluateSumo,
 } from './match/sumo';
+export { evaluateMaze } from './match/maze';
 export { loadWorld } from './world/load-world';
 export { createInitialState } from './sim/state';
 export { step } from './sim/step';

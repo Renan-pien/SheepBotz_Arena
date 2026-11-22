@@ -229,4 +229,4 @@ Setup T001–T002 → Fundação T003–T008 → US1 T009–T016 → US2 T017–
 
 - [X] T045 [US2] Testar S2-US2-AC13/14 e implementar o sensor no núcleo e na API comum — `src/core/sensors/edge.ts`, `src/core/index.ts`, `src/core/controller/api.ts`, `eslint.config.js`, `tests/core/acceptance/s2/us2-borda.test.ts`, `tests/runtime/edge-strategy.test.ts` — S2-FR-038. Campos [EdgeReading.front, EdgeReading.rear, EdgeReading.left, EdgeReading.right](data-model.md#leitura-derivada-de-borda). Pronto com quatro direções, empurrão, limites, cópia e controlador personalizado validados.
 
-- [ ] T046 [US5] Medir a geometria, percorrer os três mundos com o Navegador e testar a chegada após contatos. Entregar mundos, controlador e regra em `examples/`, `src/core/match/`, `tests/core/acceptance/s2/maze.test.ts` — S2-FR-039, S2-US5-AC4 e AC5.
+- [X] T046 [US5] Medir a geometria, percorrer os três mundos com o Navegador e testar a chegada após contatos. Entregar mundos, controlador e regra em `examples/`, `src/core/match/`, `tests/core/acceptance/s2/maze.test.ts` — S2-FR-039, S2-US5-AC4 e AC5.

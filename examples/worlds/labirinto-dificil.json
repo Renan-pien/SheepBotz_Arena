@@ -1,0 +1,275 @@
+{
+  "name": "Labirinto 3 · Difícil",
+  "seed": 7,
+  "dt": 0.05,
+  "map": {
+    "width": 4,
+    "height": 3
+  },
+  "match": {
+    "mode": "maze",
+    "exit": {
+      "x": 1.75,
+      "y": 1.25,
+      "width": 0.25,
+      "height": 0.25
+    }
+  },
+  "obstacles": [
+    {
+      "id": "parede-1",
+      "x": -1.75,
+      "y": -1,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-2",
+      "x": -1.25,
+      "y": -1,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-3",
+      "x": 0.5,
+      "y": -1.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-4",
+      "x": 0.75,
+      "y": -1,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-5",
+      "x": 1.75,
+      "y": -1,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-6",
+      "x": -1,
+      "y": -0.75,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-7",
+      "x": -1.25,
+      "y": -0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-8",
+      "x": -0.5,
+      "y": -0.75,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-9",
+      "x": -0.75,
+      "y": -0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-10",
+      "x": 1.25,
+      "y": -0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-11",
+      "x": 1.75,
+      "y": -0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-12",
+      "x": -1,
+      "y": -0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-13",
+      "x": 0,
+      "y": -0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-14",
+      "x": -0.25,
+      "y": 0,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-15",
+      "x": 0.5,
+      "y": -0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-16",
+      "x": 0.75,
+      "y": 0,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-17",
+      "x": 1.75,
+      "y": 0,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-18",
+      "x": -1.5,
+      "y": 0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-19",
+      "x": -1,
+      "y": 0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-20",
+      "x": -1.25,
+      "y": 0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-21",
+      "x": 0,
+      "y": 0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-22",
+      "x": -0.25,
+      "y": 0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-23",
+      "x": 0.5,
+      "y": 0.25,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-24",
+      "x": 0.25,
+      "y": 0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-25",
+      "x": 1.25,
+      "y": 0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-26",
+      "x": 1.75,
+      "y": 0.5,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-27",
+      "x": -1.5,
+      "y": 0.75,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-28",
+      "x": -0.5,
+      "y": 0.75,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-29",
+      "x": -0.75,
+      "y": 1,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-30",
+      "x": -0.25,
+      "y": 1,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-31",
+      "x": 0.5,
+      "y": 0.75,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-32",
+      "x": 1,
+      "y": 0.75,
+      "width": 0.0625,
+      "height": 0.5
+    },
+    {
+      "id": "parede-33",
+      "x": 0.75,
+      "y": 1,
+      "width": 0.5,
+      "height": 0.0625
+    },
+    {
+      "id": "parede-34",
+      "x": 1.5,
+      "y": 1.25,
+      "width": 0.0625,
+      "height": 0.5
+    }
+  ],
+  "robots": [
+    {
+      "id": "explorador",
+      "x": -1.75,
+      "y": -1.25,
+      "theta": 0,
+      "radius": 0.1,
+      "maxLinearSpeed": 1,
+      "maxAngularSpeed": 4,
+      "color": "#43A047",
+      "laser": {
+        "rays": 9,
+        "fov": 3.141592653589793,
+        "maxRange": 1.5
+      }
+    }
+  ]
+}
