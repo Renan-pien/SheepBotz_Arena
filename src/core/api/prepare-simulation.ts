@@ -38,7 +38,7 @@ function prepareTick(world: World, options: PrepareOptions) {
     const observed = tick.events.length
       ? { ...state, robots, events: [...state.events, ...tick.events] }
       : state;
-    return step(world, observed, tick.commands);
+    return step(world, observed, tick.commands, tick.attempts);
   }
 
   return { ok: true as const, advance, commands };

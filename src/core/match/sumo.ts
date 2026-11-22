@@ -9,6 +9,31 @@ import type {
   World,
 } from '../types';
 
+export const SUMO_START_SECONDS = 5;
+
+export function releaseTick(dt: number): number {
+  const tick = Math.floor(SUMO_START_SECONDS / dt);
+  return tick * dt >= SUMO_START_SECONDS ? tick : tick + 1;
+}
+
+function falseStartResult(
+  world: World,
+  tick: number,
+  offenders?: readonly string[],
+): MatchResult | null {
+  if (!offenders?.length) return null;
+  const winner =
+    world.robots.find(({ id }) => !offenders.includes(id))?.id ?? null;
+  return {
+    tick,
+    vencedor: winner,
+    motivo: winner === null ? 'queima_dupla' : 'queima_da_largada',
+    pontos: Object.fromEntries(
+      world.robots.map(({ id }) => [id, Number(id === winner)]),
+    ),
+  };
+}
+
 type Point = Pick<Pose, 'x' | 'y'>;
 const progressToleranceM = 0.001;
 const pairGapToleranceM = 0.002;
@@ -118,6 +143,9 @@ export function evaluateSumo(
   state: SimState,
 ): MatchResult | null {
   if (world.match.mode !== 'sumo' || !world.arena) return null;
+  const start = state.sumoStartDelay ? releaseTick(world.dt) : 0;
+  if (state.sumoStartDelay && state.tick <= start)
+    return falseStartResult(world, state.tick, state.falseStarters);
   const [first, second] = state.robots;
   const center = { x: 0, y: 0 };
   const firstOut = distance(center, first!.pose) > world.arena.radius;
@@ -131,11 +159,12 @@ export function evaluateSumo(
     };
   }
   if (firstOut) return { vencedor: null, motivo: 'ambos_sairam', tick };
-  if (tick === world.match.maxTicks)
+  if (tick === start + world.match.maxTicks)
     return { vencedor: null, motivo: 'tempo_esgotado', tick };
   if (
     state.stall &&
-    (tick - stallStartTick(state.stall)) * world.dt >= state.stall.limitSeconds
+    (tick - Math.max(start, stallStartTick(state.stall))) * world.dt >=
+      state.stall.limitSeconds
   )
     return { vencedor: null, motivo: 'falta_de_progresso', tick };
   return null;

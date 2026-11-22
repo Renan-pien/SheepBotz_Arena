@@ -82,7 +82,10 @@ export interface MatchResult {
     | 'ambos_sairam'
     | 'tempo_esgotado'
     | 'falta_de_progresso'
+    | 'queima_da_largada'
+    | 'queima_dupla'
     | 'saida_alcancada';
+  readonly pontos?: Readonly<Record<string, number>>;
   readonly tick: number;
 }
 
@@ -99,6 +102,8 @@ export interface SimEvent {
 }
 
 export interface SimState {
+  readonly sumoStartDelay?: true;
+  readonly falseStarters?: readonly string[];
   readonly stall?: StallState;
   readonly tick: number; // 0 no estado inicial
   readonly time: number; // tick × dt
@@ -143,6 +148,7 @@ export type ControllerOptions =
     };
 
 export type HeadlessInput = ControllerOptions & {
+  readonly sumoStartDelay?: boolean;
   readonly stallSeconds?: StallSeconds;
   readonly world: string; // texto do arquivo de mundo
   readonly commands?: Readonly<Record<string, Command>>; // comando constante por id

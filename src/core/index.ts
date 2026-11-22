@@ -11,6 +11,8 @@ export {
   advanceStall,
   stallStartTick,
   evaluateSumo,
+  SUMO_START_SECONDS,
+  releaseTick,
 } from './match/sumo';
 export { evaluateMaze } from './match/maze';
 export { loadWorld } from './world/load-world';

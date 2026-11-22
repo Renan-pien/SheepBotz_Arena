@@ -13,6 +13,8 @@ export function completeMatch(
   resultado: MatchResult,
 ): SimState {
   const message = {
+    queima_da_largada: `Queima de largada de '${state.falseStarters?.[0]}'. Vitória de '${resultado.vencedor}' (+1 ponto).`,
+    queima_dupla: 'Queima de largada dos dois robôs. Empate sem pontos.',
     saida_alcancada: 'Nível concluído. O robô alcançou a saída.',
     saida_da_arena: `Fim da luta: vitória de '${resultado.vencedor}' por saída da arena.`,
     ambos_sairam: 'Fim da luta: empate. Os dois robôs saíram da arena.',
@@ -52,12 +54,15 @@ export function withLaser(
 export function createInitialState(
   world: World,
   stallSeconds?: StallSeconds,
+  sumoStartDelay = false,
 ): SimState {
   if (stallSeconds !== undefined && !isStallSeconds(stallSeconds))
     throw new RangeError(
       'O limite sem progresso deve ser 5, 10 ou 30 segundos.',
     );
   return {
+    ...(world.match.mode === 'sumo' &&
+      sumoStartDelay && { sumoStartDelay: true as const }),
     ...(world.match.mode === 'sumo' &&
       stallSeconds !== undefined && {
         stall: initialStall(world, stallSeconds),

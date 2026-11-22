@@ -7,7 +7,7 @@ import type {
   World,
 } from '../types';
 import { evaluateMaze } from '../match/maze';
-import { advanceStall, evaluateSumo } from '../match/sumo';
+import { advanceStall, evaluateSumo, SUMO_START_SECONDS } from '../match/sumo';
 import { resolveRobotContacts } from './contacts';
 import { integratePose, saturate } from './kinematics';
 import { resolveObstaclesAndWalls } from './obstacles';
@@ -63,8 +63,26 @@ export function step(
   world: World,
   state: SimState,
   commands: Readonly<Record<string, Command>>,
+  attempts?: ReadonlySet<string>,
 ): SimState {
   if (state.status === 'finalizada') return state;
+  if (state.sumoStartDelay && state.time < SUMO_START_SECONDS) {
+    const tick = state.tick + 1;
+    const offenders = world.robots
+      .filter(({ id }) => {
+        const cmd = Object.hasOwn(commands, id) ? commands[id] : undefined;
+        return attempts?.has(id) || (cmd && (cmd.v !== 0 || cmd.w !== 0));
+      })
+      .map(({ id }) => id);
+    const next = {
+      ...state,
+      tick,
+      time: tick * world.dt,
+      ...(offenders.length > 0 && { falseStarters: offenders }),
+    };
+    const result = evaluateSumo(world, next);
+    return result ? completeMatch(next, result) : next;
+  }
   const candidates = world.robots.map((config, index) => {
     const previous = state.robots[index]!;
     const requested = Object.hasOwn(commands, config.id)

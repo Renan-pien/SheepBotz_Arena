@@ -3,6 +3,7 @@ import { createInitialState } from './state';
 import { step } from './step';
 
 export interface SimulationOptions {
+  readonly sumoStartDelay?: boolean;
   readonly stallSeconds?: StallSeconds;
   readonly commands?: Readonly<Record<string, Command>>;
   readonly history?: boolean;
@@ -50,7 +51,7 @@ export function assembleSimulation(
 ): Simulation {
   let advanceTick = firstTick;
   const { history: recordHistory, stallSeconds } = options;
-  let current = createInitialState(world, stallSeconds);
+  let current = createInitialState(world, stallSeconds, options.sumoStartDelay);
   let history = recordHistory ? [current] : undefined;
 
   function advance(): SimState {
@@ -76,7 +77,11 @@ export function assembleSimulation(
     },
     reset() {
       const next = reload();
-      const initial = createInitialState(world, stallSeconds);
+      const initial = createInitialState(
+        world,
+        stallSeconds,
+        options.sumoStartDelay,
+      );
       advanceTick = next;
       current = initial;
       if (history) history = [current];

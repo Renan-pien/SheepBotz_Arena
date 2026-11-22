@@ -48,6 +48,20 @@ export function resultLabel(state: SimState, lastLevel = false): string | null {
       ' s · tick ' +
       result.tick
     );
+  if (result.motivo === 'queima_dupla')
+    return (
+      'Queima de largada dos dois robôs — empate sem pontos · tick ' +
+      result.tick
+    );
+  if (result.motivo === 'queima_da_largada')
+    return (
+      'Queima de largada de ' +
+      state.falseStarters![0] +
+      ' — vitória de ' +
+      result.vencedor +
+      ' (+1 ponto) · tick ' +
+      result.tick
+    );
   const title = result.vencedor ? 'Vitória de ' + result.vencedor : 'Empate';
   return (
     title +
