@@ -10,6 +10,7 @@ export default defineConfig(
     'build/**',
     'coverage/**',
     'reports/**',
+    'public/meupia/pyodide/**',
     '**/*.min.js',
     '.husky/_/**',
   ]),

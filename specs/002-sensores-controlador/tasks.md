@@ -235,4 +235,4 @@ Setup T001–T002 → Fundação T003–T008 → US1 T009–T016 → US2 T017–
 
 - [X] T048 [US3] Testar a fronteira temporal e a decisão imutável, guardar o primeiro comando e integrar 0.50 s de movimento com colisões em `src/core/{controller,sim,match,api}` e na CLI — S2-FR-040, S2-US3-AC16 a AC19.
 
-- [ ] T049 [US2] Testar pacote, funções públicas, isolamento, persistência e limites antes da IDE; implementar adaptador em src/runtime/portugol e dependências locais — S2-FR-041, S2-US2-AC15/16.
+- [X] T049 [US2] Testar pacote, funções públicas, isolamento, persistência e limites antes da IDE; implementar adaptador em src/runtime/portugol e dependências locais — S2-FR-041, S2-US2-AC15/16.
