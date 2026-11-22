@@ -1,6 +1,6 @@
 # SheepBotz Arena
 
-**378 testes · 89% de cobertura**
+**380 testes · 89% de cobertura**
 
 Métricas geradas a partir dos relatórios com `npm run stats`.
 

@@ -169,3 +169,9 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 | RB-25, ADR-021 | S1-FR-041 | S1-T051 (`c3c641b`) | [S1-US1-AC12 · mundo e saída](../tests/core/acceptance/s1/maze-world.test.ts) | Validado localmente |
 | RB-25, ADR-021 | S2-FR-039 | S2-T046 (`a3db897`, `611f8e0`) | [S2-US5-AC4 e AC5 · topologia e percurso do explorador](../tests/core/acceptance/s2/maze.test.ts) | Validado localmente |
 | RB-22, RB-24, ADR-021 | S3-FR-043 | S3-T025 (`5cc60e2`) | [S3-US3-AC10 · chegada, pausa, retrocesso, replay e progressão](../tests/ui/s3/maze.test.tsx) | Validado localmente |
+
+## Seleção de modo e dificuldade · ADR-022
+
+| Origem | Requisitos | Tarefa e commit | Testes de aceitação | Estado |
+|---|---|---|---|---|
+| RB-22, RB-24, ADR-022 | S3-FR-019, S3-FR-043, S3-FR-044 | S3-T026 (`1bf574f`) | [S3-US3-AC10, AC11 e AC12 · progressão, troca direta, rascunho, arquivos e replay](../tests/ui/s3/maze.test.tsx) | Validado localmente |

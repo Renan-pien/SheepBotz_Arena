@@ -510,3 +510,9 @@ O percurso mínimo entre centros de células tem 3.50, 7.00 e 9.00 m, respectiva
 Na interface em Chromium, a verificação percorreu os três mundos, recuou um tick e reproduziu cada chegada. O clique em Próximo nível abriu o mundo seguinte no tick 0. A suíte verificou a leitura das gravações anteriores, o replay do labirinto e a continuidade da estratégia aplicada.
 
 A suíte local passou com 378 testes e 89.52% das linhas cobertas. Lint e build de produção passaram. O Vite avisou sobre o tamanho do pacote principal. Benchmark S2 com Node 24.22.3 em Windows x64: 3 000 ticks em 144.14 ms, com empate por tempo. [Cobertura](cobertura/resumo.md) · [Rastreabilidade](rastreabilidade.md#labirinto--adr-021)
+
+## 2026-11-22 · Modo e dificuldade
+
+No Chrome, a lista Modo apresentou Sumô e Labirinto. Ao escolher Labirinto, a lista Dificuldade mostrou Fácil, Médio e Difícil. A troca direta carregou o mapa escolhido. Após concluir o Médio, Próximo nível selecionou Difícil no tick 0. Voltar ao Sumô ocultou Dificuldade.
+
+A suíte completa passou com 380 testes e 89.59% de cobertura de linhas. Os testes de interface verificaram a estratégia aplicada, o rascunho, a pausa no tick 0 e a identificação de mundos importados e de replay. Lint e build passaram. [Tarefa e testes](rastreabilidade.md#seleção-de-modo-e-dificuldade--adr-022) · [Cobertura](cobertura/resumo.md)
