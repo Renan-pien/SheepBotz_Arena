@@ -214,6 +214,7 @@ export function ArenaView({
         </p>
       </div>
       <div className="scene-toolbar">
+        {world.match.exit && <span>▦ Saída quadriculada</span>}
         <div role="group" aria-label="Vistas da câmera">
           <button
             type="button"

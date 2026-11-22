@@ -1,9 +1,9 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { PerspectiveCamera, Vector3, MOUSE } from 'three';
+import roomWorld from '../../../examples/worlds/sala-com-obstaculos.json?raw';
 import { afterEach, expect, it } from 'vitest';
 import { createInitialState, loadWorld } from '../../../src/core';
 import { App } from '../../../src/ui/App';
-import { worldPresets } from '../../../src/ui/arena/catalog';
 import { ArenaSession } from '../../../src/ui/arena/session';
 import { configureCamera, orbitSettings } from '../../../src/ui/scene/camera';
 import { buildScene } from '../../../src/ui/scene/graphics';
@@ -91,7 +91,7 @@ it('S3-US1-AC6: trocar visibilidade de raios conserva o snapshot', () => {
 });
 
 it('S3-US1-AC7: Sala tem paredes, três obstáculos, nove raios e nenhuma arena', () => {
-  const result = loadWorld(worldPresets.sala.text);
+  const result = loadWorld(roomWorld);
   if (!result.ok) throw new Error('Sala inválida');
   const { world } = result;
   const [explorer] = projectFrame(world, createInitialState(world));
@@ -158,7 +158,7 @@ it('cria recursos da cena e atualiza os raios sem alterar o snapshot', () => {
   expect(contents.scene.children.length).toBe(before);
   expect(snapshot.tick).toBe(0);
   contents.dispose();
-  const sala = loadWorld(worldPresets.sala.text);
+  const sala = loadWorld(roomWorld);
   if (!sala.ok) throw new Error('Sala inválida');
   const stage = buildScene(sala.world);
   stage.update(projectFrame(sala.world, createInitialState(sala.world)), true);

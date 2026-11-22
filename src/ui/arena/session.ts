@@ -11,6 +11,7 @@ import {
 } from '../../core';
 import { initializeControllerEngine } from '../../runtime/controller-engine';
 import {
+  nextMazeLevel,
   controllerPresets,
   worldPresets,
   type ControllerPreset,
@@ -160,6 +161,26 @@ export class ArenaSession {
     this.openWorld(worldPresets[preset].text, preset);
   }
 
+  nextLevel() {
+    const { preset, snapshot, controllers, drafts } = this.#view;
+    const next = nextMazeLevel(preset);
+    if (
+      this.#replay ||
+      !next ||
+      snapshot.resultado?.motivo !== 'saida_alcancada'
+    )
+      return;
+    const text = worldPresets[next].text;
+    const parsed = loadWorld(text);
+    if (!parsed.ok) {
+      this.#publish({ errors: parsed.errors });
+      return;
+    }
+    this.#replace(parsed.world, text, controllers, drafts, next, {
+      status: 'pausada',
+    });
+  }
+
   editSource(id: string, source: string) {
     if (this.#replay) return;
     const draft = this.#view.drafts[id]!;
@@ -247,7 +268,12 @@ export class ArenaSession {
 
   #liveRecording(tick: number): Recording {
     return {
-      version: this.#view.world.match.mode === 'sumo' ? 3 : 1,
+      version:
+        this.#view.world.match.mode === 'maze'
+          ? 4
+          : this.#view.world.match.mode === 'sumo'
+            ? 3
+            : 1,
       ...(this.#view.world.match.mode === 'sumo' && {
         stallSeconds: this.#view.stallSeconds,
       }),
@@ -318,7 +344,10 @@ export class ArenaSession {
   exitReplay() {
     if (!this.#replay) return;
     const { world, worldText, controllers, drafts } = this.#view;
-    this.#replace(world, worldText, controllers, drafts, '');
+    const preset = (['facil', 'medio', 'dificil'] as const).find(
+      (key) => worldPresets[key].text === worldText,
+    );
+    this.#replace(world, worldText, controllers, drafts, preset ?? '');
   }
 
   seek(tick: number) {
@@ -359,6 +388,7 @@ export class ArenaSession {
 
   play() {
     if (
+      this.#view.snapshot.status === 'finalizada' ||
       this.#view.status === 'finalizada' ||
       this.#view.status === 'executando' ||
       this.#view.replayLast === this.#view.snapshot.tick
@@ -402,6 +432,7 @@ export class ArenaSession {
   step() {
     if (
       this.#view.status === 'executando' ||
+      this.#view.snapshot.status === 'finalizada' ||
       this.#view.status === 'finalizada' ||
       this.#view.replayLast === this.#view.snapshot.tick
     )
@@ -464,7 +495,12 @@ export class ArenaSession {
     this.#publish({
       roundStarted: this.#view.roundStarted || snapshot.tick > 0,
       snapshot,
-      status: snapshot.status === 'finalizada' ? 'finalizada' : status,
+      status:
+        snapshot.resultado?.motivo === 'saida_alcancada'
+          ? 'pausada'
+          : snapshot.status === 'finalizada'
+            ? 'finalizada'
+            : status,
       behind: snapshot.status !== 'finalizada' && behind,
       limitReached: snapshot.tick >= lastRecordedTick,
     });

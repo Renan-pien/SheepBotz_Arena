@@ -6,6 +6,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
+import roomWorld from '../../../examples/worlds/sala-com-obstaculos.json?raw';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { ControllerEngine } from '../../../src/core';
 import { App } from '../../../src/ui/App';
@@ -47,21 +48,21 @@ function button(name: string) {
   return screen.getByRole<HTMLButtonElement>('button', { name });
 }
 
-it('S3-US3-AC1: seletor troca para Sala com Desviador e tick zero', () => {
+it('S3-US3-AC1: seletor troca para Labirinto com Navegador e tick zero', () => {
   const session = mount();
   fireEvent.change(screen.getByLabelText('Mundo'), {
-    target: { value: 'sala' },
+    target: { value: 'facil' },
   });
   const view = session.getSnapshot();
-  expect(view.world.name).toBe('Sala com obstáculos');
-  expect(view.controllers.explorador).toBe(controllerPresets.desviador.source);
+  expect(view.world.name).toBe('Labirinto 1 · Fácil');
+  expect(view.controllers.explorador).toBe(controllerPresets.navegador.source);
   expect(view.snapshot.tick).toBe(0);
 });
 
 it('S3-US3-AC2: arquivo válido inicia com Parado para todos os robôs', async () => {
   const session = mount();
   fireEvent.change(screen.getByLabelText('Abrir mundo'), {
-    target: { files: [new File([worldPresets.sala.text], 'sala.json')] },
+    target: { files: [new File([roomWorld], 'sala.json')] },
   });
   await waitFor(() =>
     expect(session.getSnapshot().world.name).toBe('Sala com obstáculos'),

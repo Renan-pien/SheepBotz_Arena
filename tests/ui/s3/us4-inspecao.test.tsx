@@ -6,6 +6,7 @@ import {
   screen,
   within,
 } from '@testing-library/react';
+import roomWorld from '../../../examples/worlds/sala-com-obstaculos.json?raw';
 import { afterEach, expect, it } from 'vitest';
 import type { SimEvent } from '../../../src/core';
 import { App } from '../../../src/ui/App';
@@ -202,7 +203,7 @@ it('S3-US4-AC7: inspeção acompanha os quatro lados ao avançar, voltar, reinic
 
 it('S3-US4-AC7: cartão de mundo livre identifica o sensor de borda indisponível', () => {
   const session = mount();
-  act(() => session.chooseWorld('sala'));
+  act(() => session.openWorld(roomWorld));
   inspect();
   expect(screen.getByText('Indisponível no modo livre')).toBeTruthy();
 });

@@ -78,6 +78,32 @@ function buildMap(world: World, scene: Scene) {
     ring.rotation.x = -Math.PI / 2;
     scene.add(disk, ring);
   }
+  const exit = world.match.exit;
+  if (exit) {
+    const finish = new Group();
+    finish.name = 'Saída';
+    finish.position.set(exit.x, -0.002, -exit.y);
+    const tiles = 4;
+    const tile = new BoxGeometry(
+      exit.width / tiles,
+      0.004,
+      exit.height / tiles,
+    );
+    const light = new MeshBasicMaterial({ color: '#ffffff' });
+    const dark = new MeshBasicMaterial({ color: '#10243a' });
+    for (let row = 0; row < tiles; row++) {
+      for (let col = 0; col < tiles; col++) {
+        const mesh = new Mesh(tile, (row + col) % 2 === 0 ? light : dark);
+        mesh.position.set(
+          ((col + 0.5) / tiles - 0.5) * exit.width,
+          0,
+          ((row + 0.5) / tiles - 0.5) * exit.height,
+        );
+        finish.add(mesh);
+      }
+    }
+    scene.add(finish);
+  }
   const crateMaterial = new MeshLambertMaterial({ color: '#bd9961' });
   for (const obstacle of world.obstacles) {
     const boxHeight = Math.min(obstacle.width, obstacle.height, 0.25);

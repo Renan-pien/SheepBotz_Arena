@@ -17,7 +17,7 @@ export const lastRecordedTick = 100_000;
 const format = 'sheepbotz-arena';
 
 export interface Recording {
-  readonly version: 1 | 2 | 3;
+  readonly version: 1 | 2 | 3 | 4;
   readonly stallSeconds?: StallSeconds;
   readonly world: string;
   readonly controllers: Readonly<Record<string, string>>;
@@ -83,7 +83,10 @@ export function decodeRecording(text: string): DecodeResult {
     requireField(object(data), '', 'esperado um objeto de gravação');
     requireField(data.format === format, 'format', 'formato desconhecido');
     requireField(
-      data.version === 1 || data.version === 2 || data.version === 3,
+      data.version === 1 ||
+        data.version === 2 ||
+        data.version === 3 ||
+        data.version === 4,
       'version',
       'versão não suportada',
     );
@@ -117,9 +120,14 @@ export function decodeRecording(text: string): DecodeResult {
       'states',
       'esperada uma lista de 1 a 100 001 estados',
     );
+    requireField(
+      (data.version === 4) === (parsed.world.match.mode === 'maze'),
+      'version',
+      'versão incompatível com a modalidade',
+    );
     const stallSeconds = data.stallSeconds;
     requireField(
-      data.version === 1
+      data.version === 1 || data.version === 4
         ? stallSeconds === undefined
         : isStallSeconds(stallSeconds) && parsed.world.match.mode === 'sumo',
       'stallSeconds',

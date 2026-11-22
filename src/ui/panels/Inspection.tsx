@@ -37,9 +37,17 @@ const reason = {
   tempo_esgotado: 'tempo esgotado',
 };
 
-export function resultLabel(state: SimState): string | null {
+export function resultLabel(state: SimState, lastLevel = false): string | null {
   const result = state.resultado;
   if (!result) return null;
+  if (result.motivo === 'saida_alcancada')
+    return (
+      (lastLevel ? 'Labirinto concluído' : 'Nível concluído') +
+      ' em ' +
+      formatNumber(state.time, 2) +
+      ' s · tick ' +
+      result.tick
+    );
   const title = result.vencedor ? 'Vitória de ' + result.vencedor : 'Empate';
   return (
     title +
@@ -69,8 +77,10 @@ function SensorCard({
   robot,
   config,
   edge,
+  maze,
 }: {
   edge: EdgeReading | null;
+  maze: boolean;
   robot: RobotState;
   config: RobotConfig;
 }) {
@@ -114,7 +124,9 @@ function SensorCard({
             ))}
           </dl>
         ) : (
-          <p className="muted">Indisponível no modo livre</p>
+          <p className="muted">
+            {maze ? 'Indisponível no labirinto' : 'Indisponível no modo livre'}
+          </p>
         )}
       </section>
       {laser ? (
@@ -172,6 +184,7 @@ export function Inspection({
           key={robot.id}
           robot={robot}
           config={world.robots[index]!}
+          maze={world.match.mode === 'maze'}
           edge={readEdge(world, robot.pose, world.robots[index]!.radius)}
         />
       ))}

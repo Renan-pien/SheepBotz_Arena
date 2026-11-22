@@ -2,7 +2,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { stallStartTick } from '../core';
 import { speeds, startTicker, type PlaybackSpeed } from './arena/clock';
 import { ArenaSession } from './arena/session';
-import { worldPresets, type WorldPreset } from './arena/catalog';
+import { nextMazeLevel, worldPresets, type WorldPreset } from './arena/catalog';
 import { chosenFile, downloadText, LocalFiles } from './arena/files';
 import { encodeRecording, recordingName } from './arena/recording';
 import { Controllers } from './panels/Controllers';
@@ -23,8 +23,22 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const { world, snapshot, status, speed, behind } = view;
   const running = status === 'executando';
   const replay = view.mode === 'replay';
-  const stopped = status === 'finalizada' || view.replayLast === snapshot.tick;
-  const result = resultLabel(snapshot);
+  const stopped =
+    snapshot.status === 'finalizada' ||
+    status === 'finalizada' ||
+    view.replayLast === snapshot.tick;
+  const result = resultLabel(
+    snapshot,
+    view.worldText === worldPresets.dificil.text,
+  );
+  const nextLevel =
+    !replay &&
+    snapshot.resultado?.motivo === 'saida_alcancada' &&
+    nextMazeLevel(view.preset) ? (
+      <button type="button" onClick={() => session.nextLevel()}>
+        Próximo nível
+      </button>
+    ) : null;
 
   useEffect(() => {
     if (running) return startTicker((elapsed) => session.pulse(elapsed));
@@ -224,6 +238,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           </div>
           <strong>{formatNumber(snapshot.time, 2)} s</strong>
           {result && <strong className="scoreboard-result">{result}</strong>}
+          {nextLevel}
         </section>
       )}
       <div
@@ -276,11 +291,16 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
       {result && !presenting && (
         <section className="match-result" aria-label="Resultado">
           <strong>{result}</strong>
+          {nextLevel}
           {!replay && (
             <>
               <button
                 type="button"
-                aria-label="Reiniciar luta"
+                aria-label={
+                  world.match.mode === 'maze'
+                    ? 'Reiniciar nível'
+                    : 'Reiniciar luta'
+                }
                 onClick={() => session.reset()}
               >
                 Reiniciar

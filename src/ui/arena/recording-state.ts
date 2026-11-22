@@ -1,4 +1,9 @@
-import { advanceStall, initialStall, evaluateSumo } from '../../core';
+import {
+  advanceStall,
+  initialStall,
+  evaluateMaze,
+  evaluateSumo,
+} from '../../core';
 import type {
   StallSeconds,
   MatchResult,
@@ -101,13 +106,15 @@ export function readEvents(
       path + '.message',
       'esperado um texto',
     );
-    if (type === 'fim_da_luta') {
+    const finishType =
+      world.match.mode === 'maze' ? 'fim_do_nivel' : 'fim_da_luta';
+    if (type === finishType) {
       requireField(
         robotId === null,
         path + '.robotId',
         'evento de partida deve ter ID nulo',
       );
-      return { type, tick, robotId, message };
+      return { type: finishType, tick, robotId, message };
     }
     requireField(
       type === 'log' ||
@@ -138,7 +145,10 @@ function readResult(
     'resultado deve pertencer ao tick final',
   );
   const { motivo, vencedor } = value;
-  if (motivo === 'saida_da_arena') {
+  if (
+    motivo === 'saida_da_arena' ||
+    (motivo === 'saida_alcancada' && world.match.mode === 'maze')
+  ) {
     requireField(
       typeof vencedor === 'string' &&
         world.robots.some((robot) => robot.id === vencedor),
@@ -193,7 +203,10 @@ export function readStates(
     });
     let finishInTick = false;
     while (events[end]?.tick === tick) {
-      if (events[end]!.type === 'fim_da_luta') {
+      if (
+        events[end]!.type === 'fim_da_luta' ||
+        events[end]!.type === 'fim_do_nivel'
+      ) {
         finishEvents += 1;
         finishInTick = true;
       }
@@ -233,10 +246,15 @@ export function readStates(
       resultado: null,
       ...(stall && { stall }),
     };
-    const expected = stall && tick > 0 ? evaluateSumo(world, snapshot) : null;
+    const maze = world.match.mode === 'maze';
+    const expected = maze
+      ? evaluateMaze(world, snapshot)
+      : stall && tick > 0
+        ? evaluateSumo(world, snapshot)
+        : null;
     if (status === 'finalizada') {
       requireField(
-        world.match.mode === 'sumo' &&
+        (world.match.mode === 'sumo' || maze) &&
           tick > 0 &&
           tick === values.length - 1 &&
           finishEvents === 1 &&
@@ -252,7 +270,7 @@ export function readStates(
         stallSeconds,
       );
       requireField(
-        !stall ||
+        (!stall && !maze) ||
           (expected?.motivo === result.motivo &&
             expected.vencedor === result.vencedor),
         path + '.resultado',
@@ -269,7 +287,7 @@ export function readStates(
       'estado em andamento incompatível com resultado ou eventos',
     );
     requireField(
-      world.match.mode === 'free' || tick < world.match.maxTicks,
+      world.match.mode !== 'sumo' || tick < world.match.maxTicks,
       path,
       'uma luta em andamento excede o limite de ticks',
     );
