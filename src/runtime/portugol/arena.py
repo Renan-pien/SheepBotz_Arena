@@ -46,7 +46,16 @@ def checked_binary(op, left, right):
 def scalar_list(*items):
     if len(items) > 1024 or any(type(item) not in (str, int, bool, float) for item in items):
         invalid("use uma lista de até 1024 valores escalares.")
+    if sum(len(item) for item in items if isinstance(item, str)) > 4096:
+        invalid("limite de texto da lista excedido.")
     return list(items)
+
+
+def bounded_text(value):
+    text = str(value)
+    if len(text) > 4096:
+        invalid("limite de texto excedido.")
+    return text
 
 
 def inclusive_range(start, end, step):
@@ -83,6 +92,8 @@ class Profile(ast.NodeTransformer):
             invalid("literal indisponível.")
         if type(value) is int and value.bit_length() > 256:
             invalid("inteiro fora do intervalo.")
+        if type(value) is float and not math.isfinite(value):
+            invalid("real fora do intervalo.")
         if type(value) is str and len(value) > 4096:
             invalid("texto longo demais.")
         return node
@@ -208,10 +219,10 @@ def build_controller(source, api):
             iot_configurar_pino(pin, "SAIDA")
 
         def log(*values):
-            api.log(*[value if type(value) in (str, bool, int, float) else str(value) for value in values])
+            api.log(*[value if type(value) in (str, bool, int, float) else bounded_text(value) for value in values])
 
         env = {"__builtins__": {}, "_check": check, "_binary": checked_binary,
-               "_items": scalar_list, "_S": str, "len": len, "_escreva": log, "_faixa": inclusive_range,
+               "_items": scalar_list, "_S": bounded_text, "len": len, "_escreva": log, "_faixa": inclusive_range,
                "definir_velocidade": api.speed, "ler_laser": lambda: json.loads(api.laser()),
                "ler_laser_central": api.central, "ler_contato": api.contact, "ler_borda": api.edge,
                "ler_odometria": lambda: json.loads(api.odometry()), "tempo_simulado": api.time,

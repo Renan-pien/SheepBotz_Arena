@@ -1,3 +1,4 @@
+import { loadWorld, prepareSimulation } from '../../src/core';
 import { createHash } from 'node:crypto';
 import { beforeAll, expect, it } from 'vitest';
 import { readFile } from 'node:fs/promises';
@@ -135,4 +136,79 @@ it('S2-US2-AC16: empacota o wheel e o arquivo oficial do Maker íntegros', async
         .update(await readFile('public/meupia/' + name))
         .digest('hex'),
     ).toBe(hash);
+});
+
+it('S2-US2-AC15: inicio e preparar antecedem decidir e o reset recria variáveis e funções auxiliares', () => {
+  const source = program(
+    'para i de 1 ate 2 faca\nn <- dobro(n)\nfim_para\nregistrar(n)',
+    'var\nn: inteiro\ni: inteiro\nfuncao dobro(x)\nretorne x * 2\nfim_funcao\nfuncao preparar()\nn <- n + 1\nfim_funcao',
+  ).replace('inicio\nfim_algoritmo', 'inicio\nn <- 2\nfim_algoritmo');
+  const r = robot();
+  for (let i = 0; i < 2; i++) {
+    const loaded = engine.load(source, r.api);
+    if (!loaded.ok) throw Error(loaded.message);
+    loaded.value.setup?.();
+    loaded.value.loop();
+    loaded.value.loop();
+  }
+  expect(r.outputs).toEqual([[12], [48], [12], [48]]);
+});
+it('S2-US2-AC16: recusa pino além da Arena e lado de borda inválido', () => {
+  for (const expr of [
+    'iot_ligar(8)',
+    'iot_configurar_pino(2, "ENTRADA")',
+    'registrar(ler_borda("outro"))',
+  ]) {
+    const r = robot();
+    const loaded = engine.load(program(expr), r.api);
+    if (!loaded.ok) throw Error(loaded.message);
+    expect(() => loaded.value.loop()).toThrow();
+    expect(r.outputs).toHaveLength(0);
+  }
+});
+it('S2-US2-AC15: texto e tamanho do fonte respeitam os limites do perfil', () => {
+  const source = program(
+    'enquanto verdadeiro faca\ns <- s + s\nfim_enquanto',
+    'var s: cadeia',
+  ).replace('inicio\nfim_algoritmo', 'inicio\ns <- "a"\nfim_algoritmo');
+  const r = robot();
+  const loaded = engine.load(source, r.api);
+  if (!loaded.ok) throw Error(loaded.message);
+  loaded.value.setup?.();
+  expect(() => loaded.value.loop()).toThrow(/texto/);
+  expect(
+    engine.load(program('registrar(1)') + ' '.repeat(32768), r.api).ok,
+  ).toBe(false);
+});
+
+it('S2-US2-AC16: no duelo real a borda muda a velocidade e uma falha só desativa o outro robô', async () => {
+  const duel = JSON.parse(
+    await readFile('examples/worlds/duelo-padrao.json', 'utf8'),
+  );
+  duel.robots[0].x = 0.325;
+  duel.robots[1].x = -0.2;
+  const world = loadWorld(JSON.stringify(duel));
+  if (!world.ok) throw Error(JSON.stringify(world.errors));
+  const sources = {
+    vermelho: await readFile('examples/controllers/borda.por', 'utf8'),
+    azul: program('iot_ligar(8)'),
+  };
+  const result = prepareSimulation(world.world, {
+    controllers: sources,
+    controllerEngine: engine,
+    sumoStartDelay: true,
+  });
+  if (!result.ok) throw Error(JSON.stringify(result.errors));
+  const sim = result.simulation;
+  sim.stepN(250);
+  const first = sim.step(),
+    next = sim.step();
+  expect(first.robots[0]!.command.v).toBe(0.2);
+  expect(next.robots[0]!.command.v).toBe(-0.25);
+  expect(next.robots[1]!.situacao).toBe('desativado');
+  expect(next.events.filter((e) => e.type === 'erro_controlador')).toHaveLength(
+    1,
+  );
+  sim.reset();
+  expect(sim.stepN(252)).toEqual(next);
 });

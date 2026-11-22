@@ -1,6 +1,6 @@
-# Contrato da API do controlador · v3
+# Contrato da API do controlador · JavaScript v3 e Portugol v1
 
-O controlador é um script JavaScript síncrono em modo estrito. Declara `loop()` e pode declarar `setup()`.
+Na linguagem padrão, o controlador é um script JavaScript síncrono em modo estrito. Declara `loop()` e pode declarar `setup()`.
 Instruções no nível superior são avaliadas uma vez por carga, inclusive no reset, sem acesso
 às funções do robô. Um erro de sintaxe, forma de script incompatível com a execução síncrona,
 ausência de `loop()` ou falha durante a avaliação gera `CONTROLADOR_INVALIDO` antes do tick 0.
@@ -65,3 +65,5 @@ Arquivo .por com usar "maker", decidir() obrigatória e preparar() opcional, amb
 - ler_borda(lado) aceita frente, traseira, esquerda e direita; fora do sumô devolve falso. ler_odometria() devolve uma cópia com x, y e theta, consultáveis por chave. tempo_simulado() e largada_liberada() observam o tick corrente; a largada está liberada quando a regra está ausente.
 - iot_configurar_pino(2,"SAIDA"), iot_ligar(2) e iot_desligar(2) utilizam o módulo público do Maker. Nível alto aplica (0.20,0) e nível baixo (0,0). Só existe esse pino virtual. Esperas são escritas com tempo_simulado().
 - O programa vê apenas dados e operações do próprio robô. Uma tentativa de usar recurso indisponível na carga produz CONTROLADOR_INVALIDO. Uma falha em callback segue erro_controlador.
+
+O perfil trabalha com inteiros de até 256 bits, reais finitos e textos de até 4096 caracteres. Literais de lista aceitam até 1024 escalares e 4096 caracteres de texto no total. Leituras por índice usam as cópias locais. Operações de hardware físico, espera bloqueante, atributos de objetos e outros plugins ficam fora do perfil. A cota de trabalho reinicia na inicialização e em cada decisão.
