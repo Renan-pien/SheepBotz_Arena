@@ -355,6 +355,8 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 
 ## Extensão de US2 — Operar a largada (P1)
 
-**FR-045** (ADR-023). Toda rodada de sumô ao vivo, inclusive de arquivo, exibe a contagem restante desde 5.00 s. Congelar na pausa, recalcular ao retroceder, reiniciar em 5.00 s no reset. A queima encerra no tick da infração e aguarda ação do usuário. Identificar quem queimou e quem recebeu o ponto ou o empate sem pontos. Os pontos pertencem ao resultado daquele tick. Os exemplos disponíveis na interface aguardam a liberação. Livre e Labirinto conservam sua operação.
+**FR-045** (ADR-023). Toda rodada de sumô ao vivo, inclusive de arquivo, exibe a contagem restante desde 5.00 s. Congelar na pausa, recalcular ao retroceder, reiniciar em 5.00 s no reset. A queima fixa o desfecho no tick da infração e encerra a rodada depois de mostrar 0.50 s de movimento (ADR-024). Identificar quem queimou e quem recebeu o ponto ou o empate sem pontos. Os pontos pertencem ao resultado publicado no último tick da demonstração. Os exemplos disponíveis na interface aguardam a liberação. Livre e Labirinto conservam sua operação.
 
 **S3-US2-AC17.** Dada uma rodada com queima, quando o usuário pausa, avança, volta e revê o fim ao vivo ou em replay, então vê o tempo e o resultado do tick escolhido, com uma única atribuição do ponto. Reiniciar volta ao tick zero. Uma gravação anterior reproduz seus tempos originais.
+
+**S3-US2-AC18** (FR-045, ADR-024). Dado um ou dois infratores, quando a demonstração começa, então cada infrator recebe “Queimou” junto ao próprio robô, inclusive com os nomes ocultos. O texto acompanha a pose em execução, pausa, passo, retrocesso e replay. Permanece no quadro final para inspeção e desaparece ao voltar antes da infração ou reiniciar. Na velocidade 1×, o duelo padrão iniciado com queima no primeiro passo pausa no tick 25. O replay de arquivo anterior conserva seus ticks originais.

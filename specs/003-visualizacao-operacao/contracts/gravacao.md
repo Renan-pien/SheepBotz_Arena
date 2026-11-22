@@ -1,12 +1,12 @@
-# Contrato de gravação · v1 a v5
+# Contrato de gravação · v1 a v6
 
 Arquivo JSON UTF-8, independente do estado atual da tela.
 
 | Chave | Tipo e invariante |
 |---|---|
 | `format` | Constante `sheepbotz-arena`. |
-| `version` | Inteiro `1` sem detector, `2` com critério individual, `3` com os critérios individual e conjunto sem largada, `4` em labirinto ou `5` no sumô com largada. |
-| `stallSeconds` | Obrigatório nas versões 2, 3 e 5. Inteiro 5, 10 ou 30 em sumô. |
+| `version` | Inteiro `1` sem detector, `2` com critério individual, `3` com os critérios individual e conjunto sem largada, `4` em labirinto, `5` no sumô com queima imediata e `6` no sumô com demonstração de 0.50 s. |
+| `stallSeconds` | Obrigatório nas versões 2, 3, 5 e 6. Inteiro 5, 10 ou 30 em sumô. |
 | `world` | Texto original do mundo, aceito pelo validador da S1. |
 | `controllers` | Objeto com o texto do controlador aplicado de cada ID, exatamente na mesma associação do mundo. |
 | `createdAt` | Data UTC em ISO 8601 no formato de `Date.toISOString()`. |
@@ -52,3 +52,9 @@ Reservada a mundos `maze`, sem `stallSeconds`. Usa os estados e prefixos de even
 
 ### Versão 5 · Sumô com largada
 A versão 5 identifica a espera fixa de 5 s e usa o mesmo stallSeconds e contato do par da v3. Durante a espera a física permanece no estado inicial. O último estado com queima registra falseStarters, uma lista dos infratores distintos na ordem dos robôs. O resultado registra motivo, tick, vencedor e pontos por ID. Validar a janela pelo tempo anterior ao passo, poses e comandos imóveis, vínculo entre infratores, vencedor e pontos e evento final único. Não executar os scripts ao ler. V1–v4 conservam as próprias regras.
+
+### Versão 6 · Demonstração da queima
+
+Em todo quadro desde a infração, inclusive no último, gravar `falseStartTick` (primeiro tick com movimento) e `falseStarters` (IDs não repetidos em ordem do mundo). Ambos os campos estão ausentes antes da queima. O primeiro tick da demonstração deve partir de tempo observado menor que 5 s. Os infratores conservam seus comandos saturados e os demais ficam sem tração. Valem os limites de movimento da arena e a física continua a atualizar as leituras.
+
+Aceitar exportação parcial durante a demonstração. O estado terminal requer o primeiro tick que completa 0.50 s de movimento, um evento de fim, vencedor e pontos compatíveis com os infratores iniciais. Guardar o resultado no último estado e exibir separadamente o tick da infração. A reprodução usa as poses gravadas. A v5 conserva os sensores, as poses imóveis e o fim imediato inclusive ao exportar novamente.

@@ -429,3 +429,7 @@ Avaliar o centro físico após contatos no passo headless. Bordas do retângulo 
 
 ### Largada · S2-FR-040
 Habilitar a regra com a opção de execução `sumoStartDelay` apenas no sumô. Marcar tentativas válidas no frame compartilhado por setup e loop e unir aos comandos constantes. Durante a espera o passo avança tempo, eventos e estado de habilitação dos controladores. Julgar todos os IDs antes da integração. Derivar liberação de tick × dt e usar o tick de liberação como origem mínima dos prazos. Sem dependências novas. Constitution Check aprovado para determinismo, isolamento e independência do renderizador.
+
+### Movimento da queima · ADR-024
+
+Capturar o primeiro par (v,w) não nulo do frame e congelar os comandos efetivos saturados dos infratores no primeiro passo. Dispensar novas chamadas aos scripts durante o desfecho. Reutilizar integração, contatos, laser e odometria, usando no último passo apenas a fração restante de 0.50 s. Manter o relógio por tick e congelar o detector de impasse. Antes de avaliar a arena, comparar o tick ao limite da demonstração. Constitution Check aprovado para determinismo, separação da cena e física própria.

@@ -18,7 +18,7 @@ exceção que sai do callback gera `erro_controlador`. Essas regras também vale
 ## Fases e dados disponíveis
 
 No primeiro tick executado, `setup()` roda imediatamente antes de `loop()`. Ambas observam a
-pose e os sensores publicados no tick 0. Em cada passo `k → k + 1`, `loop()` é chamada uma vez
+pose e os sensores publicados no tick 0. Em cada passo de disputa `k → k + 1`, `loop()` é chamada uma vez
 por robô ativo, na ordem do mundo, e observa os dados do tick `k`. A API está disponível durante
 essas chamadas e seus auxiliares síncronos.
 
@@ -55,3 +55,5 @@ A partir da pose física do tick observado, cada ponto fica a um raio de robô d
 
 ### Liberação da largada
 Em rodada com a regra, `getInfo().startReleased` é booleano e usa o tempo anterior ao passo. Para uma estratégia compatível com execuções legadas, usar `if (getInfo().startReleased === false) return;` antes de comandar movimento. Na execução legada o campo é omitido. Durante a espera os sensores, logs e sorteios continuam disponíveis.
+
+No tick de infração, concluir os callbacks dos dois robôs. Durante a demonstração, conservar o primeiro comando de movimento válido de cada infrator, inclusive se uma chamada posterior falhar. As estratégias só voltam a ser chamadas numa nova execução da rodada.

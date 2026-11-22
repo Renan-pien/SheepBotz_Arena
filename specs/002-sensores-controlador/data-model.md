@@ -80,4 +80,4 @@ No detector da ADR-019, `StallState.pair` é opcional. Guarda `center` (ponto m�
 
 A chegada usa `MatchResult.motivo = "saida_alcancada"` e `SimEvent.type = "fim_do_nivel"` no tick terminal do explorador (ADR-021).
 
-A presença de `SimState.sumoStartDelay` identifica uma execução com a largada fixa. `falseStarters` pertence ao tick de infração. `MatchResult.pontos` pertence à queima e tem as duas chaves do duelo. O tempo absoluto continua igual a tick × dt.
+A presença de `SimState.sumoStartDelay` identifica uma execução com a largada fixa. `falseStarters` e `falseStartTick` pertencem a todos os estados da demonstração, inclusive ao terminal. Os comandos de movimento são os efetivos de `RobotState.command`. `MatchResult.pontos` pertence à queima e tem as duas chaves do duelo. O tempo absoluto continua igual a tick × dt.

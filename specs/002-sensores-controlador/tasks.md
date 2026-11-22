@@ -232,3 +232,5 @@ Setup T001–T002 → Fundação T003–T008 → US1 T009–T016 → US2 T017–
 - [X] T046 [US5] Medir a geometria, percorrer os três mundos com o Navegador e testar a chegada após contatos. Entregar mundos, controlador e regra em `examples/`, `src/core/match/`, `tests/core/acceptance/s2/maze.test.ts` — S2-FR-039, S2-US5-AC4 e AC5.
 
 - [X] T047 [US3] Testar primeiro a fronteira temporal, comandos e igualdade de ticks. Implementar fiscalização e resultado na API, runner, simulação e regra de sumô, incluindo a opção --sumo-start-delay da CLI — S2-FR-040, S2-US3-AC16 a AC18.
+
+- [ ] T048 [US3] Testar a fronteira temporal e a decisão imutável, guardar o primeiro comando e integrar 0.50 s de movimento com colisões em `src/core/{controller,sim,match,api}` e na CLI — S2-FR-040, S2-US3-AC16 a AC19.

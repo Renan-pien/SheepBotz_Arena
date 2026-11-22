@@ -333,3 +333,10 @@
 - **Contexto e opções** Verificar o deslocamento físico deixaria passar uma tentativa contra um obstáculo ou um comando sobrescrito. A equipe escolheu julgar a intenção declarada no tick.
 - **Decisão** Todo sumô ao vivo aguarda 5 s de tempo simulado. Um infrator concede um ponto da rodada ao adversário. Dois infratores no mesmo tick empatam, ambos com zero. A rodada encerrada aguarda ação do operador.
 - **Consequências** S2-FR-040 e S3-FR-045. A duração é fixa. Geometria, sensores e demais modalidades conservam seus contratos. O placar desta decisão pertence à rodada. Acumulação entre lutas continua fora do escopo.
+
+## ADR-024 — Mostrar a queima de largada durante meio segundo
+
+- **Data** 2026-11-22. **Status** Aceita por Wesley.
+- **Contexto e opções** O encerramento imediato impedia observar o robô infringindo a regra. Uma animação independente da simulação não apareceria nos sensores e no histórico.
+- **Decisão** Fixar os infratores no primeiro tick da tentativa. Cada um executa seu primeiro comando válido de movimento por 0.50 s simulados com a indicação “Queimou”. Depois pausar e publicar uma só pontuação. O intervalo inclui o passo da infração e respeita os controles de tempo.
+- **Consequências** Revisão de S2-FR-040 e S3-FR-045. O adversário sem infração pode ser empurrado. O replay v5 conserva o encerramento imediato das gravações anteriores.

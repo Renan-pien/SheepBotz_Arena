@@ -95,4 +95,4 @@ no controlador e compara execução em lote com execução em passos intercalado
 do host. O atributo `data-history` publica os cinco estados para comparação com o teste Node.
 
 ### Julgar a largada no terminal
-Execute `npm run sim -- --world examples/worlds/duelo-padrao.json --ticks 1 --sumo-start-delay --command vermelho=0,1`. O resultado deve registrar queima de vermelho e um ponto para azul. Acrescente `--command azul=-1,0` para reproduzir a queima dupla no tick 1.
+Execute `npm run sim -- --world examples/worlds/duelo-padrao.json --ticks 25 --sumo-start-delay --command vermelho=0,1`. O resultado deve registrar queima de vermelho e um ponto para azul. Acrescente `--command azul=-1,0` para reproduzir a queima dupla. Ambos os casos registram a infração no tick 1 e terminam no tick 25. Com `--history`, confira as poses intermediárias e o evento final único.
