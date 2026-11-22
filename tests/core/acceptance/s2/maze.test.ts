@@ -113,3 +113,26 @@ it('S2-US5-AC5: a odometria pode cruzar a saída atrás de uma parede', () => {
   expect(result.state.robots[0]!.odometry.x).toBeCloseTo(0.2, 6);
   expect(result.state.robots[0]!.pose.x).toBeLessThan(0);
 });
+
+it('S2-US5-AC5: centro sobre o limite encerra uma vez no primeiro tick de chegada', () => {
+  const world = JSON.stringify({
+    dt: 0.0625,
+    map: { width: 2, height: 2 },
+    match: { mode: 'maze', exit: { x: 0.25, y: 0, width: 0.25, height: 0.25 } },
+    robots: [{ id: 'r', x: 0, y: 0, radius: 0.125 }],
+  });
+  const result = runHeadless({
+    world,
+    commands: { r: { v: 1, w: 0 } },
+    ticks: 100,
+    history: true,
+  });
+  if (!result.ok) throw Error(JSON.stringify(result.errors));
+  expect(result.history).toHaveLength(3);
+  expect(result.history?.[1]?.resultado).toBeNull();
+  expect(result.state.robots[0]!.pose.x).toBeCloseTo(0.125, 9);
+  expect(result.state.resultado?.tick).toBe(2);
+  expect(result.state.events.map((e) => [e.type, e.tick])).toEqual([
+    ['fim_do_nivel', 2],
+  ]);
+});
