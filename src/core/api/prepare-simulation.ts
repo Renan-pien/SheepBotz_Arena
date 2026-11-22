@@ -26,7 +26,8 @@ function prepareTick(world: World, options: PrepareOptions) {
   const { commands, controllers } = inputs;
 
   function advance(state: SimState): SimState {
-    if (controllers.size === 0) return step(world, state, commands);
+    if (state.falseStartTick !== undefined || controllers.size === 0)
+      return step(world, state, commands);
     const tick = runner.run(state, commands, controllers);
     const robots = tick.disabled.size
       ? state.robots.map((robot) =>

@@ -9,7 +9,7 @@ export interface ControllerFrame {
   readonly observedTime: number;
   readonly events: SimEvent[];
   startReleased?: boolean;
-  attemptedMotion?: true;
+  firstMotion?: Command;
   command?: Command;
   failure?: string;
 }
@@ -64,9 +64,9 @@ export function createControllerScope(world: World, index: number) {
         active.failure ??= 'setSpeed exige dois números finitos.';
         throw new TypeError(active.failure);
       }
-      if (active.startReleased === false && (v !== 0 || w !== 0))
-        active.attemptedMotion = true;
       active.command = { v, w };
+      if (active.startReleased === false && (v !== 0 || w !== 0))
+        active.firstMotion ??= active.command;
     },
     log(...values) {
       const active = frame();

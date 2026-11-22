@@ -25,7 +25,7 @@ export function createControllerRunner(world: World) {
     ) {
       const events: SimEvent[] = [];
       const disabled = new Set<string>();
-      const attempts = new Set<string>();
+      const attempts = new Map<string, Command>();
       const requested = Object.entries(commands);
       for (const [index, { id }] of world.robots.entries()) {
         const script = scripts.get(id);
@@ -45,7 +45,7 @@ export function createControllerRunner(world: World) {
         if (state.tick === 0 && script.setup)
           controller.invoke(frame, script.setup);
         if (frame.failure === undefined) controller.invoke(frame, script.loop);
-        if (frame.attemptedMotion) attempts.add(id);
+        if (frame.firstMotion) attempts.set(id, frame.firstMotion);
         if (frame.failure !== undefined) {
           disabled.add(id);
           requested.push([id, { v: 0, w: 0 }]);

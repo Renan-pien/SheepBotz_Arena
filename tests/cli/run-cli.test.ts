@@ -217,12 +217,19 @@ it('S2-US3-AC13: CLI ativa impasse por opção e rejeita prazo inválido', () =>
 });
 
 it('S2-US3-AC16: comando constante queima somente com a largada de sumô habilitada', () => {
-  const args = [...base, '--command', 'azul=0,-1'];
+  const args = [
+    '--world',
+    'exemplo.json',
+    '--ticks',
+    '25',
+    '--command',
+    'azul=0,-1',
+  ];
   expect(JSON.parse(invoke(args, duel).stdout).state.resultado).toBeNull();
   const run = invoke([...args, '--sumo-start-delay'], duel);
   expect(run.code).toBe(0);
   expect(JSON.parse(run.stdout).state.resultado).toEqual({
-    tick: 1,
+    tick: 25,
     motivo: 'queima_da_largada',
     vencedor: 'vermelho',
     pontos: { vermelho: 1, azul: 0 },

@@ -10,10 +10,15 @@ import type {
 } from '../types';
 
 export const SUMO_START_SECONDS = 5;
+export const FALSE_START_MOTION_SECONDS = 0.5;
+
+function ticksForSeconds(seconds: number, dt: number): number {
+  const tick = Math.floor(seconds / dt);
+  return tick * dt >= seconds ? tick : tick + 1;
+}
 
 export function releaseTick(dt: number): number {
-  const tick = Math.floor(SUMO_START_SECONDS / dt);
-  return tick * dt >= SUMO_START_SECONDS ? tick : tick + 1;
+  return ticksForSeconds(SUMO_START_SECONDS, dt);
 }
 
 function falseStartResult(
@@ -143,6 +148,12 @@ export function evaluateSumo(
   state: SimState,
 ): MatchResult | null {
   if (world.match.mode !== 'sumo' || !world.arena) return null;
+  if (state.falseStartTick !== undefined) {
+    const elapsedTicks = state.tick - state.falseStartTick + 1;
+    return elapsedTicks >= ticksForSeconds(FALSE_START_MOTION_SECONDS, world.dt)
+      ? falseStartResult(world, state.tick, state.falseStarters)
+      : null;
+  }
   const start = state.sumoStartDelay ? releaseTick(world.dt) : 0;
   if (state.sumoStartDelay && state.tick <= start)
     return falseStartResult(world, state.tick, state.falseStarters);

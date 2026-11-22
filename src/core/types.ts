@@ -103,6 +103,7 @@ export interface SimEvent {
 
 export interface SimState {
   readonly sumoStartDelay?: true;
+  readonly falseStartTick?: number;
   readonly falseStarters?: readonly string[];
   readonly stall?: StallState;
   readonly tick: number; // 0 no estado inicial
