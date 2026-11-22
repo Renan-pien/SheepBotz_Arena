@@ -5,6 +5,7 @@ import {
   type StallSeconds,
   type World,
 } from '../../core';
+import type { Language, Languages } from './languages';
 import {
   object,
   readEvents,
@@ -17,7 +18,8 @@ export const lastRecordedTick = 100_000;
 const format = 'sheepbotz-arena';
 
 export interface Recording {
-  readonly version: 1 | 2 | 3 | 4 | 5 | 6;
+  readonly version: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  readonly languages?: Languages;
   readonly stallSeconds?: StallSeconds;
   readonly world: string;
   readonly controllers: Readonly<Record<string, string>>;
@@ -39,6 +41,7 @@ export function encodeRecording(recording: Recording): string {
     stallSeconds: recording.stallSeconds,
     world: recording.world,
     controllers: recording.controllers,
+    languages: recording.languages,
     createdAt: recording.createdAt,
     events: recording.states.at(-1)!.events,
     states: recording.states.map(
@@ -69,10 +72,11 @@ export function encodeRecording(recording: Recording): string {
 function sources(
   value: unknown,
   world: World,
+  field = 'controllers',
 ): Readonly<Record<string, string>> {
   requireField(
     object(value) && Object.keys(value).length === world.robots.length,
-    'controllers',
+    field,
     'esperado um controlador de texto por robô',
   );
   return Object.fromEntries(
@@ -80,7 +84,7 @@ function sources(
       const source = value[id];
       requireField(
         Object.hasOwn(value, id) && typeof source === 'string',
-        'controllers.' + id,
+        field + '.' + id,
         'texto do controlador ausente ou inválido',
       );
       return [id, source];
@@ -99,7 +103,8 @@ export function decodeRecording(text: string): DecodeResult {
         data.version === 3 ||
         data.version === 4 ||
         data.version === 5 ||
-        data.version === 6,
+        data.version === 6 ||
+        data.version === 7,
       'version',
       'versão não suportada',
     );
@@ -133,14 +138,37 @@ export function decodeRecording(text: string): DecodeResult {
       'states',
       'esperada uma lista de 1 a 100 001 estados',
     );
+    const mode = parsed.world.match.mode;
+    const stateVersion =
+      data.version === 7
+        ? mode === 'sumo'
+          ? 6
+          : mode === 'maze'
+            ? 4
+            : 1
+        : data.version;
+    let languages: Languages | undefined;
+    if (data.version === 7) {
+      const values = sources(data.languages, parsed.world, 'languages');
+      languages = Object.fromEntries(
+        Object.entries(values).map(([id, value]) => {
+          requireField(
+            value === 'javascript' || value === 'portugol',
+            'languages.' + id,
+            'linguagem inválida',
+          );
+          return [id, value as Language];
+        }),
+      );
+    }
     requireField(
-      (data.version === 4) === (parsed.world.match.mode === 'maze'),
+      (stateVersion === 4) === (parsed.world.match.mode === 'maze'),
       'version',
       'versão incompatível com a modalidade',
     );
     const stallSeconds = data.stallSeconds;
     requireField(
-      data.version === 1 || data.version === 4
+      stateVersion === 1 || stateVersion === 4
         ? stallSeconds === undefined
         : isStallSeconds(stallSeconds) && parsed.world.match.mode === 'sumo',
       'stallSeconds',
@@ -154,13 +182,14 @@ export function decodeRecording(text: string): DecodeResult {
       parsed.world,
       list,
       limit,
-      data.version,
+      stateVersion,
     );
     return {
       ok: true,
       world: parsed.world,
       recording: {
         version: data.version,
+        ...(languages && { languages }),
         ...(limit && { stallSeconds: limit }),
         world: worldText,
         controllers: boundSources,

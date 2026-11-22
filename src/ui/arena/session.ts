@@ -19,6 +19,12 @@ import {
   type ControllerPreset,
   type WorldPreset,
 } from './catalog';
+import {
+  defaultLanguages,
+  makerExample,
+  type Language,
+  type Languages,
+} from './languages';
 import { TickClock, type PlaybackSpeed } from './clock';
 import { decodeRecording, lastRecordedTick, type Recording } from './recording';
 
@@ -32,6 +38,8 @@ export interface SessionError {
 }
 
 export interface Draft {
+  readonly language: Language;
+  readonly alternate?: Pick<Draft, 'source' | 'example'>;
   readonly source: string;
   readonly example: ControllerPreset;
 }
@@ -48,7 +56,14 @@ function initialDrafts(
   return Object.fromEntries(
     world.robots.map(({ id }) => {
       const example = Object.hasOwn(defaults, id) ? defaults[id]! : 'parado';
-      return [id, { example, source: controllerPresets[example].source }];
+      return [
+        id,
+        {
+          language: 'javascript',
+          example,
+          source: controllerPresets[example].source,
+        },
+      ];
     }),
   );
 }
@@ -73,6 +88,8 @@ export interface SessionView {
   readonly world: World;
   readonly worldText: string;
   readonly controllers: Sources;
+  readonly languages: Languages;
+  readonly loading: string | null;
   readonly snapshot: SimState;
   readonly status: SessionStatus;
   readonly speed: PlaybackSpeed;
@@ -97,7 +114,13 @@ export class ArenaSession {
   #replay: Recording | null = null;
   #createdAt = new Date().toISOString();
 
-  constructor(engine: ControllerEngine = initializeControllerEngine()) {
+  #maker?: ControllerEngine;
+  #request = 0;
+  constructor(
+    engine: ControllerEngine = initializeControllerEngine(),
+    private readonly getMaker = async (): Promise<ControllerEngine> =>
+      (await import('../../runtime/portugol/runtime')).loadMaker(),
+  ) {
     this.#engine = engine;
     const worldText = worldPresets.duelo.text;
     const world = loadWorld(worldText);
@@ -121,6 +144,8 @@ export class ArenaSession {
       controllers,
       snapshot: this.#simulation.getState(),
       status: 'pronta',
+      languages: defaultLanguages(world.world),
+      loading: null,
       speed: 1,
       behind: false,
       limitReached: false,
@@ -163,7 +188,12 @@ export class ArenaSession {
       sourcesFrom(drafts),
       drafts,
       preset,
-      preset && loaded.world.match.mode === 'maze' ? { status: 'pausada' } : {},
+      {
+        languages: defaultLanguages(loaded.world),
+        ...(preset && loaded.world.match.mode === 'maze'
+          ? { status: 'pausada' as const }
+          : {}),
+      },
     );
   }
 
@@ -195,7 +225,10 @@ export class ArenaSession {
       { [targetId]: controllers[sourceId]! },
       { [targetId]: drafts[sourceId]! },
       level,
-      { status: 'pausada' },
+      {
+        status: 'pausada',
+        languages: { [targetId]: this.#view.languages[sourceId]! },
+      },
     );
   }
 
@@ -207,11 +240,38 @@ export class ArenaSession {
     });
   }
 
+  chooseLanguage(id: string, language: Language) {
+    const { drafts, world } = this.#view;
+    const draft = drafts[id]!;
+    if (this.#replay || draft.language === language) return;
+    const next = draft.alternate ?? {
+      example: 'parado',
+      source:
+        language === 'portugol'
+          ? makerExample(world.match.mode).source
+          : controllerPresets.parado.source,
+    };
+    this.#publish({
+      drafts: {
+        ...drafts,
+        [id]: {
+          ...next,
+          language,
+          alternate: { example: draft.example, source: draft.source },
+        },
+      },
+    });
+  }
+
   selectExample(id: string, example: ControllerPreset) {
     if (this.#replay) return;
-    const source = controllerPresets[example].source;
+    const draft = this.#view.drafts[id]!;
+    const source =
+      draft.language === 'portugol'
+        ? makerExample(this.#view.world.match.mode).source
+        : controllerPresets[example].source;
     this.#publish({
-      drafts: { ...this.#view.drafts, [id]: { example, source } },
+      drafts: { ...this.#view.drafts, [id]: { ...draft, example, source } },
     });
   }
 
@@ -221,14 +281,50 @@ export class ArenaSession {
 
   apply(id: string) {
     if (this.#replay) return;
-    const { world, worldText, controllers, drafts, preset } = this.#view;
-    this.#replace(
-      world,
-      worldText,
-      { ...controllers, [id]: drafts[id]!.source },
-      drafts,
-      preset,
-    );
+    const draft = this.#view.drafts[id]!;
+    const commit = () => {
+      const { world, worldText, controllers, drafts, preset, languages } =
+        this.#view;
+      this.#replace(
+        world,
+        worldText,
+        { ...controllers, [id]: draft.source },
+        drafts,
+        preset,
+        {
+          languages: { ...languages, [id]: draft.language },
+          ...(draft.language === 'portugol' && { status: 'pausada' as const }),
+        },
+      );
+    };
+    if (draft.language === 'portugol' && !this.#maker)
+      return this.#prepareMaker(
+        id,
+        () => this.#view.drafts[id] === draft,
+        commit,
+      );
+    commit();
+  }
+
+  async #prepareMaker(id: string, valid: () => boolean, apply: () => void) {
+    const request = ++this.#request,
+      revision = this.#revision;
+    const current = () =>
+      request === this.#request && revision === this.#revision;
+    this.#publish({ loading: id });
+    try {
+      this.#maker = await this.getMaker();
+      if (current() && valid()) apply();
+    } catch (error) {
+      if (current() && valid())
+        this.reportError({
+          code: 'CONTROLADOR_INVALIDO',
+          path: 'controllers.' + id,
+          message: error instanceof Error ? error.message : String(error),
+        });
+    } finally {
+      if (current()) this.#publish({ loading: null });
+    }
   }
 
   #replace(
@@ -239,9 +335,17 @@ export class ArenaSession {
     preset: WorldPreset | '',
     patch: Partial<SessionView> = {},
   ) {
+    const languages = patch.languages ?? this.#view.languages;
+    // O identificador encaminha a carga ao motor do respectivo robô, mesmo com fontes iguais.
     const prepared = prepareSimulation(world, {
-      controllers,
-      controllerEngine: this.#engine,
+      controllers: Object.fromEntries(world.robots.map(({ id }) => [id, id])),
+      controllerEngine: {
+        load: (id, api) =>
+          (languages[id] === 'portugol' ? this.#maker! : this.#engine).load(
+            controllers[id]!,
+            api,
+          ),
+      },
       sumoStartDelay: true,
       stallSeconds: patch.stallSeconds ?? this.#view.stallSeconds,
     });
@@ -269,6 +373,7 @@ export class ArenaSession {
     this.#createdAt = new Date().toISOString();
     this.#publish({
       mode: 'live',
+      loading: null,
       roundStarted: false,
       lastDraw: null,
       replayLast: null,
@@ -286,9 +391,14 @@ export class ArenaSession {
   }
 
   #liveRecording(tick: number): Recording {
+    const multilingual = Object.values(this.#view.languages).includes(
+      'portugol',
+    );
     return {
-      version:
-        this.#view.world.match.mode === 'maze'
+      ...(multilingual && { languages: this.#view.languages }),
+      version: multilingual
+        ? 7
+        : this.#view.world.match.mode === 'maze'
           ? 4
           : this.#view.world.match.mode === 'sumo'
             ? 6
@@ -339,7 +449,14 @@ export class ArenaSession {
         const example =
           names.find((key) => controllerPresets[key].source === source) ??
           'parado';
-        return [id, { example, source }];
+        return [
+          id,
+          {
+            example,
+            source,
+            language: recording.languages?.[id] ?? ('javascript' as const),
+          },
+        ];
       }),
     );
     this.#publish({
@@ -349,6 +466,8 @@ export class ArenaSession {
       world,
       worldText: recording.world,
       controllers: recording.controllers,
+      languages: recording.languages ?? defaultLanguages(world),
+      loading: null,
       drafts,
       preset: '',
       snapshot: recording.states[0]!,
@@ -364,7 +483,14 @@ export class ArenaSession {
     if (!this.#replay) return;
     const { world, worldText, controllers, drafts } = this.#view;
     const preset = mazeLevelFromText(worldText);
-    this.#replace(world, worldText, controllers, drafts, preset ?? '');
+    const resume = () =>
+      this.#replace(world, worldText, controllers, drafts, preset ?? '');
+    if (
+      !this.#maker &&
+      Object.values(this.#view.languages).includes('portugol')
+    )
+      return this.#prepareMaker('replay', () => this.#replay !== null, resume);
+    resume();
   }
 
   seek(tick: number) {

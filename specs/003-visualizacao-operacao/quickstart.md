@@ -79,3 +79,6 @@ Na aba **Controladores** do Sumô, clique entre dois caracteres do código de `v
 
 ### Testar queima de largada
 Aplique `function loop() { setSpeed(0, 1); }` a vermelho e deixe azul com o Girador de exemplo. No tick 0 confira “Largada em 5,00 s”. Avance uma vez e confira “vermelho · Queimou” enquanto ele gira. Clique em Executar e confira a pausa no tick 25 com um ponto para azul. Volte e avance para rever o resultado. Aplique o mesmo código a azul e execute novamente para ver os dois rótulos e o empate sem pontos. Reiniciar abre outra espera completa.
+
+### Programar em Portugol e consultar a ajuda
+No Sumô, escolha Portugol no vermelho e mantenha JavaScript no azul. Abra **? Comandos**, consulte a borda, feche com Escape e confira o foco no botão. Aplique Guarda da borda. No duelo padrão, avance até a liberação aos 5 s e compare dois ticks usando Voltar e Avançar. Abra um .por com erro e aplique: confira o diagnóstico e a conservação do último estado. No Labirinto, aplique Desviar da parede, troque a dificuldade e confira o mesmo fonte. Salve o .por, exporte a gravação e abra-a em outra sessão: os estados e a linguagem devem aparecer antes de carregar o motor. A ajuda continua disponível no replay.

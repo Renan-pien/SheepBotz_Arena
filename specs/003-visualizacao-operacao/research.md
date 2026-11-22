@@ -79,3 +79,6 @@
 - **Alternativas consideradas.** Diminuir a resolução do canvas ou mudar
   o intervalo de desenho. O custo de materiais e amostragem foi reduzido
   com resolução e cadência preservadas.
+
+### Tutorial e carregamento por linguagem
+Manter um editor por robô permite disputar com linguagens diferentes. O diálogo nativo mantém a navegação por teclado no tutorial da modalidade atual e devolve o foco ao botão. Uma aplicação de Portugol aguarda o runtime do próprio site. Revisão da sessão e identidade do rascunho impedem uma resposta atrasada de substituir edição ou mundo posteriores.

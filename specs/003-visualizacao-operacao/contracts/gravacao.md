@@ -1,12 +1,12 @@
-# Contrato de gravação · v1 a v6
+# Contrato de gravação · v1 a v7
 
 Arquivo JSON UTF-8, independente do estado atual da tela.
 
 | Chave | Tipo e invariante |
 |---|---|
 | `format` | Constante `sheepbotz-arena`. |
-| `version` | Inteiro `1` sem detector, `2` com critério individual, `3` com os critérios individual e conjunto sem largada, `4` em labirinto, `5` no sumô com queima imediata e `6` no sumô com demonstração de 0.50 s. |
-| `stallSeconds` | Obrigatório nas versões 2, 3, 5 e 6. Inteiro 5, 10 ou 30 em sumô. |
+| `version` | Inteiro `1` sem detector, `2` com critério individual, `3` com os critérios individual e conjunto sem largada, `4` em labirinto, `5` no sumô com queima imediata e `6` no sumô com demonstração de 0.50 s. A versão `7` guarda a linguagem de cada robô. |
+| `stallSeconds` | Obrigatório nas versões 2, 3, 5 e 6 e na versão 7 de sumô. Inteiro 5, 10 ou 30 em sumô. |
 | `world` | Texto original do mundo, aceito pelo validador da S1. |
 | `controllers` | Objeto com o texto do controlador aplicado de cada ID, exatamente na mesma associação do mundo. |
 | `createdAt` | Data UTC em ISO 8601 no formato de `Date.toISOString()`. |

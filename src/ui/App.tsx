@@ -71,7 +71,8 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
       )
         return;
       const target = event.target instanceof Element ? event.target : null;
-      if (target?.closest('input, textarea, select, [contenteditable]')) return;
+      if (target?.closest('input, textarea, select, dialog, [contenteditable]'))
+        return;
       if (event.key === ' ' && !target?.closest('button, a')) {
         event.preventDefault();
         if (session.getSnapshot().status === 'executando') session.pause();
@@ -225,7 +226,11 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
             Exportar gravação
           </button>
           {replay && (
-            <button type="button" onClick={() => session.exitReplay()}>
+            <button
+              type="button"
+              disabled={view.loading !== null}
+              onClick={() => void session.exitReplay()}
+            >
               Sair do replay
             </button>
           )}

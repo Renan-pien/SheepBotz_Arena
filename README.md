@@ -1,12 +1,18 @@
 # SheepBotz Arena
 
-**399 testes · 90% de cobertura**
+**418 testes · 89% de cobertura**
 
 Métricas geradas a partir dos relatórios com `npm run stats`.
 
 Simulador de robôs móveis para a equipe **Univille SheepBotz**. O navegador mostra a
 simulação em 3D e permite editar estratégias, inspecionar sensores e salvar replays.
-O núcleo 2D aceita mundos JSON e controladores JavaScript.
+O núcleo 2D aceita mundos JSON. Na IDE, cada robô pode usar JavaScript ou Portugol com o meuPiá Maker.
+
+### Escrever uma estratégia em Portugol
+
+Na aba **Controladores**, escolha o robô e selecione **Linguagem → Portugol (meuPiá Maker)**. Escreva a decisão de cada tick em `decidir()` ou comece pelo exemplo do modo. Clique em **Aplicar** e depois em **Avançar 1 tick** ou **Executar**. O botão **? Comandos** mostra a API e um exemplo para o modo e a linguagem selecionados.
+
+A IDE abre e salva arquivos `.por`. Cada equipe pode escolher sua linguagem. No Labirinto, trocar a dificuldade conserva o controlador aplicado e o rascunho. O primeiro uso do Portugol carrega o compilador a partir dos arquivos do próprio site. A instalação para quem clona o projeto continua usando `npm ci`. [Exemplo do Sumô](examples/controllers/borda.por) · [Exemplo do Labirinto](examples/controllers/parede.por)
 
 ## Status
 
