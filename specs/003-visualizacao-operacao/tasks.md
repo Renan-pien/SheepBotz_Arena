@@ -88,3 +88,5 @@ navegador. A seguir entram inspeção e replay. A apresentação vem por
 - [X] T024 [US4] Mostrar a leitura física da borda nos cartões e compartilhar o limiar com a cena — `src/ui/panels/Inspection.tsx`, `src/ui/scene/graphics.ts`, `tests/ui/s3/us4-inspecao.test.tsx`, README e rastreabilidade — S3-FR-042. Depende de S2-T045. Pronto com S3-US4-AC7 (ao vivo, retrocesso, reset, modo livre e replays antigos), suíte completa, lint e build.
 
 - [X] T025 [US3] Integrar seleção, chegada visível, replay e troca explícita com estratégia preservada em `src/ui/` e `tests/ui/s3/maze.test.tsx`. Validar regressões e rastreabilidade — S3-FR-043, S3-US3-AC10.
+
+- [ ] T026 [US3] Separar Modo e Dificuldade e compartilhar a troca pausada com Próximo nível. Validar o catálogo, a estratégia e o rascunho, a exibição de arquivos e os seletores em replay — `src/ui/App.tsx`, `src/ui/arena/catalog.ts`, `src/ui/arena/session.ts`, `tests/ui/s3/maze.test.tsx` — S3-FR-019, S3-FR-043, S3-FR-044, S3-US3-AC11 e AC12.

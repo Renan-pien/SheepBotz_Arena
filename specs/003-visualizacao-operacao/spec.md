@@ -96,7 +96,7 @@ Como membro da equipe, quero escolher ou abrir um mundo e escrever a estratégia
 
 **Cenários de aceitação:**
 
-1. **Dado** o seletor de mundos, **Quando** o usuário escolhe o primeiro labirinto, **Então** a cena e os painéis passam a refletir esse mundo no tick 0, com o controlador "Navegador" no robô `explorador`.
+1. **Dado** o seletor de modo, **Quando** o usuário escolhe Labirinto, **Então** a cena e os painéis passam a refletir esse mundo no tick 0, com o controlador "Navegador" no robô `explorador`.
 2. **Dado** o botão "Abrir mundo", **Quando** o usuário escolhe um arquivo de mundo válido, **Então** o mundo é carregado no tick 0 e todos os robôs começam com o controlador "Parado".
 3. **Dado** um arquivo de mundo com 3 erros, **Quando** o usuário o abre, **Então** aparece a lista dos 3 erros, cada um com código, caminho e mensagem em pt-BR, e o mundo anterior continua carregado e intacto.
 4. **Dado** a aba "Controladores", **Quando** o usuário escolhe um exemplo para um robô (Parado, Avança, Girador, Caçador, Desviador ou Navegador), **Então** o código do exemplo aparece no editor daquele robô.
@@ -213,7 +213,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 
 ### 4.4 Mundos e controladores
 
-- **FR-019:** A tela DEVE oferecer um seletor com o Duelo e os três níveis de labirinto (FR-043) e um botão "Abrir mundo" para escolher um arquivo `.json`. *(RB-22)*
+- **FR-019:** A tela DEVE oferecer o seletor Modo com Sumô e Labirinto (FR-044) e um botão "Abrir mundo" para escolher um arquivo `.json`. *(RB-22)*
 - **FR-020:** Ao abrir um mundo inválido, a tela DEVE listar todos os erros (código, caminho, mensagem) e manter o mundo anterior. *(RB-46)*
 - **FR-021:** Ao carregar um mundo, os controladores iniciais DEVEM ser: no "Duelo padrão", `vermelho` com "Caçador" e `azul` com "Girador"; nos três labirintos, `explorador` com "Navegador"; em mundos abertos de arquivo, "Parado" para todos. *(RB-22, RB-23, ADR-003)*
 - **FR-022:** A tela inicial DEVE abrir com o "Duelo padrão" e seus controladores iniciais, no tick 0, pausada. *(RB-24, ADR-003)*
@@ -341,6 +341,12 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 
 ## Extensão de US3 — Escolher o nível (P2)
 
-**FR-043** (ADR-021, RB-22, RB-24). O seletor oferece os três níveis ao lado do Duelo. A Sala pode ser importada de arquivo. A saída tem marca própria no piso. A chegada suspende o avanço no tick final e mostra a conclusão e o tempo. Nos dois primeiros mapas de catálogo, o comando explícito “Próximo nível” carrega o seguinte pausado no tick 0 com o controlador aplicado. O último informa “Labirinto concluído”. Replay apenas reproduz o nível gravado.
+**FR-043** (ADR-021, RB-22, RB-24). Os três níveis estão disponíveis na lista Dificuldade do Labirinto (FR-044). A Sala pode ser importada de arquivo. A saída tem marca própria no piso. A chegada suspende o avanço no tick final e mostra a conclusão e o tempo. Nos dois primeiros mapas de catálogo, o comando explícito “Próximo nível” carrega o seguinte pausado no tick 0 com o controlador aplicado. O último informa “Labirinto concluído”. Replay apenas reproduz o nível gravado.
 
 **S3-US3-AC10.** Dada a chegada ao vivo, quando passa tempo real, o nível permanece no tick final. Ao retroceder um tick e avançar, o resultado volta uma vez. Quando o usuário escolhe o próximo nível, a estratégia aplicada continua disponível e o histórico começa no tick 0. A gravação reproduz o tick de chegada e o replay conserva o nível.
+
+**FR-044** (ADR-022, RB-22, RB-24). Modo oferece exatamente Sumô e Labirinto. A escolha de Labirinto abre o Fácil pausado no tick 0. Apenas no labirinto aparece Dificuldade, com Fácil, Médio e Difícil em ordem. Mudar de dificuldade ao vivo abre o mapa escolhido pausado no tick 0 e conserva o código aplicado e o rascunho do explorador. Próximo nível atualiza essa mesma indicação. Em replay, as listas são de consulta.
+
+**S3-US3-AC11.** Dado o Sumô inicial, quando o usuário entra em Labirinto, então vê Fácil selecionado e o simulador pausado. Quando muda diretamente para Difícil e depois Médio, inclusive durante uma execução, cada nível inicia pausado no tick 0 com a mesma estratégia. Ao escolher Sumô, a lista Dificuldade desaparece. Uma nova entrada em Labirinto começa no Fácil.
+
+**S3-US3-AC12.** Dado um mundo de arquivo ou replay, quando a tela mostra os controles, o nome do mundo pode ser consultado. Um mundo livre deixa Modo sem seleção e um labirinto personalizado deixa Dificuldade sem seleção. Os arquivos não acrescentam opções às listas. No replay de um nível do catálogo a dificuldade correspondente aparece selecionada e bloqueada.

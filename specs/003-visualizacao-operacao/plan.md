@@ -304,3 +304,7 @@ Consultar o sensor da S2 com a pose do snapshot exibido, o raio do robô corresp
 ## ADR-021 · S3-FR-043
 
 Catalogar os três JSONs por ordem de nível. Desenhar uma chegada quadriculada no piso. Reusar o estado terminal e a navegação pelo histórico. Ao avançar de nível, preparar uma nova simulação com o controlador aplicado e rascunho preservado. O replay apenas consome snapshots.
+
+## Seleção em dois passos · S3-FR-044
+
+Derivar Modo de `world.match.mode` e Dificuldade do preset ou do texto de um mapa conhecido. A sessão prepara Duelo ou Fácil quando o usuário troca de modo. A mudança direta de dificuldade compartilha a transição de Próximo nível. Vincular o controlador aplicado e o rascunho do único robô de origem ao explorador do destino, inclusive se o identificador no arquivo importado for diferente. Publicar a nova sessão apenas após validar mapa e controlador.

@@ -31,7 +31,7 @@ oculte a aba e volte. O estado permanece pausado e conserva o tick.
 
 ## Cargas e erros
 
-Selecione Labirinto 1 · Fácil e execute o Navegador até a chegada quadriculada. Confira o tempo final, volte um tick e avance. Clique em Próximo nível e confirme o tick 0 pausado e o mesmo código. Repita no médio e no difícil. Exporte a chegada e abra a gravação. Abra o arquivo `examples/worlds/sala-com-obstaculos.json` para confirmar o modo livre com Parado. Abra um mundo
+Selecione **Modo → Labirinto**, confira **Dificuldade → Fácil** e execute o Navegador até a chegada quadriculada. Confira o tempo final, volte um tick e avance. Clique em Próximo nível e confirme o tick 0 pausado e o mesmo código. Confira **Dificuldade → Médio**. Escolha **Difícil** diretamente e verifique que o mapa abriu pausado no tick 0 com a estratégia aplicada. Execute até a chegada. Exporte a chegada e abra a gravação. Abra o arquivo `examples/worlds/sala-com-obstaculos.json` para confirmar o modo livre com Parado. Abra um mundo
 inválido e confira todos os erros e a preservação do mundo anterior.
 No cartão, carregue um rascunho com erro, tente aplicar e conserve a sessão.
 Salve o rascunho, restaure um exemplo válido e aplique para voltar ao tick 0.

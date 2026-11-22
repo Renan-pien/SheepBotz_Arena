@@ -51,7 +51,7 @@ além da cor.
 - A região da cena se chama **Cena 3D**. As opções são **Mostrar raios**
   e **Mostrar rótulos**. **Controladores**, **Inspeção** e **Eventos**
   têm papel de aba. Inspeção e Eventos também nomeiam as regiões de conteúdo.
-- O seletor é **Mundo**, com os valores de catálogo `duelo`, `facil`, `medio` e `dificil`. O arquivo da Sala continua disponível em **Abrir mundo**.
+- **Modo** oferece **Sumô** (`sumo`) e **Labirinto** (`maze`). No Labirinto, **Dificuldade** oferece **Fácil** (`facil`), **Médio** (`medio`) e **Difícil** (`dificil`). Cada lista tem um rótulo acessível próprio. O arquivo da Sala continua disponível em **Abrir mundo**.
   Os campos de arquivo têm rótulos **Abrir mundo** e **Abrir gravação**.
   Os erros de preparação ou de arquivo aparecem em uma região de alerta.
 - Os nomes por robô são **Exemplo de `<id>`**, **Código de `<id>`**,
@@ -91,3 +91,5 @@ Em sumô, o cartão de cada robô apresenta Frente, Traseira, Esquerda e Direita
 ## Labirinto · ADR-021
 
 Os níveis 1, 2 e 3 são Fácil, Médio e Difícil. A saída quadriculada corresponde ao retângulo físico. O status ao vivo é `pausada` no tick da chegada. O banner mostra “Nível concluído em … s” (“Labirinto concluído” no terceiro mapa), o tick, **Reiniciar nível** e **Ver replay**. Nos dois primeiros níveis do catálogo, **Próximo nível** aparece também em apresentação. Avançar de nível e executar são duas ações explícitas distintas. **Voltar 1 Tick** permite rever o estado anterior. A modalidade usa as APIs comuns de navegação. O painel indica “Indisponível no labirinto” para a borda de sumô.
+
+A entrada pelo seletor **Modo → Labirinto** abre o Fácil pausado no tick 0. Tanto uma troca direta em Dificuldade quanto Próximo nível preservam o controlador aplicado e o rascunho. No replay as listas indicam o mundo e o nível conhecidos e ficam bloqueadas. Mundos de arquivo são identificados pelo nome ao lado dos controles. Modo fica sem seleção em mundos livres e Dificuldade fica sem seleção em labirintos fora do catálogo.

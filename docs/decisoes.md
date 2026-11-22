@@ -318,3 +318,11 @@
 - **Contexto e opções** O cenário livre demonstra colisão e sensores. Para oferecer navegação com chegada, avaliamos alterar o comportamento do modo livre ou acrescentar uma modalidade de exploração.
 - **Decisão** Acrescentar três mapas fixos, com 2, 4 e pelo menos 6 bifurcações na rota mais curta, respectivamente. Usar um robô idêntico nos três níveis. O centro físico determina a chegada. O usuário inspeciona o tick final e escolhe se avança com sua estratégia aplicada.
 - **Consequências** A Sala permanece como mundo livre de arquivo. O sumô continua como demonstração definida pela ADR-003. A modalidade adicional usa os contratos S1-FR-041, S2-FR-039 e S3-FR-043.
+
+## ADR-022 — Escolher modo e dificuldade em listas distintas
+
+- **Data** 2026-11-22
+- **Status** Aceita por Wesley.
+- **Contexto e opções** O seletor enumerava o Duelo e os três mapas de labirinto no mesmo nível. A escolha aprovada agrupa os mapas por modalidade.
+- **Decisão** Oferecer Sumô e Labirinto em Modo. Mostrar Dificuldade ao lado apenas no Labirinto, com Fácil, Médio e Difícil. A entrada no Labirinto abre o Fácil pausado. A troca direta de dificuldade preserva a estratégia e abre o mapa pausado no tick 0, como Próximo nível.
+- **Consequências** Revisão da operação da S3 (FR-019, FR-043, FR-044). A interface reflete a modalidade do mundo carregado e identifica arquivos fora do catálogo pelo nome.

@@ -30,7 +30,7 @@ A tela abre o **Duelo padrão** com Caçador e Girador. Clique em **Executar**
 para ver a luta. Use **Inspeção** para consultar os sensores e **Ver replay**
 para voltar a um tick. Os controles de gravação usam arquivos JSON locais.
 
-Em **Mundo**, selecione **Labirinto 1 · Fácil**, **Labirinto 2 · Médio** ou **Labirinto 3 · Difícil**. Clique em **Executar** para acompanhar o Navegador ou aplique sua própria estratégia ao `explorador`. A chegada é a área quadriculada. A simulação pausa ao alcançá-la. **Próximo nível** leva a estratégia aplicada ao tick 0 do novo mapa. Também é possível voltar um tick ou rever a chegada no replay. Para explorar a sala livre original, use **Abrir mundo** com [Sala com obstáculos](examples/worlds/sala-com-obstaculos.json).
+Em **Modo**, escolha **Sumô** ou **Labirinto**. O Labirinto abre pausado no **Fácil**. Na lista **Dificuldade**, você pode escolher **Fácil**, **Médio** ou **Difícil**. Cada troca abre o mapa no tick 0 com sua estratégia aplicada. Clique em **Executar** para acompanhar o Navegador ou aplique sua própria estratégia ao `explorador`. A chegada é a área quadriculada. A simulação pausa ao alcançá-la. **Próximo nível** leva a estratégia aplicada ao tick 0 do novo mapa. Também é possível voltar um tick ou rever a chegada no replay. Para explorar a sala livre original, use **Abrir mundo** com [Sala com obstáculos](examples/worlds/sala-com-obstaculos.json).
 
 No sumô ao vivo, **Regra de Tempo** permite escolher 5, 10 ou 30 s antes do
 primeiro passo. A rodada empata se os dois robôs ficarem parados ou se, após
