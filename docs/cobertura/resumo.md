@@ -1,6 +1,6 @@
 # Cobertura de testes
 
-**380 testes · 89% de cobertura**
+**381 testes · 89% de cobertura**
 
 | Métrica | Cobertos | Total | Percentual |
 |---|---:|---:|---:|

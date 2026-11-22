@@ -175,3 +175,9 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 | Origem | Requisitos | Tarefa e commit | Testes de aceitação | Estado |
 |---|---|---|---|---|
 | RB-22, RB-24, ADR-022 | S3-FR-019, S3-FR-043, S3-FR-044 | S3-T026 (`1bf574f`) | [S3-US3-AC10, AC11 e AC12 · progressão, troca direta, rascunho, arquivos e replay](../tests/ui/s3/maze.test.tsx) | Validado localmente |
+
+## Cursor de inserção dos controladores
+
+| Origem | Requisitos | Tarefa e commit | Verificação | Estado |
+|---|---|---|---|---|
+| RB-23, RB-20 | S3-FR-023, S3-FR-038 | S3-T027 (`06d5d54`) | [S3-US3-AC13 · cor do cursor nos três editores](../tests/ui/s3/us3-controladores.test.tsx) e [clique, setas e inserção no Chrome](registro-de-consolidacao.md#2026-11-22--cursor-nos-editores-de-estratégia) | Validado localmente |

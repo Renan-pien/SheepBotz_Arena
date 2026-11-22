@@ -516,3 +516,11 @@ A suíte local passou com 378 testes e 89.52% das linhas cobertas. Lint e build 
 No Chrome, a lista Modo apresentou Sumô e Labirinto. Ao escolher Labirinto, a lista Dificuldade mostrou Fácil, Médio e Difícil. A troca direta carregou o mapa escolhido. Após concluir o Médio, Próximo nível selecionou Difícil no tick 0. Voltar ao Sumô ocultou Dificuldade.
 
 A suíte completa passou com 380 testes e 89.59% de cobertura de linhas. Os testes de interface verificaram a estratégia aplicada, o rascunho, a pausa no tick 0 e a identificação de mundos importados e de replay. Lint e build passaram. [Tarefa e testes](rastreabilidade.md#seleção-de-modo-e-dificuldade--adr-022) · [Cobertura](cobertura/resumo.md)
+
+## 2026-11-22 · Cursor nos editores de estratégia
+
+Antes do ajuste, o Chrome aplicava preto ao cursor nativo nos editores de vermelho, azul e explorador. A cor aplicada após a correção foi `#f1f6fc`, com contraste de 15.81:1 sobre o fundo `#0f1c2c`.
+
+Nos três editores, dois cliques em posições distintas deslocaram a barra. As setas direita e esquerda moveram um caractere e as setas para baixo e para cima mudaram de linha. As capturas de tela confirmaram a barra clara no ponto do clique e após deslocamentos horizontal e vertical. Uma letra digitada em cada rascunho entrou no ponto esperado.
+
+A suíte passou com 381 testes e 89.59% de cobertura de linhas. Lint e build passaram. [Matriz de rastreabilidade](rastreabilidade.md#cursor-de-inserção-dos-controladores) · [Cobertura](cobertura/resumo.md)
