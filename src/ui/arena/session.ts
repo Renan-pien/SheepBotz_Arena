@@ -11,7 +11,9 @@ import {
 } from '../../core';
 import { initializeControllerEngine } from '../../runtime/controller-engine';
 import {
+  mazeLevelFromText,
   nextMazeLevel,
+  type MazeLevel,
   controllerPresets,
   worldPresets,
   type ControllerPreset,
@@ -154,7 +156,14 @@ export class ArenaSession {
     }
     const defaults = preset ? worldPresets[preset].defaults : {};
     const drafts = initialDrafts(loaded.world, defaults);
-    this.#replace(loaded.world, worldText, sourcesFrom(drafts), drafts, preset);
+    this.#replace(
+      loaded.world,
+      worldText,
+      sourcesFrom(drafts),
+      drafts,
+      preset,
+      preset && loaded.world.match.mode === 'maze' ? { status: 'pausada' } : {},
+    );
   }
 
   chooseWorld(preset: WorldPreset) {
@@ -162,23 +171,31 @@ export class ArenaSession {
   }
 
   nextLevel() {
-    const { preset, snapshot, controllers, drafts } = this.#view;
+    const { preset, snapshot } = this.#view;
     const next = nextMazeLevel(preset);
-    if (
-      this.#replay ||
-      !next ||
-      snapshot.resultado?.motivo !== 'saida_alcancada'
-    )
-      return;
-    const text = worldPresets[next].text;
+    if (next && snapshot.resultado?.motivo === 'saida_alcancada')
+      this.chooseDifficulty(next);
+  }
+
+  chooseDifficulty(level: MazeLevel) {
+    const { world, preset, controllers, drafts } = this.#view;
+    if (this.#replay || world.match.mode !== 'maze' || preset === level) return;
+    const text = worldPresets[level].text;
     const parsed = loadWorld(text);
     if (!parsed.ok) {
       this.#publish({ errors: parsed.errors });
       return;
     }
-    this.#replace(parsed.world, text, controllers, drafts, next, {
-      status: 'pausada',
-    });
+    const sourceId = world.robots[0]!.id;
+    const targetId = parsed.world.robots[0]!.id;
+    this.#replace(
+      parsed.world,
+      text,
+      { [targetId]: controllers[sourceId]! },
+      { [targetId]: drafts[sourceId]! },
+      level,
+      { status: 'pausada' },
+    );
   }
 
   editSource(id: string, source: string) {
@@ -344,9 +361,7 @@ export class ArenaSession {
   exitReplay() {
     if (!this.#replay) return;
     const { world, worldText, controllers, drafts } = this.#view;
-    const preset = (['facil', 'medio', 'dificil'] as const).find(
-      (key) => worldPresets[key].text === worldText,
-    );
+    const preset = mazeLevelFromText(worldText);
     this.#replace(world, worldText, controllers, drafts, preset ?? '');
   }
 

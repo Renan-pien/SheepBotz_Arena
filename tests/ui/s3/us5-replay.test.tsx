@@ -39,7 +39,7 @@ it('S3-US5-AC2: resultado abre a linha do tempo pausada no tick zero e bloqueia 
     screen.getByRole<HTMLInputElement>('slider', { name: 'Linha do tempo' })
       .max,
   ).toBe('34');
-  expect(screen.getByLabelText<HTMLSelectElement>('Mundo').disabled).toBe(true);
+  expect(screen.getByLabelText<HTMLSelectElement>('Modo').disabled).toBe(true);
   expect(button('Aplicar vermelho').disabled).toBe(true);
   expect(
     screen

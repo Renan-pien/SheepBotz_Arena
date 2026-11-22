@@ -15,7 +15,7 @@ import {
   decodeRecording,
 } from '../../../src/ui/arena/recording';
 import { buildScene } from '../../../src/ui/scene/graphics';
-import { controllerPresets } from '../../../src/ui/arena/catalog';
+import { controllerPresets, worldPresets } from '../../../src/ui/arena/catalog';
 
 // O jsdom compartilha intrínsecos do host. A suíte headless usa o motor SES de produção.
 const engine: ControllerEngine = {
@@ -30,8 +30,8 @@ afterEach(cleanup);
 it('S3-US3-AC10: chegada pausada, retrocesso, replay e progressão por clique', () => {
   const session = new ArenaSession(engine);
   render(<App session={session} />);
-  fireEvent.change(screen.getByLabelText('Mundo'), {
-    target: { value: 'facil' },
+  fireEvent.change(screen.getByLabelText('Modo'), {
+    target: { value: 'maze' },
   });
   const source = controllerPresets.navegador.source + '\n// Minha estratégia';
   act(() => {
@@ -39,6 +39,7 @@ it('S3-US3-AC10: chegada pausada, retrocesso, replay e progressão por clique', 
     session.apply('explorador');
   });
   for (const level of ['facil', 'medio', 'dificil']) {
+    expect(select('Dificuldade').value).toBe(level);
     expect(session.getSnapshot().preset).toBe(level);
     expect(session.getSnapshot().controllers.explorador).toBe(source);
     const graphics = buildScene(session.getSnapshot().world);
@@ -91,4 +92,83 @@ it('S3-US3-AC10: chegada pausada, retrocesso, replay e progressão por clique', 
       expect(session.getSnapshot().snapshot.tick).toBe(0);
     }
   }
+});
+
+function select(name: string) {
+  return screen.getByRole<HTMLSelectElement>('combobox', { name });
+}
+
+function choose(name: string, value: string) {
+  fireEvent.change(select(name), { target: { value } });
+}
+
+function options(name: string) {
+  return Array.from(select(name).options, (option) => option.text);
+}
+
+it('S3-US3-AC11: duas modalidades e troca direta de dificuldade preservando estratégia e rascunho', () => {
+  const session = new ArenaSession(engine);
+  render(<App session={session} />);
+  expect(options('Modo')).toEqual(['Sumô', 'Labirinto']);
+  expect(select('Modo').value).toBe('sumo');
+  expect(screen.queryByLabelText('Dificuldade')).toBeNull();
+  choose('Modo', 'maze');
+  expect(select('Dificuldade').value).toBe('facil');
+  expect(options('Dificuldade')).toEqual(['Fácil', 'Médio', 'Difícil']);
+  expect(session.getSnapshot().status).toBe('pausada');
+  const source = 'function loop() { setSpeed(0.1, 0); }';
+  act(() => {
+    session.editSource('explorador', source);
+    session.apply('explorador');
+    session.editSource('explorador', '// ainda em edição');
+    session.play();
+    session.pulse(500);
+  });
+  expect(session.getSnapshot().snapshot.tick).toBeGreaterThan(0);
+  for (const level of ['dificil', 'medio'] as const) {
+    choose('Dificuldade', level);
+    const view = session.getSnapshot();
+    expect(view.world.name).toBe(worldPresets[level].name);
+    expect(view.status).toBe('pausada');
+    expect(view.snapshot.tick).toBe(0);
+    expect(session.history()).toHaveLength(1);
+    expect(view.controllers.explorador).toBe(source);
+    expect(view.drafts.explorador?.source).toBe('// ainda em edição');
+  }
+  choose('Modo', 'sumo');
+  expect(session.getSnapshot().world.name).toBe(worldPresets.duelo.name);
+  expect(screen.queryByLabelText('Dificuldade')).toBeNull();
+  choose('Modo', 'maze');
+  expect(select('Dificuldade').value).toBe('facil');
+});
+
+it('S3-US3-AC12: mundo livre e labirinto de arquivo mantêm sua identificação', () => {
+  const session = new ArenaSession(engine);
+  render(<App session={session} />);
+  const free = {
+    name: 'Minha sala',
+    map: { width: 2, height: 2 },
+    robots: [{ id: 'meu', x: 0, y: 0 }],
+  };
+  act(() => session.openWorld(JSON.stringify(free)));
+  act(() => session.step());
+  expect(options('Modo')).toEqual(['Sumô', 'Labirinto']);
+  expect(select('Modo').selectedIndex).toBe(-1);
+  expect(screen.getByText('Minha sala')).toBeTruthy();
+  expect(screen.queryByLabelText('Dificuldade')).toBeNull();
+  const custom = JSON.parse(worldPresets.facil.text);
+  custom.name = 'Meu percurso';
+  custom.robots[0].id = 'meu';
+  act(() => session.openWorld(JSON.stringify(custom)));
+  expect(select('Modo').value).toBe('maze');
+  expect(select('Dificuldade').selectedIndex).toBe(-1);
+  expect(screen.getByText('Meu percurso')).toBeTruthy();
+  choose('Dificuldade', 'medio');
+  expect(session.getSnapshot().controllers.explorador).toBe(
+    controllerPresets.parado.source,
+  );
+  act(() => session.enterReplay());
+  expect(select('Modo').disabled).toBe(true);
+  expect(select('Dificuldade').disabled).toBe(true);
+  expect(select('Dificuldade').value).toBe('medio');
 });

@@ -50,8 +50,8 @@ function button(name: string) {
 
 it('S3-US3-AC1: seletor troca para Labirinto com Navegador e tick zero', () => {
   const session = mount();
-  fireEvent.change(screen.getByLabelText('Mundo'), {
-    target: { value: 'facil' },
+  fireEvent.change(screen.getByLabelText('Modo'), {
+    target: { value: 'maze' },
   });
   const view = session.getSnapshot();
   expect(view.world.name).toBe('Labirinto 1 · Fácil');

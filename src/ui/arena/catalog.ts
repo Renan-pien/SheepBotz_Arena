@@ -27,16 +27,19 @@ export const worldPresets = {
   },
   facil: {
     name: 'Labirinto 1 · Fácil',
+    difficulty: 'Fácil',
     text: facil,
     defaults: { explorador: 'navegador' },
   },
   medio: {
     name: 'Labirinto 2 · Médio',
+    difficulty: 'Médio',
     text: medio,
     defaults: { explorador: 'navegador' },
   },
   dificil: {
     name: 'Labirinto 3 · Difícil',
+    difficulty: 'Difícil',
     text: dificil,
     defaults: { explorador: 'navegador' },
   },
@@ -44,6 +47,13 @@ export const worldPresets = {
 
 export type ControllerPreset = keyof typeof controllerPresets;
 export type WorldPreset = keyof typeof worldPresets;
+
+export const mazeLevels = ['facil', 'medio', 'dificil'] as const;
+export type MazeLevel = (typeof mazeLevels)[number];
+
+export function mazeLevelFromText(text: string) {
+  return mazeLevels.find((level) => worldPresets[level].text === text);
+}
 
 export function nextMazeLevel(preset: WorldPreset | '') {
   if (preset === 'facil') return 'medio';

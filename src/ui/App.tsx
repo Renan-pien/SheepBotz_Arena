@@ -2,7 +2,13 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { stallStartTick } from '../core';
 import { speeds, startTicker, type PlaybackSpeed } from './arena/clock';
 import { ArenaSession } from './arena/session';
-import { nextMazeLevel, worldPresets, type WorldPreset } from './arena/catalog';
+import {
+  mazeLevelFromText,
+  mazeLevels,
+  nextMazeLevel,
+  worldPresets,
+  type MazeLevel,
+} from './arena/catalog';
 import { chosenFile, downloadText, LocalFiles } from './arena/files';
 import { encodeRecording, recordingName } from './arena/recording';
 import { Controllers } from './panels/Controllers';
@@ -12,6 +18,11 @@ import { ArenaView } from './scene/ArenaView';
 import './arena.css';
 
 const tabs = ['Controladores', 'Inspeção', 'Eventos'] as const;
+
+// Um mundo importado pode estar fora do catálogo. Uma lista nativa selecionaria a primeira opção.
+function clearSelection(select: HTMLSelectElement | null) {
+  if (select) select.selectedIndex = -1;
+}
 
 export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const [session] = useState(() => supplied ?? new ArenaSession());
@@ -27,10 +38,10 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
     snapshot.status === 'finalizada' ||
     status === 'finalizada' ||
     view.replayLast === snapshot.tick;
-  const result = resultLabel(
-    snapshot,
-    view.worldText === worldPresets.dificil.text,
-  );
+  const mode = world.match.mode;
+  const difficulty =
+    mode === 'maze' ? mazeLevelFromText(view.worldText) : undefined;
+  const result = resultLabel(snapshot, difficulty === 'dificil');
   const nextLevel =
     !replay &&
     snapshot.resultado?.motivo === 'saida_alcancada' &&
@@ -116,26 +127,41 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
         </div>
         <div className="world-actions">
           <label>
-            Mundo{' '}
+            Modo{' '}
             <select
-              value={view.preset}
+              value={mode === 'free' ? undefined : mode}
+              ref={mode === 'free' ? clearSelection : undefined}
               disabled={replay}
               onChange={(event) =>
-                session.chooseWorld(event.target.value as WorldPreset)
+                session.chooseWorld(
+                  event.target.value === 'maze' ? 'facil' : 'duelo',
+                )
               }
             >
-              {Object.entries(worldPresets).map(([key, preset]) => (
-                <option key={key} value={key}>
-                  {preset.name}
-                </option>
-              ))}
-              {view.preset === '' && (
-                <option value="" disabled>
-                  {world.name}
-                </option>
-              )}
+              <option value="sumo">Sumô</option>
+              <option value="maze">Labirinto</option>
             </select>
           </label>
+          {mode === 'maze' && (
+            <label>
+              Dificuldade{' '}
+              <select
+                value={difficulty}
+                ref={difficulty ? undefined : clearSelection}
+                disabled={replay}
+                onChange={(event) =>
+                  session.chooseDifficulty(event.target.value as MazeLevel)
+                }
+              >
+                {mazeLevels.map((level) => (
+                  <option key={level} value={level}>
+                    {worldPresets[level].difficulty}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {view.preset === '' && <span>{world.name}</span>}
           <label className="file-control">
             Abrir mundo{' '}
             <input
