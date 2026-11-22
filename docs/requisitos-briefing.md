@@ -41,7 +41,7 @@
 | RB-15 | O repositório contém constitution, specs, plans, tasks e README explicando como rodar | Regra | Processo | AGENTS.md §19 |
 | RB-16 | Testes automatizados dos critérios de aceite da própria equipe | Regra | Constitution | AGENTS.md §13 |
 | RB-17 | Pitch com demo ao vivo de até 10 minutos, sem código nos slides | Regra | Processo | Roteiro da demo após a Spec 003 |
-| RB-18 | O ecossistema meuPiá só pode ser usado pelas interfaces públicas, sem modificar seu código | Restrição | Backlog | Só relevante para o bônus RB-41 |
+| RB-18 | O ecossistema meuPiá só pode ser usado pelas interfaces públicas, sem modificar seu código | Restrição | S2/S3 | Interfaces públicas do bônus RB-41 |
 
 ## 2. Visão e restrições da trilha
 
@@ -83,7 +83,7 @@
 
 | ID | Requisito | Tipo | Destino | Observações |
 |---|---|---|---|---|
-| RB-41 | Controladores escritos em Portugol, usando o meuPiá Maker | Bônus | Backlog | Respeitar RB-18 |
+| RB-41 | Controladores escritos em Portugol, usando o meuPiá Maker | Bônus | S2/S3 | Respeitar RB-18 |
 | RB-42 | Controlador remoto via WebSocket, no estilo Player/ROS | Bônus | Backlog | |
 
 ## 6. O que os testes de aceitação do professor verificam
@@ -129,4 +129,5 @@ O briefing é propositalmente incompleto. As lacunas técnicas estão listadas c
 | **S2** — Sensores e controlador | RB-23, RB-25, RB-32, RB-35, RB-43, RB-45 + fim da luta e detecção (ADR-003) |
 | **S3** — Visualização e operação | RB-21, RB-22, RB-23, RB-24, RB-28, RB-36, RB-37, RB-39, RB-40 |
 | Processo | RB-01 a RB-05, RB-09, RB-11, RB-13, RB-15, RB-17 |
-| Backlog | RB-14, RB-18, RB-41, RB-42 |
+| Bônus S2/S3 | RB-18, RB-41 (ADR-025) |
+| Backlog | RB-14, RB-42 |

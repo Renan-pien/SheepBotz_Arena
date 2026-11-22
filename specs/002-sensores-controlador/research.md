@@ -74,3 +74,6 @@ histórico da luta.
 **Motivo.** Os dois controladores mantêm os centros dentro da arena, garantindo a duração efetiva sem omitir o laser nem a execução de `loop()`. O mesmo hardware, sistema e versão Node publicados para a S1 são a referência da meta de 2 s.
 
 **Alternativas avaliadas.** Usar Avança e Parado termina a luta no tick 34. Colocar o tempo como asserção da CI compartilhada liga o aceite à carga da máquina.
+
+### Distribuição e isolamento do Maker
+A distribuição instalada do plugin 0.1.0 contém metadados e omite plugin_iot.py. A Arena inclui o arquivo oficial com licença e hash no caminho de importação esperado pelo Core. A instalação de Pyodide pelo npm e os insumos locais permitem compilar e rodar depois do build sem CDN. A ponte restringe a linguagem do aluno às operações de estratégia e evita acesso ao Python do hospedeiro.

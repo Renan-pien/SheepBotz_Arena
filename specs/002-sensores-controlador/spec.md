@@ -297,7 +297,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - Proteção contra laços infinitos ou controladores lentos (exigiria limite de tempo real, o que quebraria o determinismo).
 - Sonar, câmera e sensor de cor de uso geral.
 - Ruído nas leituras.
-- Controladores em Portugol (B-001) e controle remoto via WebSocket (B-002).
+- Controle remoto via WebSocket (B-002). O bônus B-001 foi incorporado pela ADR-025.
 - Pontuação acumulada entre lutas. A largada é definida em FR-040. A operação da rodada seguinte após impasse pertence à S3 (ADR-018).
 - Regras de sumô com mais de dois robôs.
 
@@ -486,3 +486,11 @@ Com um mundo válido, o resultado sem interface reúne as ocorrências desta tab
 **S2-US3-AC18.** Dado dt de 0.02 s, quando o controlador observa o tick 249 (4.98 s), então ainda há fiscalização. No tick observado 250 (5.00 s) o movimento é permitido e aparece no estado 251. Com dt que não divide 5 s, liberar no primeiro tick observado com tempo ≥ 5 s. Uma espera regular preserva toda a duração de combate.
 
 **S2-US3-AC19** (FR-040, ADR-024). Dada uma queima no passo que publica o tick K, quando a simulação avança, então aplica desde esse passo o primeiro comando válido de movimento de cada infrator, respeitando limites, contatos, sensores e odometria. Os outros robôs permanecem sem tração. O julgamento encerra a participação das estratégias na rodada. A lista de infratores fica fixa, mesmo ao atravessar 5 s, ao ocorrer um empurrão ou ao sair da arena. O resultado e o único evento de fim aparecem no primeiro tick que completa 0.50 s de demonstração. Com dt de 0.02 s e K=1, há movimento nos ticks 1 a 25 e pausa na posição do tick 25. Com dt de 0.03 s, há 16 passos inteiros e 0.02 s de movimento no último passo. O relógio continua mostrando tick × dt.
+
+## Controladores opcionais em Portugol
+
+**FR-041** (RB-18, RB-41, ADR-025). Aceitar uma estratégia em Portugol com decidir() obrigatória e preparar() opcional. Executar a inicialização da estratégia uma vez e decidir() uma vez por passo de disputa, com os mesmos dados observados, regras, semente e efeitos definidos para o controlador existente. Cada robô tem memória própria. O contrato do adaptador delimita os comandos e o perfil da linguagem.
+
+**S2-US2-AC15.** Dados dois controladores com o mesmo contador inicialmente zero, quando avançam dois ticks ambos observam 1 e 2. Reset repete a sequência. Um arquivo que pede outro módulo ou comando fora do contrato é recusado antes da rodada. Uma falha em execução desativa apenas seu robô.
+
+**S2-US2-AC16.** Dado um programa com usar "maker", quando aciona o pino virtual 2, então avança a 0.20 m/s; ao desligá-lo para. Os comandos de velocidade assinada, sensores, tempo, sorteio e registro também seguem a rodada e a modalidade.

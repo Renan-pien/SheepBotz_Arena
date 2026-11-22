@@ -49,3 +49,6 @@ O preset ao vivo identifica o fácil, médio ou difícil. O estado de simulaçã
 Na gravação de sumô v5, a versão identifica a espera. Os IDs em `falseStarters` registram a intenção observada antes da física. Os pontos da rodada estão em `resultado.pontos`. A tela deriva o aviso e a pontuação do snapshot selecionado.
 
 Em v6, `falseStartTick` guarda o primeiro quadro de movimento e `falseStarters` identifica os robôs marcados em cada snapshot durante os 0.50 s. `resultado.tick` é o tick do quadro final. A sessão ao vivo publica `pausada` ao atingi-lo.
+
+### Linguagem por robô
+Draft.language seleciona javascript ou portugol. Draft.source conserva o texto visível, com rascunho alternativo para a outra linguagem. SessionView.languages associa as linguagens aplicadas aos IDs dos robôs. Recording.languages registra o mesmo mapa no formato v7.

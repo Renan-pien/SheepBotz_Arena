@@ -340,3 +340,10 @@
 - **Contexto e opções** O encerramento imediato impedia observar o robô infringindo a regra. Uma animação independente da simulação não apareceria nos sensores e no histórico.
 - **Decisão** Fixar os infratores no primeiro tick da tentativa. Cada um executa seu primeiro comando válido de movimento por 0.50 s simulados com a indicação “Queimou”. Depois pausar e publicar uma só pontuação. O intervalo inclui o passo da infração e respeita os controles de tempo.
 - **Consequências** Revisão de S2-FR-040 e S3-FR-045. O adversário sem infração pode ser empurrado. O replay v5 conserva o encerramento imediato das gravações anteriores.
+
+## ADR-025 — Portugol no editor dos robôs
+
+- **Data** 2026-11-22. **Status** Aceita por Wesley após a prova no Chrome e o fechamento das três specs.
+- **Decisão** Admitir o bônus B-001 nas specs existentes. Cada robô escolhe JavaScript ou Portugol, com decidir() a cada tick e tutorial por linguagem e modalidade. Usar o Core oficial e o módulo público Maker íntegros, empacotados pela Arena.
+- **Alternativas** A instalação padrão do Maker 0.1.0 omite o módulo. Alterar o repositório externo violaria RB-18. Executar livremente o Python produzido concederia recursos além dos sensores e motores. A Arena valida o programa antes de carregar uma instância privada por robô.
+- **Impacto** RB-18 e RB-41, S2-FR-041 e S3-FR-046.

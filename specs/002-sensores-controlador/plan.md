@@ -433,3 +433,6 @@ Habilitar a regra com a opção de execução `sumoStartDelay` apenas no sumô. 
 ### Movimento da queima · ADR-024
 
 Capturar o primeiro par (v,w) não nulo do frame e congelar os comandos efetivos saturados dos infratores no primeiro passo. Dispensar novas chamadas aos scripts durante o desfecho. Reutilizar integração, contatos, laser e odometria, usando no último passo apenas a fração restante de 0.50 s. Manter o relógio por tick e congelar o detector de impasse. Antes de avaliar a arena, comparar o tick ao limite da demonstração. Constitution Check aprovado para determinismo, separação da cena e física própria.
+
+### Adaptador do meuPiá (ADR-025)
+Empacotar Pyodide 0.25.0 pelo lock do npm, wheel do Core 1.4.1 e módulo Maker do commit 1ccbedb63434b46bf8a34a4dc4d21354d4e8e212. Servir recursos locais sob demanda em um contexto separado do SES. A API pública do compilador produz Python. Validar por lista explícita a árvore da parte do aluno antes de compilar esse trecho com globais privados, funções permitidas e orçamento determinístico. O cabeçalho e as importações produzidos pelo gerador nunca são executados como código do aluno. A ponte chama as funções públicas do Maker sobre um pino virtual e delega leituras e movimento ao runner existente.

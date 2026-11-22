@@ -96,3 +96,5 @@ navegador. A seguir entram inspeção e replay. A apresentação vem por
 - [X] T028 [US2] Integrar largada, exemplos, contagem, resultado e gravação v5 em src/ui e examples/controllers. Verificar pausas, rewind, replays anteriores, regressões e atualizar os artefatos — S3-FR-045, S3-US2-AC17.
 
 - [X] T029 [US2] Exibir “Queimou” junto a cada infrator, preservar operação e replays v1–v6 e verificar pontos, pausa e navegação em `src/ui` e `tests/ui/s3` — S3-FR-045, S3-US2-AC17 e AC18.
+
+- [ ] T030 [US3] Integrar Draft.language, Draft.source, SessionView.languages e Recording.languages (data-model.md) a sessão, arquivos, replay e tutorial do editor com testes de navegação e aplicação — S3-FR-046, S3-US3-AC14/15. Depende de S2-T049.

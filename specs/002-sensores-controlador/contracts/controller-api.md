@@ -57,3 +57,11 @@ A partir da pose física do tick observado, cada ponto fica a um raio de robô d
 Em rodada com a regra, `getInfo().startReleased` é booleano e usa o tempo anterior ao passo. Para uma estratégia compatível com execuções legadas, usar `if (getInfo().startReleased === false) return;` antes de comandar movimento. Na execução legada o campo é omitido. Durante a espera os sensores, logs e sorteios continuam disponíveis.
 
 No tick de infração, concluir os callbacks dos dois robôs. Durante a demonstração, conservar o primeiro comando de movimento válido de cada infrator, inclusive se uma chamada posterior falhar. As estratégias só voltam a ser chamadas numa nova execução da rodada.
+
+## Perfil Portugol · ADR-025
+Arquivo .por com usar "maker", decidir() obrigatória e preparar() opcional, ambas sem argumentos. O bloco inicio e preparar() rodam no primeiro passo antes de decidir(). Variáveis globais persistem até reset. Aceitar funções auxiliares, variáveis escalares, se, enquanto, para, retorno, aritmética, comparações e consulta por índice. Cada callback dispõe de 4096 entradas em funções e iterações. Limitar o fonte a 32 KiB. Diagnosticar operações e módulos fora do perfil antes de aplicar.
+
+- definir_velocidade(v,w), ler_laser(), ler_contato(), aleatorio() e registrar(...) delegam às operações homólogas da Arena. escreva também registra no log. ler_laser_central() devolve o raio central ou zero sem raios.
+- ler_borda(lado) aceita frente, traseira, esquerda e direita; fora do sumô devolve falso. ler_odometria() devolve uma cópia com x, y e theta, consultáveis por chave. tempo_simulado() e largada_liberada() observam o tick corrente; a largada está liberada quando a regra está ausente.
+- iot_configurar_pino(2,"SAIDA"), iot_ligar(2) e iot_desligar(2) utilizam o módulo público do Maker. Nível alto aplica (0.20,0) e nível baixo (0,0). Só existe esse pino virtual. Esperas são escritas com tempo_simulado().
+- O programa vê apenas dados e operações do próprio robô. Uma tentativa de usar recurso indisponível na carga produz CONTROLADOR_INVALIDO. Uma falha em callback segue erro_controlador.

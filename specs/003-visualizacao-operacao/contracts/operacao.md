@@ -98,3 +98,6 @@ A entrada pelo seletor **Modo → Labirinto** abre o Fácil pausado no tick 0. T
 Na v5, a indicação “Largada em … s” usa duas casas e o tempo observado. O tempo até impasse de uma rodada em andamento aparece a partir da liberação e usa como início mínimo o tick de liberação. Em queima, `pausada` no tick terminal permite Voltar, Reiniciar e Ver replay. O aviso com a pontuação aparece também no modo apresentação.
 
 Com a ADR-024, “Queimou” acompanha o robô desde a primeira pose de infração até a pausa final. A indicação permanece visível mesmo com os nomes ocultos. Durante esse intervalo, Executar e Pausar seguem o relógio normal e os botões de avançar e voltar percorrem os snapshots. O aviso final identifica o tick da infração e o do encerramento. Em uma v5 importada continua valendo o aviso original.
+
+### Editor por linguagem
+Lista Linguagem independente em cada cartão. Abrir .por ou .js seleciona a linguagem correspondente sem aplicar. Salvar usa a extensão do rascunho. O botão ? tem nome acessível e abre tutorial da linguagem e modalidade, também disponível no replay. Preservar o rascunho, o foco ao fechar e o estado da simulação.

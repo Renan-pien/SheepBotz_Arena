@@ -319,3 +319,6 @@ Solicitar a regra em toda preparação de sumô vivo. Projetar a contagem do sna
 ### Identificação da queima e replay · ADR-024
 
 Projetar o texto no mesmo ponto do robô usado pelos rótulos da câmera. No arquivo v6, persistir o tick inicial e os infratores em cada quadro da demonstração. Validar continuidade, comando por robô, duração, resultado e evento final inclusive em gravações parciais. Reproduzir snapshots sem executar estratégias. A v5 conserva sua validação própria.
+
+### Editor de linguagens e ajuda
+S3-FR-046 usa o cartão existente e rascunhos independentes por linguagem. Preparar o interpretador uma vez sob demanda. Associar a linguagem por ID ao criar a simulação. Descartar uma aplicação assíncrona ultrapassada por edição ou troca de sessão. Exibir o tutorial contextual em diálogo com retorno de foco e Escape. Gravação v7 carrega os metadados das linguagens e conserva as regras físicas do formato anterior de cada modalidade.

@@ -58,3 +58,6 @@ A versão 5 identifica a espera fixa de 5 s e usa o mesmo stallSeconds e contato
 Em todo quadro desde a infração, inclusive no último, gravar `falseStartTick` (primeiro tick com movimento) e `falseStarters` (IDs não repetidos em ordem do mundo). Ambos os campos estão ausentes antes da queima. O primeiro tick da demonstração deve partir de tempo observado menor que 5 s. Os infratores conservam seus comandos saturados e os demais ficam sem tração. Valem os limites de movimento da arena e a física continua a atualizar as leituras.
 
 Aceitar exportação parcial durante a demonstração. O estado terminal requer o primeiro tick que completa 0.50 s de movimento, um evento de fim, vencedor e pontos compatíveis com os infratores iniciais. Guardar o resultado no último estado e exibir separadamente o tick da infração. A reprodução usa as poses gravadas. A v5 conserva os sensores, as poses imóveis e o fim imediato inclusive ao exportar novamente.
+
+### Versão 7 · fontes em Portugol
+Quando há Portugol, manter controllers com o texto original por ID e acrescentar languages com exatamente os mesmos IDs e valores javascript ou portugol. Validar estados como v6 no sumô, v4 no labirinto e v1 em mundo livre. V1–v6 conservam as linguagens JavaScript implícitas. Ler estados gravados não requer o runtime de Portugol.

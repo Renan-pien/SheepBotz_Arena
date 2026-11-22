@@ -360,3 +360,11 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 **S3-US2-AC17.** Dada uma rodada com queima, quando o usuário pausa, avança, volta e revê o fim ao vivo ou em replay, então vê o tempo e o resultado do tick escolhido, com uma única atribuição do ponto. Reiniciar volta ao tick zero. Uma gravação anterior reproduz seus tempos originais.
 
 **S3-US2-AC18** (FR-045, ADR-024). Dado um ou dois infratores, quando a demonstração começa, então cada infrator recebe “Queimou” junto ao próprio robô, inclusive com os nomes ocultos. O texto acompanha a pose em execução, pausa, passo, retrocesso e replay. Permanece no quadro final para inspeção e desaparece ao voltar antes da infração ou reiniciar. Na velocidade 1×, o duelo padrão iniciado com queima no primeiro passo pausa no tick 25. O replay de arquivo anterior conserva seus ticks originais.
+
+## Linguagem e tutorial do controlador
+
+**FR-046** (RB-18, RB-41, RB-23, ADR-025). Cada cartão oferece JavaScript por padrão e Portugol (meuPiá Maker). Alternar preserva o rascunho de cada linguagem. Abrir e salvar usam .js ou .por. Aplicar com sucesso volta ao tick 0 aguardando ação. Falha de carga conserva a execução e mostra o diagnóstico. O explorador conserva seu código ao mudar de dificuldade. O botão visível ? abre ajuda contextual com comandos e exemplo, operável por teclado.
+
+**S3-US3-AC14.** Dados azul e vermelho com linguagens independentes, ou o explorador de qualquer nível, quando o operador aplica uma estratégia, então pode avançar, voltar, continuar e reiniciar com resultado reproduzível. A gravação guarda a linguagem e o fonte. Replays antigos são JavaScript e assistir dispensa compilação.
+
+**S3-US3-AC15.** Dado um editor, quando o operador abre ? usando clique ou teclado, então vê o ciclo, sensores, movimento e exemplo da sua linguagem e modalidade. Fechar ou Escape devolve o foco ao botão e conserva o código.
