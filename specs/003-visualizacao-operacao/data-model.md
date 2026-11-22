@@ -45,3 +45,5 @@ O cartão associa o robô do snapshot ao raio da configuração do mesmo robô n
 ## Nível do catálogo
 
 O preset ao vivo identifica o fácil, médio ou difícil. O estado de simulação terminal conserva a pose na saída. A sessão ao vivo fica `pausada`. A troca explícita cria o histórico do novo mapa no tick 0, preservando controlador aplicado e rascunho.
+
+Na gravação de sumô v5, a versão identifica a espera. Os IDs em `falseStarters` registram a intenção observada antes da física. Os pontos da rodada estão em `resultado.pontos`. A tela deriva o aviso e a pontuação do snapshot selecionado.

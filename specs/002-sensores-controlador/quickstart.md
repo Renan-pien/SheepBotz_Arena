@@ -93,3 +93,6 @@ Abra `http://127.0.0.1:4173/` em Chromium. No console, `document.documentElement
 deve devolver `"ok"`. A fixture verifica a indisponibilidade de `Promise` e `Array.fromAsync`
 no controlador e compara execução em lote com execução em passos intercalados com microtarefas
 do host. O atributo `data-history` publica os cinco estados para comparação com o teste Node.
+
+### Julgar a largada no terminal
+Execute `npm run sim -- --world examples/worlds/duelo-padrao.json --ticks 1 --sumo-start-delay --command vermelho=0,1`. O resultado deve registrar queima de vermelho e um ponto para azul. Acrescente `--command azul=-1,0` para reproduzir a queima dupla no tick 1.

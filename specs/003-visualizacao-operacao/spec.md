@@ -52,7 +52,7 @@ Como membro da equipe (ou da plateia), quero ver a arena, os robôs e o que cada
 6. **Dado** a opção "Mostrar raios" desligada, **Quando** a cena é desenhada, **Então** nenhum raio aparece, e a simulação continua idêntica.
 7. **Dado** o "Sala com obstáculos", **Quando** é carregado, **Então** a cena mostra as paredes do mapa, os três obstáculos e o robô `explorador` com 9 raios, sem arena.
 8. **Dado** um robô desativado (Spec 002), **Quando** a cena é desenhada, **Então** ele aparece acinzentado, com um ícone de alerta.
-9. **Dado** um rótulo visível, **Quando** "Mostrar rótulos" é desligado, **Então** o rótulo desaparece e o estado exibido é preservado. Na luta padrão, o contorno destaca azul ao sair da arena no tick 34.
+9. **Dado** um rótulo visível, **Quando** "Mostrar rótulos" é desligado, **Então** o rótulo desaparece e o estado exibido é preservado. Na luta padrão, o contorno destaca azul ao sair da arena no tick 284.
 10. **Dado** uma câmera deslocada, **Quando** o usuário escolhe "Centralizar", **Então** o ponto de interesse volta ao centro da área enquadrada, preservando a vista de cima ou 3D selecionada.
 
 ---
@@ -81,8 +81,8 @@ Como membro da equipe, quero executar, pausar, avançar tick a tick e reiniciar 
 12. **Dado** um controlador com memória, registros e sorteios, **Quando** a sessão volta e retoma por passo ou execução contínua, **Então** todos os estados e eventos são idênticos aos de uma execução contínua com as mesmas entradas, inclusive em ticks novos. Voltar do fim da luta remove o resultado até avançar de novo ao tick final.
 13. **Dado** um mundo livre além de 100 000 ticks, **Quando** o usuário retrocede e avança através desse limite, **Então** cada ação percorre exatamente um tick e a gravação vai do tick 0 ao menor entre o tick exibido e 100 000.
 14. **Dado** prazo de 5 s no Duelo, **Quando** houver pausa, retrocesso e retomada, **Então** o tempo segue os ticks observados, e a escolha só reabre ao começar outra rodada.
-15. **Dado** o tick 249 sem progresso, **Quando** um passo ou um lote atingir o tick 250, **Então** registrar um empate, descartar o saldo do lote e publicar a próxima rodada pausada no tick 0. Pulsos adicionais deixam o tick em zero. Novo avanço explícito reproduz o primeiro passo original.
-16. **Dado** o Duelo com dois Caçadores e “Regra de Tempo” em 10 s, **Quando** a rodada passar do tick 507 ao 508, inclusive após retroceder, **Então** registrar o empate, disponibilizar o replay e restaurar o tick 0 pausado. No tick 507 resta 0.02 s.
+15. **Dado** o tick 499 com cinco segundos de impasse quase completos, **Quando** um passo ou um lote atingir o tick 500, **Então** registrar um empate, descartar o saldo do lote e publicar a próxima rodada pausada no tick 0. Pulsos adicionais deixam o tick em zero. Novo avanço explícito reproduz o primeiro passo original.
+16. **Dado** o Duelo com dois Caçadores e “Regra de Tempo” em 10 s, **Quando** a rodada passar do tick 757 ao 758, inclusive após retroceder, **Então** registrar o empate, disponibilizar o replay e restaurar o tick 0 pausado. No tick 757 resta 0.02 s.
 
 ---
 
@@ -122,7 +122,7 @@ Como membro da equipe, quero ver em números o que cada robô está sentindo e f
 2. **Dado** a simulação avançando, **Quando** o estado muda, **Então** o painel mostra os valores do estado exibido na cena (nunca de outro tick).
 3. **Dado** um robô empurrado, **Quando** o usuário olha o cartão, **Então** vê a pose real, a odometria e a diferença entre elas em metros.
 4. **Dado** a aba "Eventos", **Quando** ocorrem logs, erros de controlador ou o fim da luta, **Então** cada evento aparece com tick, robô, tipo e mensagem, em ordem, com erros destacados. É possível filtrar por robô e por tipo. O evento da luta aparece como "Partida", sem associação ao vencedor. Dos eventos que atendem aos filtros, aparecem os 500 mais recentes em ordem e a quantidade oculta.
-5. **Dado** os controladores padrão, **Quando** a luta termina, **Então** aparece o aviso de resultado "Vitória de vermelho — saída da arena · tick 34 · 0,68 s", com os botões "Reiniciar" e "Ver replay".
+5. **Dado** os controladores padrão, **Quando** a luta termina, **Então** aparece o aviso de resultado "Vitória de vermelho — saída da arena · tick 284 · 5,68 s", com os botões "Reiniciar" e "Ver replay".
 6. **Dado** uma luta que termina por tempo, **Quando** ela termina, **Então** o aviso diz "Empate — tempo esgotado"; se os dois saírem juntos, "Empate — os dois saíram da arena".
 7. **Dado** um robô de sumô que cruza a faixa entre dois ticks, **Quando** a inspeção avança, retrocede, reinicia ou exibe uma gravação v1, v2 ou v3, **Então** as quatro leituras correspondem ao tick mostrado. No modo livre, a inspeção informa que a borda está indisponível.
 
@@ -139,7 +139,7 @@ Como membro da equipe, quero rever qualquer momento da luta, avançando e voltan
 **Cenários de aceitação:**
 
 1. **Dado** uma execução no modo ao vivo, **Quando** os ticks avançam, **Então** todos os estados, desde o tick 0, ficam gravados automaticamente.
-2. **Dado** uma luta encerrada no tick 34, **Quando** o usuário clica em "Ver replay", **Então** a tela entra no modo replay pausada no tick 0, com a linha do tempo de 0 a 34 e a edição de mundo e de controladores bloqueada.
+2. **Dado** o Duelo atual encerrado no tick 284, **Quando** o usuário clica em "Ver replay", **Então** a tela entra no modo replay pausada no tick 0, com a linha do tempo de 0 a 284 e a edição de mundo e de controladores bloqueada.
 3. **Dado** o modo replay, **Quando** o usuário arrasta a linha do tempo até o tick 20, **Então** a cena, o contador e o painel de inspeção mostram exatamente o estado 20 gravado.
 4. **Dado** o modo replay no tick 20, **Quando** o usuário usa "Voltar 1 Tick" (ou a seta para a esquerda) e "Avançar 1 tick", **Então** vai ao tick 19 e ao tick 20, respectivamente; "Executar" reproduz a gravação na velocidade escolhida.
 5. **Dado** uma gravação, **Quando** o usuário clica em "Exportar gravação", **Então** o navegador baixa um arquivo com o mundo, os controladores e todos os estados.
@@ -150,7 +150,7 @@ Como membro da equipe, quero rever qualquer momento da luta, avançando e voltan
 10. **Dado** uma execução livre no tick 100 000, **Quando** ela chega ao tick 100 001, **Então** o estado ao vivo avança, a tela informa "limite de gravação atingido" e a gravação contém exatamente 100 001 estados, do tick 0 ao 100 000.
 11. **Dado** o replay no primeiro ou último tick gravado, **Quando** o usuário tenta ir além da extremidade correspondente, **Então** o cursor permanece naquela posição. A reprodução contínua para ao atingir o último tick.
 12. **Dada** uma gravação legada ou uma rodada empatada, **Quando** o replay alcança o último tick, **Então** conserva o último estado e não prepara uma nova batalha.
-13. **Dada** uma gravação anterior à regra de giro em que os dois Caçadores passam do tick 508, **Quando** aberta e salva novamente, **Então** conserva o resultado e a contagem individuais. Uma gravação nova reproduz o empate no tick 508 para o prazo de 10 s.
+13. **Dada** uma gravação anterior à regra de giro em que os dois Caçadores passam do tick 508, **Quando** aberta e salva novamente, **Então** conserva o resultado e a contagem individuais. Uma gravação com largada reproduz o empate no tick 758 para o prazo de 10 s.
 
 ---
 
@@ -313,7 +313,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 │   [☑ Raios] [☑ Rótulos]                       │                      │
 ├───────────────────────────────────────────────┴──────────────────────┤
 │ [▶ Executar] [⏸] [⏭ 1 tick] [↺ Reiniciar]  Vel.: [1× ▾]              │
-│ Tick 34 · 0,68 s · finalizada     (no replay: ◀ linha do tempo ▶)    │
+│ Tick 284 · 5,68 s · finalizada     (no replay: ◀ linha do tempo ▶)    │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -352,3 +352,9 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 **S3-US3-AC12.** Dado um mundo de arquivo ou replay, quando a tela mostra os controles, o nome do mundo pode ser consultado. Um mundo livre deixa Modo sem seleção e um labirinto personalizado deixa Dificuldade sem seleção. Os arquivos não acrescentam opções às listas. No replay de um nível do catálogo a dificuldade correspondente aparece selecionada e bloqueada.
 
 **S3-US3-AC13** (FR-023, FR-038, RB-23). Dado um editor de estratégia em Sumô ou Labirinto, quando o usuário clica entre dois caracteres, então vê a barra de inserção nessa posição, com contraste mínimo de 4.5:1 sobre o fundo. Quando usa as setas, a barra acompanha o ponto de inserção. O próximo caractere digitado aparece nessa posição.
+
+## Extensão de US2 — Operar a largada (P1)
+
+**FR-045** (ADR-023). Toda rodada de sumô ao vivo, inclusive de arquivo, exibe a contagem restante desde 5.00 s. Congelar na pausa, recalcular ao retroceder, reiniciar em 5.00 s no reset. A queima encerra no tick da infração e aguarda ação do usuário. Identificar quem queimou e quem recebeu o ponto ou o empate sem pontos. Os pontos pertencem ao resultado daquele tick. Os exemplos disponíveis na interface aguardam a liberação. Livre e Labirinto conservam sua operação.
+
+**S3-US2-AC17.** Dada uma rodada com queima, quando o usuário pausa, avança, volta e revê o fim ao vivo ou em replay, então vê o tempo e o resultado do tick escolhido, com uma única atribuição do ponto. Reiniciar volta ao tick zero. Uma gravação anterior reproduz seus tempos originais.

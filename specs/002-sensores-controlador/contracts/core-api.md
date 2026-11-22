@@ -19,6 +19,7 @@ type HeadlessInput = {
   readonly world: string;
   readonly commands?: Readonly<Record<string, Command>>;
   readonly stallSeconds?: 5 | 10 | 30;
+  readonly sumoStartDelay?: boolean;
   readonly ticks: number;
   readonly history?: boolean;
 } & ControllerOptions;
@@ -65,3 +66,8 @@ A biblioteca exporta `readEdge(world, pose, robotRadius): EdgeReading | null`. U
 ## Conclusão de labirinto
 
 No primeiro tick positivo com centro dentro de `match.exit`, `status` passa a `finalizada`, `resultado` traz `motivo: "saida_alcancada"`, `vencedor` com o id do explorador e `tick`. O evento `fim_do_nivel` acompanha esse tick.
+
+### Largada de sumô (ADR-023)
+`sumoStartDelay?: boolean` em createSimulation, prepareSimulation e runHeadless. A omissão mantém a execução legada. Quando ativo no sumô, cada snapshot contém `sumoStartDelay: true`. No tick de queima, `falseStarters` contém os IDs na ordem do mundo. O resultado tem motivo `queima_da_largada` (um infrator) ou `queima_dupla` (ambos), vencedor ou null e `pontos` com os dois IDs e os pontos da rodada. O combate dispõe de maxTicks passos completos após a liberação.
+
+Na CLI, `--sumo-start-delay` ativa a mesma opção para reproduzir a rodada da interface.

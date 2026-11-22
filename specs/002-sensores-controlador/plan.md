@@ -426,3 +426,6 @@ Os níveis são mundos JSON estáticos. Cada célula mede 0.50 m em ambos os eix
 ```
 
 Avaliar o centro físico após contatos no passo headless. Bordas do retângulo são inclusivas. Publicar `saida_alcancada` e um evento `fim_do_nivel` com id de evento nulo no tick final.
+
+### Largada · S2-FR-040
+Habilitar a regra com a opção de execução `sumoStartDelay` apenas no sumô. Marcar tentativas válidas no frame compartilhado por setup e loop e unir aos comandos constantes. Durante a espera o passo avança tempo, eventos e estado de habilitação dos controladores. Julgar todos os IDs antes da integração. Derivar liberação de tick × dt e usar o tick de liberação como origem mínima dos prazos. Sem dependências novas. Constitution Check aprovado para determinismo, isolamento e independência do renderizador.

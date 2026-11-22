@@ -250,7 +250,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - **FR-034:** O estado de cada robô DEVE acrescentar aos campos da Spec 001 as leituras do laser da pose publicada (FR-008) e a situação (`ativo` ou `desativado`). O estado da simulação DEVE acrescentar status, resultado e a lista de eventos ocorridos até aquele tick, em ordem. *(RB-43, RB-45)*
 - **FR-035:** O sistema DEVE oferecer os mundos de exemplo "Duelo padrão" (Spec 001, Anexo A) e "Sala com obstáculos" (Anexo C). *(RB-25)*
 - **FR-036:** O sistema DEVE oferecer os controladores de exemplo do Anexo D, com exatamente o comportamento descrito. *(RB-25)*
-- **FR-037:** Quando solicitado em sumô por 5, 10 ou 30 s (ADR-018), contar o tempo desde o tick 0 ou o último progresso. Após resolver todos os contatos, comparar cada centro físico (x, y) com sua própria referência. Se qualquer distância euclidiana exceder 0.001 m, atualizar ambas as referências e zerar a contagem naquele tick. Orientação, comandos e odometria não entram na medida. Em paralelo, iniciar uma contagem conjunta no contato entre os robôs (inclusive tangência inicial). Usar o ponto médio dos centros físicos após todos os contatos. Enquanto a folga entre as superfícies for de até 0.002 m, manter a referência do par até o deslocamento do ponto médio exceder 0.001 m. Nesse tick, usar o novo ponto médio e reiniciar a contagem conjunta. Acima da folga, descartar a contagem conjunta até novo contato. Aproximar-se sem tocar não inicia a contagem. No primeiro tick em que qualquer um dos dois intervalos atingir o prazo em tempo simulado (ADR-019), encerrar com vencedor nulo, motivo falta_de_progresso e um único evento fim_da_luta. Saída da arena, saída simultânea e limite de ticks mantêm precedência. O modo livre e a execução sem opção seguem as regras anteriores.
+- **FR-037:** Quando solicitado em sumô por 5, 10 ou 30 s (ADR-018), contar o tempo desde a liberação, se houver largada, ou desde o tick 0 nas demais execuções, reiniciando no último progresso. Após resolver todos os contatos, comparar cada centro físico (x, y) com sua própria referência. Se qualquer distância euclidiana exceder 0.001 m, atualizar ambas as referências e zerar a contagem naquele tick. Orientação, comandos e odometria não entram na medida. Em paralelo, iniciar uma contagem conjunta no contato entre os robôs (inclusive tangência inicial). Usar o ponto médio dos centros físicos após todos os contatos. Enquanto a folga entre as superfícies for de até 0.002 m, manter a referência do par até o deslocamento do ponto médio exceder 0.001 m. Nesse tick, usar o novo ponto médio e reiniciar a contagem conjunta. Acima da folga, descartar a contagem conjunta até novo contato. Aproximar-se sem tocar não inicia a contagem. No primeiro tick em que qualquer um dos dois intervalos atingir o prazo em tempo simulado (ADR-019), encerrar com vencedor nulo, motivo falta_de_progresso e um único evento fim_da_luta. Saída da arena, saída simultânea e limite de ticks mantêm precedência. O modo livre e a execução sem opção seguem as regras anteriores.
 
 ---
 
@@ -298,7 +298,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - Sonar, câmera e sensor de cor de uso geral.
 - Ruído nas leituras.
 - Controladores em Portugol (B-001) e controle remoto via WebSocket (B-002).
-- Contagem regressiva de início de luta e pontuação entre lutas. A operação da rodada seguinte após impasse pertence à S3 (ADR-018).
+- Pontuação acumulada entre lutas. A largada é definida em FR-040. A operação da rodada seguinte após impasse pertence à S3 (ADR-018).
 - Regras de sumô com mais de dois robôs.
 
 ---
@@ -329,7 +329,7 @@ do controlador ocorre durante uma chamada síncrona prevista no FR-024.
 | `readBumper()` | verdadeiro/falso | Se houve contato no tick anterior |
 | `readOdometry()` | `{ x, y, theta }` | Pose estimada pela odometria |
 | `setSpeed(v, w)` | nada | Define velocidade linear (m/s) e angular (rad/s); exige dois números finitos; saturada pelos limites do robô |
-| `getInfo()` | `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }` | Informações do próprio robô e do tempo |
+| `getInfo()` | `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }` | Informações do próprio robô e do tempo. Em duelo com largada, inclui também o booleano `startReleased` |
 | `random()` | número em [0, 1) | Número pseudoaleatório determinístico pela semente |
 | `log(...valores)` | nada | Registra uma mensagem de log |
 
@@ -384,6 +384,7 @@ function loop() {}
 
 ```js
 function loop() {
+  if (getInfo().startReleased === false) return;
   setSpeed(1, 0);
 }
 ```
@@ -392,6 +393,7 @@ function loop() {
 
 ```js
 function loop() {
+  if (getInfo().startReleased === false) return;
   setSpeed(0, 3);
 }
 ```
@@ -400,6 +402,7 @@ function loop() {
 
 ```js
 function loop() {
+  if (getInfo().startReleased === false) return;
   const leituras = readLaser();
   const info = getInfo();
   if (leituras.length === 0) {
@@ -419,6 +422,7 @@ function loop() {
 
 ```js
 function loop() {
+  if (getInfo().startReleased === false) return;
   const l = readLaser();
   const frente = Math.min(l[3], l[4], l[5]);
   if (readBumper() || frente < 0.4) {
@@ -470,3 +474,13 @@ Com um mundo válido, o resultado sem interface reúne as ocorrências desta tab
 **S2-US5-AC4.** Dados os níveis fácil, médio e difícil, quando se mede a menor rota da partida à saída, então há 7, 14 e 18 passagens de 0.50 m, com 2, 4 e 6 bifurcações. O fácil tem becos curtos, o médio tem ramificação fora da rota e o difícil tem ao menos um ciclo alcançável e becos mais profundos.
 
 **S2-US5-AC5.** Dado o explorador, quando percorre cada mapa com o exemplo de navegação, então chega à saída com o centro físico, registra a chegada uma vez e conserva o tick final em novos avanços. Um robô separado da saída por uma parede continua em andamento mesmo quando a odometria atravessa a marca.
+
+## Extensão de US3 — Largada de sumô (P1)
+
+**FR-040** (ADR-023). No duelo com largada, todo robô observa seus sensores e pode chamar `setSpeed(0, 0)` durante os primeiros 5 s simulados. Qualquer chamada válida com componente linear ou angular diferente de zero, inclusive em setup, é queima se o tempo observado antes do passo for menor que 5 s. Vale também quando outra chamada sobrescreve o comando ou ocorre erro posterior. Julgar ambos no mesmo tick antes de aplicar movimento. A espera conserva poses, comandos efetivos e medições. Os prazos de combate e impasse começam no primeiro estado com tempo de pelo menos 5 s. O modo legado da biblioteca e da CLI mantém os exemplos numéricos de US3 sem espera. A leitura `getInfo().startReleased` indica a liberação nas rodadas com largada.
+
+**S2-US3-AC16.** Dado um único infrator durante a espera, quando solicita avanço, ré ou giro, então encerra o passo sem deslocamento e com um único evento de fim. O adversário ganha 1 ponto e o infrator 0. A ordem dos robôs, um comando posterior e uma falha posterior conservam essa decisão.
+
+**S2-US3-AC17.** Dados dois infratores no mesmo tick, quando ambos os controladores terminam sua vez, então há um empate e 0 pontos por robô.
+
+**S2-US3-AC18.** Dado dt de 0.02 s, quando o controlador observa o tick 249 (4.98 s), então ainda há fiscalização. No tick observado 250 (5.00 s) o movimento é permitido e aparece no estado 251. Com dt que não divide 5 s, liberar no primeiro tick observado com tempo ≥ 5 s. Uma espera regular preserva toda a duração de combate.

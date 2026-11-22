@@ -1,12 +1,12 @@
-# Contrato de gravação · v1 a v4
+# Contrato de gravação · v1 a v5
 
 Arquivo JSON UTF-8, independente do estado atual da tela.
 
 | Chave | Tipo e invariante |
 |---|---|
 | `format` | Constante `sheepbotz-arena`. |
-| `version` | Inteiro `1` sem detector, `2` com critério individual, `3` com os critérios individual e conjunto ou `4` em labirinto. |
-| `stallSeconds` | Obrigatório na v2 e na v3. Inteiro 5, 10 ou 30 em sumô. |
+| `version` | Inteiro `1` sem detector, `2` com critério individual, `3` com os critérios individual e conjunto sem largada, `4` em labirinto ou `5` no sumô com largada. |
+| `stallSeconds` | Obrigatório nas versões 2, 3 e 5. Inteiro 5, 10 ou 30 em sumô. |
 | `world` | Texto original do mundo, aceito pelo validador da S1. |
 | `controllers` | Objeto com o texto do controlador aplicado de cada ID, exatamente na mesma associação do mundo. |
 | `createdAt` | Data UTC em ISO 8601 no formato de `Date.toISOString()`. |
@@ -49,3 +49,6 @@ A inspeção de borda da ADR-020 deriva as leituras do mundo e da pose gravada e
 ## Versão 4 · Labirinto
 
 Reservada a mundos `maze`, sem `stallSeconds`. Usa os estados e prefixos de eventos existentes. Conferir `fim_do_nivel` único no último tick positivo e validar `saida_alcancada` pela pose física e pelo id do robô. Uma chegada antecipada em estado em andamento invalida o arquivo. As versões 1–3 conservam seus modos anteriores.
+
+### Versão 5 · Sumô com largada
+A versão 5 identifica a espera fixa de 5 s e usa o mesmo stallSeconds e contato do par da v3. Durante a espera a física permanece no estado inicial. O último estado com queima registra falseStarters, uma lista dos infratores distintos na ordem dos robôs. O resultado registra motivo, tick, vencedor e pontos por ID. Validar a janela pelo tempo anterior ao passo, poses e comandos imóveis, vínculo entre infratores, vencedor e pontos e evento final único. Não executar os scripts ao ler. V1–v4 conservam as próprias regras.

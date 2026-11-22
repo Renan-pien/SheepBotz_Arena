@@ -8,7 +8,7 @@ são emitidos também em `free` e nas simulações com comandos constantes.
 |---|---|
 | Robô | `laser: number[]` e `situacao: "ativo"` ou `"desativado"`. `laser` é vazio sem sensor e corresponde à pose publicada. |
 | Estado | `status: "em_andamento"` ou `"finalizada"`, `resultado: MatchResult \| null` e `events: SimEvent[]`. |
-| Resultado | `{ vencedor: string \| null, motivo, tick }`. Os motivos são `saida_da_arena`, `ambos_sairam`, `tempo_esgotado` e, com o detector, `falta_de_progresso`. |
+| Resultado | `{ vencedor: string \| null, motivo, tick }`. As saídas e empates físicos têm motivos `saida_da_arena`, `ambos_sairam`, `tempo_esgotado` ou `falta_de_progresso`. A largada acrescenta `queima_da_largada` e `queima_dupla`. O labirinto usa `saida_alcancada`. |
 | Evento | `{ type, tick, robotId: string \| null, message: string }`. `type` é `log`, `erro_controlador`, `limite_de_logs` ou `fim_da_luta`. |
 
 No tick 0, todos os robôs estão ativos, `events` é `[]`, `resultado` é `null` e
@@ -54,3 +54,6 @@ O replay preserva os estados publicados e sua ordem, inclusive os eventos acumul
 SimState.stall é opcional: { limitSeconds, sinceTick, centers: [{ x, y }, ...] }. Centros em metros na ordem do mundo. No tick 0 correspondem às posições iniciais. O motivo falta_de_progresso exige vencedor nulo e um único evento terminal.
 
 Com a ADR-019, `stall.pair` pode conter `{center: {x, y}, sinceTick}` e `stall.pairContact` registra colisão entre os robôs no passo. A tangência geométrica inicia a contagem inclusive no tick 0. O início efetivo é o menor dos ticks de referência ativos. As distâncias usam os raios configurados no mundo.
+
+### Queima de largada · ADR-023
+Um passo de espera conserva a física e as leituras. A situação do controlador e seus eventos podem mudar. Na infração, retornar `finalizada`, os IDs em `falseStarters` e a pontuação individual de FR-040 em `resultado.pontos`. Em avanços posteriores o histórico conserva o mesmo estado terminal.

@@ -25,7 +25,7 @@ deslocamento, as duas vistas e centralização. Confira o comportamento
 em 1024 px e 1023 px com teclado, sem depender só dos indicadores de cor.
 
 Execute. O Duelo com Caçador e Girador termina com vitória de vermelho
-por saída da arena, tick 34, 0,68 s. Reinicie, avance um tick e confira
+por saída da arena, tick 284, 5,68 s. Reinicie, avance um tick e confira
 que contador, painel e cena permanecem no mesmo tick. Em execução,
 oculte a aba e volte. O estado permanece pausado e conserva o tick.
 
@@ -38,11 +38,11 @@ Salve o rascunho, restaure um exemplo válido e aplique para voltar ao tick 0.
 
 ## Replay
 
-Após a luta padrão, clique em Ver replay e confira intervalo 0 a 34.
+Após a luta padrão, clique em Ver replay e confira intervalo 0 a 284.
 Vá ao tick 20, volte e avance. Exporte, abra o arquivo e compare os estados
-com a gravação anterior e com o resultado CLI de referência. Verifique a
+com a gravação anterior e com o resultado da CLI com `--sumo-start-delay --stall-seconds 10`. Verifique a
 preservação da sessão ao abrir uma versão desconhecida e o retorno ao
-vivo no tick 0 ao sair do replay. [Contrato v1](contracts/gravacao.md)
+vivo no tick 0 ao sair do replay. [Contrato de gravação](contracts/gravacao.md)
 
 ## Desempenho e apresentação
 
@@ -76,3 +76,6 @@ edição por arquivo, apresentação e layout a 1024 e 1023 px.
 ### Conferir o cursor de texto no navegador
 
 Na aba **Controladores** do Sumô, clique entre dois caracteres do código de `vermelho`, depois em outro ponto da mesma linha. Confira se a barra clara aparece no ponto do último clique. Use as setas direita e esquerda para mover um caractere e as setas para baixo e para cima para mudar de linha. Digite uma letra e confira onde ela entrou no rascunho. Repita em `azul` e, em **Modo → Labirinto**, no editor de `explorador`.
+
+### Testar queima de largada
+Aplique `function loop() { setSpeed(0, 1); }` a vermelho e deixe azul com o Girador de exemplo. No tick 0 confira “Largada em 5,00 s”. Avance uma vez e confira vitória de azul com um ponto. Volte e avance para rever o resultado. Aplique o mesmo código a azul e avance uma vez para obter empate sem pontos. Reiniciar abre outra espera completa.

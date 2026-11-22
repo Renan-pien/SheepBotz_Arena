@@ -270,7 +270,7 @@ export function recordingName(name: string, createdAt: string): string;
 
 O discriminador e a versão entram na serialização. Em memória, cada
 estado possui seu prefixo de `events`. Estados cuja contagem não muda
-reutilizam a referência do prefixo. O codec valida os [formatos v1, v2 e v3](contracts/gravacao.md).
+reutilizam a referência do prefixo. O codec valida os [formatos v1 a v5](contracts/gravacao.md).
 
 A região de cena publica `data-tick`, `data-rays` e `data-labels`.
 A região de inspeção publica `data-tick`. O tick é uma string decimal
@@ -295,7 +295,7 @@ misturar o relógio em tempo real com a suíte determinística.
 
 O núcleo decide o resultado. A sessão guarda a última gravação e resumo do impasse, reinicia pelo reset da simulação e publica o tick zero pausado em uma transição. O lote termina com a rodada. O cursor de retrocesso publica a contagem contida no snapshot. Guardar apenas uma rodada anterior. A importação deriva os dados do detector das poses gravadas sem executar estratégias.
 
-A sessão ao vivo grava sumô com detector em v3. O leitor seleciona a regra histórica pelo número da versão. A UI e o núcleo usam o mesmo cálculo de tempo de impasse, a partir das referências do snapshot.
+A v3 registra o sumô com detector anterior à largada. A v5 registra as novas rodadas. O leitor seleciona a regra histórica pelo número da versão. A UI e o núcleo usam o mesmo cálculo de tempo de impasse, a partir das referências do snapshot.
 
 ## Borda no cartão de inspeção
 
@@ -312,3 +312,6 @@ Derivar Modo de `world.match.mode` e Dificuldade do preset ou do texto de um map
 ### Cursor de inserção dos controladores · S3-US3-AC13
 
 O CodeMirror usa o cursor nativo do navegador. Aplicar `caret-color: #f1f6fc` ao conteúdo editável dentro de `.code-editor`, sobre o fundo `#0f1c2c`. O navegador mantém a seleção, a navegação por teclado e o piscar do cursor conforme as preferências do usuário.
+
+### Largada · S3-FR-045
+Solicitar a regra em toda preparação de sumô vivo. Projetar a contagem do snapshot e os pontos do resultado terminal em tela normal e apresentação. A v5 registra as tentativas no tick da infração. Revalidar o resultado com a mesma regra do núcleo. Versões anteriores mantêm a cronologia original. Nenhum contador de pontos é incrementado ao navegar no histórico.

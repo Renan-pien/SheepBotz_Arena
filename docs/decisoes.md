@@ -326,3 +326,10 @@
 - **Contexto e opções** O seletor enumerava o Duelo e os três mapas de labirinto no mesmo nível. A escolha aprovada agrupa os mapas por modalidade.
 - **Decisão** Oferecer Sumô e Labirinto em Modo. Mostrar Dificuldade ao lado apenas no Labirinto, com Fácil, Médio e Difícil. A entrada no Labirinto abre o Fácil pausado. A troca direta de dificuldade preserva a estratégia e abre o mapa pausado no tick 0, como Próximo nível.
 - **Consequências** Revisão da operação da S3 (FR-019, FR-043, FR-044). A interface reflete a modalidade do mundo carregado e identifica arquivos fora do catálogo pelo nome.
+
+## ADR-023 — Largada de cinco segundos no sumô
+
+- **Data** 2026-11-22. **Status** Aceita por Wesley.
+- **Contexto e opções** Verificar o deslocamento físico deixaria passar uma tentativa contra um obstáculo ou um comando sobrescrito. A equipe escolheu julgar a intenção declarada no tick.
+- **Decisão** Todo sumô ao vivo aguarda 5 s de tempo simulado. Um infrator concede um ponto da rodada ao adversário. Dois infratores no mesmo tick empatam, ambos com zero. A rodada encerrada aguarda ação do operador.
+- **Consequências** S2-FR-040 e S3-FR-045. A duração é fixa. Geometria, sensores e demais modalidades conservam seus contratos. O placar desta decisão pertence à rodada. Acumulação entre lutas continua fora do escopo.

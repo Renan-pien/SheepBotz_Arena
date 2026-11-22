@@ -1,4 +1,4 @@
-# Contrato da API do controlador · v2
+# Contrato da API do controlador · v3
 
 O controlador é um script JavaScript síncrono em modo estrito. Declara `loop()` e pode declarar `setup()`.
 Instruções no nível superior são avaliadas uma vez por carga, inclusive no reset, sem acesso
@@ -31,7 +31,7 @@ produzem os mesmos estados, eventos e histórico para as mesmas entradas.
 | `readEdge()` | Em sumô, novo objeto `{ front, rear, left, right }` de booleanos por chamada. Em modo livre, `null`. Disponível desde o primeiro `setup()`, inclusive sem laser. |
 | `readBumper()` | Booleano com o contato registrado no estado observado. Falso no tick 0. |
 | `readOdometry()` | Cópia de `{ x, y, theta }` em metros e radianos. |
-| `getInfo()` | Cópia de `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }`. `tick` e `time` são observados. `laser` é `{ rays, fov, maxRange }` ou `null` e `arenaRadius` é o raio em metros ou `null`. |
+| `getInfo()` | Cópia de `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }`. `startReleased` é acrescentado em sumô com largada. `tick` e `time` são observados. `laser` é `{ rays, fov, maxRange }` ou `null` e `arenaRadius` é o raio em metros ou `null`. |
 | `setSpeed(v, w)` | Recebe dois números finitos em m/s e rad/s. O último comando válido do passo é aplicado após saturação pela física. Sem chamada, vale o comando efetivo anterior. |
 | `random()` | Número em `[0, 1)`. Usa a semente do mundo e o índice do robô. `setup()` e `loop()` compartilham apenas a sequência daquele robô. |
 | `log(...valores)` | Converte cada valor de um log aceito com `String(valor)` e junta com um espaço. Registra ID do robô e tick `k + 1`. São aceitos até 1 000 logs por robô por execução. Descarte tentativas excedentes antes de converter os argumentos. A tentativa 1 001 gera o aviso único `limite_de_logs`. |
@@ -52,3 +52,6 @@ vetores do gerador. Os scripts fornecidos como exemplo são os do Anexo D da [sp
 ## Sensor de borda (ADR-020)
 
 A partir da pose física do tick observado, cada ponto fica a um raio de robô do centro. Os ângulos relativos para frente, traseira, esquerda e direita são 0, π, +π/2 e −π/2. Cada valor é verdadeiro desde a margem interna da faixa (0.975 × raio da arena, inclusive) para fora. A revisão v2 acrescenta essa função às estratégias predefinidas e personalizadas.
+
+### Liberação da largada
+Em rodada com a regra, `getInfo().startReleased` é booleano e usa o tempo anterior ao passo. Para uma estratégia compatível com execuções legadas, usar `if (getInfo().startReleased === false) return;` antes de comandar movimento. Na execução legada o campo é omitido. Durante a espera os sensores, logs e sorteios continuam disponíveis.

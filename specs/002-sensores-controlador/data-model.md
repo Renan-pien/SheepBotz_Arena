@@ -79,3 +79,5 @@ No detector da ADR-019, `StallState.pair` é opcional. Guarda `center` (ponto m�
 ## Resultado de navegação
 
 A chegada usa `MatchResult.motivo = "saida_alcancada"` e `SimEvent.type = "fim_do_nivel"` no tick terminal do explorador (ADR-021).
+
+A presença de `SimState.sumoStartDelay` identifica uma execução com a largada fixa. `falseStarters` pertence ao tick de infração. `MatchResult.pontos` pertence à queima e tem as duas chaves do duelo. O tempo absoluto continua igual a tick × dt.
