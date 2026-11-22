@@ -188,3 +188,10 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 |---|---|---|---|---|
 | ADR-023, RB-25, RB-27 | S2-FR-040 | S2-T047 (`d6a6941`) | [S2-US3-AC16 a AC18 · fronteira, empate e vitória](../tests/core/acceptance/s2/us3-largada.test.ts) e [comandos constantes na CLI](../tests/cli/run-cli.test.ts) | Validado localmente |
 | ADR-023, RB-24, RB-40 | S3-FR-045 | S3-T028 (`a82dbb3`) | [S3-US2-AC17 · pausa, pontos da rodada, reinício, rewind e replay v5](../tests/ui/s3/us2-largada.test.tsx) e [verificação no Chrome](registro-de-consolidacao.md#largada-de-sumô--2026-11-22) | Validado localmente |
+
+## Movimento visível após a queima · ADR-024
+
+| Origem | Requisito | Tarefa e commit | Teste | Estado |
+|---|---|---|---|---|
+| ADR-024, RB-25, RB-27 | S2-FR-040 | S2-T048 (`d54b503`) | [S2-US3-AC16 a AC19 · primeiro comando, decisão, duração, contatos e bloqueio](../tests/core/acceptance/s2/us3-largada.test.ts) | Validado localmente |
+| ADR-024, RB-24, RB-40 | S3-FR-045 | S3-T029 (`ad71d1d`) | [S3-US2-AC17/18 · identificação, pausa, retrocesso, replay v5 e v6](../tests/ui/s3/us2-largada.test.tsx) e [verificação no Chrome](registro-de-consolidacao.md#demonstração-da-queima--2026-11-22) | Validado localmente |

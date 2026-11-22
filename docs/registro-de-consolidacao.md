@@ -530,3 +530,9 @@ A suíte passou com 381 testes e 89.59% de cobertura de linhas. Lint e build pas
 O Chrome no Windows executou o Duelo padrão com os exemplos aplicados. O relógio mostrou 5,00 s no início e 4,98 s após um passo. O duelo terminou por saída da arena no tick 284 (5,68 s). Ao aplicar giro imediato só a vermelho, azul recebeu 1 ponto no tick 1. Voltar e avançar, inclusive no replay, recuperou o resultado. Com giro imediato nos dois editores houve empate sem pontos no tick 1.
 
 A suíte completa passou em 393 de 393 testes. A cobertura de linhas foi de 89,97% no projeto e 99,06% no núcleo. ESLint, TypeScript e build Vite passaram. O build emitiu o aviso de tamanho do pacote principal. Com Node 24.22.3 no Windows x64, o benchmark do núcleo executou 3 000 ticks em 32,30 ms e o da S2 em 59,96 ms. [Relatório de cobertura](cobertura/resumo.md)
+
+## Demonstração da queima · 2026-11-22
+
+No Chrome com WebGL 2, a indicação “vermelho · Queimou” ficou dentro da área visível da cena e acompanhou o deslocamento mesmo com “Mostrar rótulos” desligado. A infração ocorreu no tick 1, foi possível pausar durante o movimento e a rodada terminou no tick 25 com 1 ponto para azul. Voltar do fim e percorrer o replay restaurou a indicação. Com os dois robôs avançando cedo, apareceram dois rótulos e houve empate sem pontos. Com as estratégias padrão, vermelho venceu por saída da arena no tick 284.
+
+A suíte completa passou em 399 de 399 testes. Os testes incluem barreira física, empurrão, queima no último tick da espera, comando sobrescrito e replay antigo. Cobertura de linhas de 90,01% no projeto e 99,07% no núcleo. Lint, TypeScript e build passaram. O Vite emitiu o aviso de tamanho do pacote principal. Os benchmarks S1 e S2 executaram 3 000 ticks em 22,86 ms e 36,68 ms, respectivamente, com Node 24.22.3 no Windows x64. [Cobertura](cobertura/resumo.md)
