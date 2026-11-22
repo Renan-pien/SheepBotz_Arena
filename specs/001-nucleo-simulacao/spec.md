@@ -374,7 +374,7 @@ O documento raiz é um objeto. Campos não listados geram `CAMPO_DESCONHECIDO`. 
 | `FORA_DO_MAPA` | Obstáculo, robô ou arena que não cabe no mapa |
 | `POSICAO_INICIAL_INVALIDA` | Robô que começa sobrepondo obstáculo ou robô anterior |
 | `DESLOCAMENTO_EXCESSIVO` | `maxLinearSpeed × dt` maior que o raio do robô |
-| `REGRA_DA_MODALIDADE` | Violação das exigências do modo `sumo` (FR-011) |
+| `REGRA_DA_MODALIDADE` | Violação das exigências do modo `sumo` (FR-011) ou `maze` (FR-041) |
 | `ROBO_INEXISTENTE` | Comando ou controlador associado a um `id` que não existe (execução) |
 | `COMANDO_INVALIDO` | Comando não numérico ou não finito na execução sem interface |
 

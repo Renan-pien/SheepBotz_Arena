@@ -496,3 +496,17 @@ A suíte completa passou com 346 testes em 50 arquivos e 89.03% de cobertura de 
 A suíte passou com 361 testes em 52 arquivos e 89.11% de cobertura de linhas. O sensor passou nos quatro sentidos, no limiar exato, além da faixa, em lados simultâneos, com raios diferentes e em modo livre. Após um empurrão lateral, a estratégia detectou a borda pela pose real enquanto a odometria continuava em y = 0.32 m. Uma estratégia personalizada aplicada à sessão comandou recuo após ler a borda frontal. O painel acompanhou avanço, retrocesso, reset e os replays v1, v2 e v3.
 
 Build de produção e lint passaram, inclusive a verificação de um script personalizado com `readEdge()` pelos mesmos globais dos exemplos. O benchmark S2 completou 3000 ticks em 128.80 ms e encerrou por tempo esgotado em Windows x64 com Node 24.22.3. [Cobertura](cobertura/resumo.md) · [Matriz de rastreabilidade](rastreabilidade.md#sensor-de-borda--adr-020)
+
+## 2026-11-22 · Três níveis de labirinto
+
+O percurso mínimo entre centros de células tem 3.50, 7.00 e 9.00 m, respectivamente com 2, 4 e 6 bifurcações. O Navegador usa o laser e a odometria para explorar a malha de 0.50 m. A chegada considera as coordenadas físicas, inclusive o limite do retângulo.
+
+| Nível | Tick de chegada no Chrome com WebGL | Tempo simulado |
+|---|---:|---:|
+| Fácil | 194 | 9.70 s |
+| Médio | 348 | 17.40 s |
+| Difícil | 1188 | 59.40 s |
+
+Na interface em Chromium, a verificação percorreu os três mundos, recuou um tick e reproduziu cada chegada. O clique em Próximo nível abriu o mundo seguinte no tick 0. A suíte verificou a leitura das gravações anteriores, o replay do labirinto e a continuidade da estratégia aplicada.
+
+A suíte local passou com 378 testes e 89.52% das linhas cobertas. Lint e build de produção passaram. O Vite avisou sobre o tamanho do pacote principal. Benchmark S2 com Node 24.22.3 em Windows x64: 3 000 ticks em 144.14 ms, com empate por tempo. [Cobertura](cobertura/resumo.md) · [Rastreabilidade](rastreabilidade.md#labirinto--adr-021)

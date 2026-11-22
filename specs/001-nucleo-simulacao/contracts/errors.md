@@ -18,7 +18,7 @@ Objeto de erro: `{ code, path, message }`. Testes de aceitação comparam `code`
 | `CAMPO_OBRIGATORIO` | campo ausente | `O campo '{c}' é obrigatório.` |
 | `CAMPO_DESCONHECIDO` | campo extra | `O campo '{c}' não é reconhecido.` |
 | `TIPO_INVALIDO` | campo | `O campo '{c}' deve ser {tipo}.` — tipo: `um número`, `um número inteiro`, `um texto`, `um objeto` ou `uma lista` |
-| `FORMATO_INVALIDO` | campo | `O campo '{c}' tem formato inválido: {regra}.` — regras: `use de 1 a 32 letras, números, '_' ou '-'`; `use uma cor no formato #RRGGBB`; `use "free" ou "sumo"` |
+| `FORMATO_INVALIDO` | campo | `O campo '{c}' tem formato inválido: {regra}.` — regras: `use de 1 a 32 letras, números, '_' ou '-'`; `use uma cor no formato #RRGGBB`; `use "free", "sumo" ou "maze"` |
 | `VALOR_FORA_DO_INTERVALO` | campo ou lista | `O campo '{c}' está fora do intervalo permitido ({intervalo}); valor recebido: {valor}.` ou `A lista '{c}' deve ter de {min} a {max} itens; recebidos: {n}.` |
 | `ID_DUPLICADO` | `….id` da repetição | `O id '{id}' em '{c}' já foi usado.` |
 | `FORA_DO_MAPA` | `obstacles[k]`, `robots[i]` ou `arena.radius` | `O obstáculo em '{c}' não está inteiramente dentro do mapa.` / `O robô em '{c}' não está inteiramente dentro do mapa.` / `A arena em '{c}' não cabe no mapa: o raio máximo é {max}.` |

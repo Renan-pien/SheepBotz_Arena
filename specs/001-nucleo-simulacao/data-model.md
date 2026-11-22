@@ -26,7 +26,7 @@ export interface Command {
 Resultado de `loadWorld` quando válido: todos os padrões aplicados, `theta` normalizado e cores definidas. É a única forma de mundo aceita por `createSimulation`.
 
 ```ts
-export type MatchMode = 'free' | 'sumo';
+export type MatchMode = 'free' | 'sumo' | 'maze';
 
 export interface World {
   readonly name: string;
@@ -34,7 +34,7 @@ export interface World {
   readonly dt: number;              // segundos
   readonly map: { readonly width: number; readonly height: number };
   readonly arena: { readonly radius: number } | null;
-  readonly match: { readonly mode: MatchMode; readonly maxTicks: number };
+  readonly match: { readonly mode: MatchMode; readonly maxTicks: number; readonly exit?: Pick<Obstacle, "x" | "y" | "width" | "height"> };
   readonly obstacles: readonly Obstacle[];
   readonly robots: readonly RobotConfig[];
 }
@@ -155,3 +155,7 @@ World 1 ── * RobotConfig ── 0..1 LaserConfig
 World 1 ── * Obstacle
 SimState 1 ── * RobotState   (RobotState.id = RobotConfig.id, mesma ordem)
 ```
+
+## Saída de labirinto
+
+`World.match.exit` contém centro `(x,y)` e dimensões `(width,height)` em metros conforme o [contrato de mundo](contracts/world.md).

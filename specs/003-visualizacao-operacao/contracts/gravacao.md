@@ -1,11 +1,11 @@
-# Contrato de gravação · v1, v2 e v3
+# Contrato de gravação · v1 a v4
 
 Arquivo JSON UTF-8, independente do estado atual da tela.
 
 | Chave | Tipo e invariante |
 |---|---|
 | `format` | Constante `sheepbotz-arena`. |
-| `version` | Inteiro `1` sem detector, `2` com critério individual ou `3` com os critérios individual e conjunto. |
+| `version` | Inteiro `1` sem detector, `2` com critério individual, `3` com os critérios individual e conjunto ou `4` em labirinto. |
 | `stallSeconds` | Obrigatório na v2 e na v3. Inteiro 5, 10 ou 30 em sumô. |
 | `world` | Texto original do mundo, aceito pelo validador da S1. |
 | `controllers` | Objeto com o texto do controlador aplicado de cada ID, exatamente na mesma associação do mundo. |

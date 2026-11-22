@@ -31,8 +31,7 @@ oculte a aba e volte. O estado permanece pausado e conserva o tick.
 
 ## Cargas e erros
 
-Abra Sala com obstáculos e observe o Desviador. Abra o JSON do mesmo
-mundo como arquivo para confirmar que começa com Parado. Abra um mundo
+Selecione Labirinto 1 · Fácil e execute o Navegador até a chegada quadriculada. Confira o tempo final, volte um tick e avance. Clique em Próximo nível e confirme o tick 0 pausado e o mesmo código. Repita no médio e no difícil. Exporte a chegada e abra a gravação. Abra o arquivo `examples/worlds/sala-com-obstaculos.json` para confirmar o modo livre com Parado. Abra um mundo
 inválido e confira todos os erros e a preservação do mundo anterior.
 No cartão, carregue um rascunho com erro, tente aplicar e conserve a sessão.
 Salve o rascunho, restaure um exemplo válido e aplique para voltar ao tick 0.

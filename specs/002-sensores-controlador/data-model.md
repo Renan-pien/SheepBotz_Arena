@@ -21,7 +21,7 @@ A S2 estende o [modelo da S1](../001-nucleo-simulacao/data-model.md). `World` co
 | `SimState` | `resultado` | Campo obrigatório `MatchResult \| null`. Vale `null` no tick 0, enquanto `em_andamento` e no modo `free`. Contém o objeto de resultado quando `finalizada`. |
 | `SimState` | `events` | `readonly SimEvent[]`. Sequência acumulada até o tick do snapshot. Vazia no estado inicial. |
 | `MatchResult` | `vencedor` | `string \| null`. ID do robô vencedor ou nulo em empate. |
-| `MatchResult` | `motivo` | `'saida_da_arena' \| 'ambos_sairam' \| 'tempo_esgotado' \| 'falta_de_progresso'`. Conforme ordem de avaliação da S2. |
+| `MatchResult` | `motivo` | `'saida_da_arena' \| 'ambos_sairam' \| 'tempo_esgotado' \| 'falta_de_progresso' \| 'saida_alcancada'`. Conforme a modalidade. |
 | `MatchResult` | `tick` | Inteiro positivo, igual ao tick em que o estado foi finalizado. |
 | `SimEvent` | `type`, `tick`, `robotId`, `message` | Tipo, tick inteiramente executado, ID do emissor ou `null`, texto. `fim_da_luta` é sempre da partida. |
 | Histórico | `readonly SimState[]` | Quando habilitado, vai de 0 até o tick atual, em ordem, com comprimento `state.tick + 1`. O reset substitui a gravação anterior. |
@@ -75,3 +75,7 @@ No detector da ADR-019, `StallState.pair` é opcional. Guarda `center` (ponto m�
 ## Leitura derivada de borda
 
 `EdgeReading.front`, `EdgeReading.rear`, `EdgeReading.left` e `EdgeReading.right` são booleanos independentes. A leitura inteira vale `null` em modo livre. Suas entradas são `World.match.mode`, `World.arena.radius`, `RobotConfig.radius` e `RobotState.pose` do tick observado. Nenhuma posição física é exposta ao controlador por essa função.
+
+## Resultado de navegação
+
+A chegada usa `MatchResult.motivo = "saida_alcancada"` e `SimEvent.type = "fim_do_nivel"` no tick terminal do explorador (ADR-021).

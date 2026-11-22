@@ -51,7 +51,7 @@ além da cor.
 - A região da cena se chama **Cena 3D**. As opções são **Mostrar raios**
   e **Mostrar rótulos**. **Controladores**, **Inspeção** e **Eventos**
   têm papel de aba. Inspeção e Eventos também nomeiam as regiões de conteúdo.
-- O seletor é **Mundo**, com valores de catálogo `duelo` e `sala`.
+- O seletor é **Mundo**, com os valores de catálogo `duelo`, `facil`, `medio` e `dificil`. O arquivo da Sala continua disponível em **Abrir mundo**.
   Os campos de arquivo têm rótulos **Abrir mundo** e **Abrir gravação**.
   Os erros de preparação ou de arquivo aparecem em uma região de alerta.
 - Os nomes por robô são **Exemplo de `<id>`**, **Código de `<id>`**,
@@ -87,3 +87,7 @@ O aviso de limite dos eventos usa “1 evento oculto” no singular e
 ## Inspeção da borda
 
 Em sumô, o cartão de cada robô apresenta Frente, Traseira, Esquerda e Direita com os estados textuais “Na borda” e “Interior”. O modo livre apresenta “Indisponível no modo livre”. A inspeção consulta o tick exibido também no reset e no retrocesso.
+
+## Labirinto · ADR-021
+
+Os níveis 1, 2 e 3 são Fácil, Médio e Difícil. A saída quadriculada corresponde ao retângulo físico. O status ao vivo é `pausada` no tick da chegada. O banner mostra “Nível concluído em … s” (“Labirinto concluído” no terceiro mapa), o tick, **Reiniciar nível** e **Ver replay**. Nos dois primeiros níveis do catálogo, **Próximo nível** aparece também em apresentação. Avançar de nível e executar são duas ações explícitas distintas. **Voltar 1 Tick** permite rever o estado anterior. A modalidade usa as APIs comuns de navegação. O painel indica “Indisponível no labirinto” para a borda de sumô.
