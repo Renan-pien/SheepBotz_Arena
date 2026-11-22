@@ -308,3 +308,7 @@ Catalogar os três JSONs por ordem de nível. Desenhar uma chegada quadriculada 
 ## Seleção em dois passos · S3-FR-044
 
 Derivar Modo de `world.match.mode` e Dificuldade do preset ou do texto de um mapa conhecido. A sessão prepara Duelo ou Fácil quando o usuário troca de modo. A mudança direta de dificuldade compartilha a transição de Próximo nível. Vincular o controlador aplicado e o rascunho do único robô de origem ao explorador do destino, inclusive se o identificador no arquivo importado for diferente. Publicar a nova sessão apenas após validar mapa e controlador.
+
+### Cursor de inserção dos controladores · S3-US3-AC13
+
+O CodeMirror usa o cursor nativo do navegador. Aplicar `caret-color: #f1f6fc` ao conteúdo editável dentro de `.code-editor`, sobre o fundo `#0f1c2c`. O navegador mantém a seleção, a navegação por teclado e o piscar do cursor conforme as preferências do usuário.

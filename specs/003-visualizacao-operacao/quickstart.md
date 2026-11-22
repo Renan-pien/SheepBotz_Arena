@@ -72,3 +72,7 @@ controle. Os 35 estados exportados corresponderam à saída da CLI.
 O ensaio também confirmou órbita, roda, arraste direito, Shift com
 arraste, mudança de vista, rejeição de arquivo inválido, saída do replay,
 edição por arquivo, apresentação e layout a 1024 e 1023 px.
+
+### Conferir o cursor de texto no navegador
+
+Na aba **Controladores** do Sumô, clique entre dois caracteres do código de `vermelho`, depois em outro ponto da mesma linha. Confira se a barra clara aparece no ponto do último clique. Use as setas direita e esquerda para mover um caractere e as setas para baixo e para cima para mudar de linha. Digite uma letra e confira onde ela entrou no rascunho. Repita em `azul` e, em **Modo → Labirinto**, no editor de `explorador`.

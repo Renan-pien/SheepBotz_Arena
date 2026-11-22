@@ -217,7 +217,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 - **FR-020:** Ao abrir um mundo inválido, a tela DEVE listar todos os erros (código, caminho, mensagem) e manter o mundo anterior. *(RB-46)*
 - **FR-021:** Ao carregar um mundo, os controladores iniciais DEVEM ser: no "Duelo padrão", `vermelho` com "Caçador" e `azul` com "Girador"; nos três labirintos, `explorador` com "Navegador"; em mundos abertos de arquivo, "Parado" para todos. *(RB-22, RB-23, ADR-003)*
 - **FR-022:** A tela inicial DEVE abrir com o "Duelo padrão" e seus controladores iniciais, no tick 0, pausada. *(RB-24, ADR-003)*
-- **FR-023:** A aba "Controladores" DEVE ter um cartão por robô (com `id` e cor), contendo: seletor de exemplos (Spec 002, Anexo D), editor de código com fonte monoespaçada e números de linha, aviso de "alterações não aplicadas" e os botões "Aplicar", "Restaurar exemplo", "Abrir código" (`.js`) e "Salvar código" (`.js`). *(RB-23)*
+- **FR-023:** A aba "Controladores" DEVE ter um cartão por robô (com `id` e cor), contendo: seletor de exemplos (Spec 002, Anexo D), editor de código com fonte monoespaçada, números de linha e cursor de inserção visível no editor em foco, aviso de "alterações não aplicadas" e os botões "Aplicar", "Restaurar exemplo", "Abrir código" (`.js`) e "Salvar código" (`.js`). *(RB-23)*
 - **FR-024:** "Aplicar" DEVE verificar o controlador; se inválido, mostrar a mensagem de `CONTROLADOR_INVALIDO` e manter o controlador anterior; se válido, reiniciar a simulação com ele. *(RB-23, ADR-014)*
 - **FR-025:** Erros de controlador durante a execução DEVEM aparecer no cartão do robô ("desativado" + mensagem) e na aba "Eventos". *(RB-23, RB-39)*
 
@@ -350,3 +350,5 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 **S3-US3-AC11.** Dado o Sumô inicial, quando o usuário entra em Labirinto, então vê Fácil selecionado e o simulador pausado. Quando muda diretamente para Difícil e depois Médio, inclusive durante uma execução, cada nível inicia pausado no tick 0 com a mesma estratégia. Ao escolher Sumô, a lista Dificuldade desaparece. Uma nova entrada em Labirinto começa no Fácil.
 
 **S3-US3-AC12.** Dado um mundo de arquivo ou replay, quando a tela mostra os controles, o nome do mundo pode ser consultado. Um mundo livre deixa Modo sem seleção e um labirinto personalizado deixa Dificuldade sem seleção. Os arquivos não acrescentam opções às listas. No replay de um nível do catálogo a dificuldade correspondente aparece selecionada e bloqueada.
+
+**S3-US3-AC13** (FR-023, FR-038, RB-23). Dado um editor de estratégia em Sumô ou Labirinto, quando o usuário clica entre dois caracteres, então vê a barra de inserção nessa posição, com contraste mínimo de 4.5:1 sobre o fundo. Quando usa as setas, a barra acompanha o ponto de inserção. O próximo caractere digitado aparece nessa posição.

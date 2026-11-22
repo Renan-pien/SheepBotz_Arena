@@ -59,6 +59,7 @@ além da cor.
   e **Salvar código de `<id>`**. O editor é uma caixa de texto nomeada
   e fica somente para leitura no replay. A falha em execução aparece
   como `desativado · <mensagem>`.
+  Com foco no editor de um robô, a barra de inserção clara indica onde o próximo caractere será digitado. Clique e setas usam a navegação nativa do texto em ambos os modos.
 - O cartão de inspeção se chama **Inspeção de `<id>`**. A pose tem formato
   `x <x> m · y <y> m · θ <ângulo>°`, com uma casa no ângulo. O sinal
   negativo visível é `−`. **Pose real**, **Odometria** e **Diferença**
