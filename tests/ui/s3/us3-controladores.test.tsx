@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import {
   act,
   cleanup,
@@ -205,4 +206,28 @@ it('S3-US3-AC9: aplica um rascunho e restaura apenas o exemplo indicado', () => 
   expect(session.getSnapshot().controllers.azul).toBe(
     controllerPresets.girador.source,
   );
+});
+
+it('S3-US3-AC13: o cursor nativo recebe a cor clara nos editores de ambos os modos', () => {
+  // O jsdom não carrega a folha de estilos importada pela tela.
+  const style = document.createElement('style');
+  style.textContent = readFileSync('src/ui/arena.css', 'utf8');
+  document.head.append(style);
+  try {
+    mount();
+    function checkCaret(id: string) {
+      const editor = screen.getByRole('textbox', { name: 'Código de ' + id });
+      editor.focus();
+      expect(document.activeElement).toBe(editor);
+      expect(getComputedStyle(editor).caretColor).toBe('rgb(241, 246, 252)');
+    }
+    checkCaret('vermelho');
+    checkCaret('azul');
+    fireEvent.change(screen.getByLabelText('Modo'), {
+      target: { value: 'maze' },
+    });
+    checkCaret('explorador');
+  } finally {
+    style.remove();
+  }
 });

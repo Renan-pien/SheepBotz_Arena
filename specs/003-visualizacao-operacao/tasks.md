@@ -91,4 +91,4 @@ navegador. A seguir entram inspeção e replay. A apresentação vem por
 
 - [X] T026 [US3] Separar Modo e Dificuldade e compartilhar a troca pausada com Próximo nível. Validar o catálogo, a estratégia e o rascunho, a exibição de arquivos e os seletores em replay — `src/ui/App.tsx`, `src/ui/arena/catalog.ts`, `src/ui/arena/session.ts`, `tests/ui/s3/maze.test.tsx` — S3-FR-019, S3-FR-043, S3-FR-044, S3-US3-AC11 e AC12.
 
-- [ ] T027 [US3] Exibir o cursor nativo com contraste no conteúdo editável de todos os controladores. Testar o estilo em `tests/ui/s3/us3-controladores.test.tsx` e verificar clique, setas e digitação no navegador nos três editores — `src/ui/arena.css` — S3-FR-023, S3-FR-038, S3-US3-AC13.
+- [X] T027 [US3] Exibir o cursor nativo com contraste no conteúdo editável de todos os controladores. Testar o estilo em `tests/ui/s3/us3-controladores.test.tsx` e verificar clique, setas e digitação no navegador nos três editores — `src/ui/arena.css` — S3-FR-023, S3-FR-038, S3-US3-AC13.

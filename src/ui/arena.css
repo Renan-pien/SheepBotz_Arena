@@ -248,8 +248,8 @@ button.primary:enabled:hover {
   background: #203148;
   border-color: #496079;
 }
-.code-editor .cm-cursor {
-  border-left-color: #f1f6fc;
+.code-editor .cm-content[contenteditable='true'] {
+  caret-color: #f1f6fc;
 }
 .code-editor .cm-editor.cm-focused {
   outline: 2px solid #8cf0d7;
