@@ -11,7 +11,7 @@ export interface Command {
   readonly w: number; // rad/s
 }
 
-export type MatchMode = 'free' | 'sumo';
+export type MatchMode = 'free' | 'sumo' | 'maze';
 
 export interface World {
   readonly name: string;
@@ -19,7 +19,11 @@ export interface World {
   readonly dt: number; // segundos
   readonly map: { readonly width: number; readonly height: number };
   readonly arena: { readonly radius: number } | null;
-  readonly match: { readonly mode: MatchMode; readonly maxTicks: number };
+  readonly match: {
+    readonly mode: MatchMode;
+    readonly maxTicks: number;
+    readonly exit?: Pick<Obstacle, 'x' | 'y' | 'width' | 'height'>;
+  };
   readonly obstacles: readonly Obstacle[];
   readonly robots: readonly RobotConfig[];
 }

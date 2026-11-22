@@ -43,14 +43,18 @@ const dimension = {
   max: 100,
 } satisfies Schema;
 
+const rectangle = {
+  x: coordinate,
+  y: coordinate,
+  width: dimension,
+  height: dimension,
+};
+
 const obstacle = {
   kind: 'object',
   fields: {
     id,
-    x: coordinate,
-    y: coordinate,
-    width: dimension,
-    height: dimension,
+    ...rectangle,
   },
 } satisfies Schema;
 
@@ -126,9 +130,13 @@ export const worldSchema = {
       fields: {
         mode: {
           kind: 'text',
-          format: { pattern: /^(free|sumo)$/, rule: 'use "free" ou "sumo"' },
+          format: {
+            pattern: /^(free|sumo|maze)$/,
+            rule: 'use "free", "sumo" ou "maze"',
+          },
           defaultValue: 'free',
         },
+        exit: { kind: 'object', optional: true, fields: rectangle },
         maxTicks: {
           kind: 'integer',
           min: 1,

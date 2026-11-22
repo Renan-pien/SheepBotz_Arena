@@ -176,6 +176,9 @@ export function normalizeWorld(validated: PartialWorld): World {
   const { robots, arena, ...world } = validated as WorldDocument;
   return {
     ...world,
+    match: world.match.exit
+      ? world.match
+      : { mode: world.match.mode, maxTicks: world.match.maxTicks },
     arena: arena ?? null,
     robots: robots.map(({ x, y, theta, color, laser, ...robot }, index) => ({
       ...robot,
