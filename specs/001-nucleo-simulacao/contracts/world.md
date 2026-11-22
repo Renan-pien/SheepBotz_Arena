@@ -26,7 +26,7 @@ O formato do arquivo é definido na spec (Anexo B). Este contrato define como ca
 
 - **Tipos:** número = `typeof v === 'number' && Number.isFinite(v)`; inteiro = número com `Number.isInteger(v)`; texto = `typeof v === 'string'`; objeto = não nulo, não lista; lista = `Array.isArray`.
 - **Intervalos:** exatamente os do Anexo B da spec, com as desigualdades estritas ou não estritas ali indicadas.
-- **Formatos:** `id` com `/^[A-Za-z0-9_-]{1,32}$/`; `color` com `/^#[0-9A-Fa-f]{6}$/`; `match.mode` em `'free' | 'sumo'`.
+- **Formatos:** `id` com `/^[A-Za-z0-9_-]{1,32}$/`; `color` com `/^#[0-9A-Fa-f]{6}$/`; `match.mode` em `'free' | 'sumo' | 'maze'`.
 - **Campos desconhecidos:** cada chave não prevista em cada objeto gera um erro com seu próprio caminho.
 - **Geometria (FR-008 a FR-011), só sobre itens válidos:**
   - Obstáculo dentro do mapa: `|x| + width/2 ≤ W/2` e `|y| + height/2 ≤ H/2`.
@@ -38,3 +38,7 @@ O formato do arquivo é definido na spec (Anexo B). Este contrato define como ca
   - No modo `sumo`, `REGRA_DA_MODALIDADE` aponta para `robots` se a lista não tiver 2 itens, para
     `arena` se a arena estiver ausente ou para `robots[i]` se o centro inicial do robô tiver
     `√(x² + y²) > arena.radius`. O centro sobre a borda é aceito e o corpo pode ultrapassá-la.
+
+## Revisão aditiva da ADR-021
+
+Em `match.mode = "maze"` o campo `match.exit = { x, y, width, height }` é obrigatório. Coordenadas de centro em metros, dimensões em (0, 100]. Limite do mapa inclusivo, contato de bordas com parede permitido, interiores disjuntos. Exigir um robô cujo centro inicial esteja fora do retângulo fechado. Nos demais modos a saída é inválida. Usar os caminhos `match.exit`, `robots` e `robots[i]` nos erros geométricos. O limite `maxTicks` regula o sumô.

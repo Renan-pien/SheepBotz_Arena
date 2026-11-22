@@ -300,3 +300,7 @@ A sessão ao vivo grava sumô com detector em v3. O leitor seleciona a regra his
 ## Borda no cartão de inspeção
 
 Consultar o sensor da S2 com a pose do snapshot exibido, o raio do robô correspondente e o mundo. Usar essa leitura em pausa, retrocesso e replay. O raio interno da faixa desenhada e o limiar físico usam a mesma proporção.
+
+## ADR-021 · S3-FR-043
+
+Catalogar os três JSONs por ordem de nível. Desenhar uma chegada quadriculada no piso. Reusar o estado terminal e a navegação pelo histórico. Ao avançar de nível, preparar uma nova simulação com o controlador aplicado e rascunho preservado. O replay apenas consome snapshots.

@@ -376,3 +376,53 @@ No giro conjunto (ADR-019), a regra de sumô recebe as poses finais, os raios e 
 ## Sensor de borda de quatro lados (ADR-020)
 
 Implementar uma função pura no núcleo, compartilhada pela API e pela inspeção. Usar o raio configurado do próprio robô e o vetor de frente (cos θ, sen θ). Rotacionar esse vetor em +90° para a esquerda. Traseira e direita usam os vetores opostos. Somar cada deslocamento ao centro físico e comparar a distância radial com o raio interno da faixa. Compartilhar o fator 0.975 com o desenho. Derivar no momento da consulta evita memória entre ticks e novos campos no mundo ou nas gravações.
+
+## ADR-021 · S2-FR-039
+
+Os níveis são mundos JSON estáticos. Cada célula mede 0.50 m em ambos os eixos. Nas figuras abaixo cada centro está em linha e coluna ímpares (base zero). Entre centros, espaço indica passagem e # indica parede de 0.50 × 0.0625 m, horizontal ou vertical. A moldura é o limite do mapa. O mapa é centrado na origem, norte é +y. I é o centro inicial e S o centro da saída de 0.25 × 0.25 m. Posição de partida na célula sudoeste, orientação inicial zero, saída a nordeste. Conservar seed 7, dt 0.05 s e os parâmetros do explorador da Sala. O Navegador usa o laser para escolher, nesta ordem, direita, frente, esquerda e retorno. Usa odometria para centralizar a cada célula. As estratégias personalizadas entram pela mesma API.
+
+### Nível 1
+
+```text
+#########
+# #   #S#
+# # ### #
+#     # #
+# # # # #
+#I# #   #
+#########
+```
+
+### Nível 2
+
+```text
+#############
+# #   #    S#
+# ### ### ###
+# #     #   #
+# ### ##### #
+#   #   #   #
+# # # # # ###
+#I#   #     #
+#############
+```
+
+### Nível 3
+
+```text
+#################
+#             #S#
+# # ##### ### # #
+# #   #   # #   #
+# ### ##### #####
+# # #   # #     #
+# # # ### ### ###
+#   #   # #     #
+# ##### # # #####
+#   # #         #
+##### # # ### ###
+#I        #     #
+#################
+```
+
+Avaliar o centro físico após contatos no passo headless. Bordas do retângulo são inclusivas. Publicar `saida_alcancada` e um evento `fim_do_nivel` com id de evento nulo no tick final.

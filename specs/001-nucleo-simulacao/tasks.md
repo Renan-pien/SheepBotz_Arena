@@ -196,3 +196,5 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 | US6 | S1-US6-AC1 a AC3 | `us6-odometry.test.ts` |
 
 Total de 36 critérios com testes de aceitação previstos, além dos testes unitários.
+
+- [ ] T051 [US1] Testar e implementar validação de saída e robô em `src/core/world/`, `src/core/types.ts` e `tests/core/acceptance/s1/maze-world.test.ts` — S1-FR-041, S1-US1-AC12.

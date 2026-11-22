@@ -462,3 +462,11 @@ Com um mundo válido, o resultado sem interface reúne as ocorrências desta tab
 | ADR-013 | FR-031 |
 | ADR-014 | FR-011, FR-012 |
 | ADR-016 | FR-009, FR-012, FR-024 |
+
+## Extensão de US5 — Navegar até a saída (P2)
+
+**FR-039** (ADR-021, RB-25). Os três mundos de labirinto têm corredores da mesma largura e explorador com diâmetro de 0.20 m e laser de nove raios. O menor percurso de centro a centro de casas ortogonais cresce em extensão e número de bifurcações. Uma bifurcação é uma casa com três ou mais direções transitáveis. Cada nível termina no primeiro tick em que o centro físico, após correção dos contatos, entra na saída, inclusive no limite. Registrar um único evento de conclusão. O tempo é simulado e livre.
+
+**S2-US5-AC4.** Dados os níveis fácil, médio e difícil, quando se mede a menor rota da partida à saída, então há 7, 14 e 18 passagens de 0.50 m, com 2, 4 e 6 bifurcações. O fácil tem becos curtos, o médio tem ramificação fora da rota e o difícil tem ao menos um ciclo alcançável e becos mais profundos.
+
+**S2-US5-AC5.** Dado o explorador, quando percorre cada mapa com o exemplo de navegação, então chega à saída com o centro físico, registra a chegada uma vez e conserva o tick final em novos avanços. Um robô separado da saída por uma parede continua em andamento mesmo quando a odometria atravessa a marca.

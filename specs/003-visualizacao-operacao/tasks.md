@@ -86,3 +86,5 @@ navegador. A seguir entram inspeção e replay. A apresentação vem por
 - [X] T023 [US2, US5] Exibir Regra de Tempo e a contagem efetiva, preservar o reset pausado e implementar leitura e exportação conforme [Recording.version](data-model.md) — App, sessão, codec, testes S3-US2-AC16 e S3-US5-AC13, matriz e métricas — S3-FR-040, S3-FR-041, ADR-019. Depende de S2-T044. Pronto com retrocesso, v1/v2/v3, build, lint e cobertura verificados.
 
 - [X] T024 [US4] Mostrar a leitura física da borda nos cartões e compartilhar o limiar com a cena — `src/ui/panels/Inspection.tsx`, `src/ui/scene/graphics.ts`, `tests/ui/s3/us4-inspecao.test.tsx`, README e rastreabilidade — S3-FR-042. Depende de S2-T045. Pronto com S3-US4-AC7 (ao vivo, retrocesso, reset, modo livre e replays antigos), suíte completa, lint e build.
+
+- [ ] T025 [US3] Integrar seleção, chegada visível, replay e troca explícita com estratégia preservada em `src/ui/` e `tests/ui/s3/maze.test.tsx`. Validar regressões e rastreabilidade — S3-FR-043, S3-US3-AC10.

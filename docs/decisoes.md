@@ -310,3 +310,11 @@
 - **Decisão** Todo controlador de sumô pode consultar `readEdge()` dentro de `setup()` e `loop()`. Quatro pontos no perímetro acompanham frente, traseira, esquerda e direita. Cada ponto sinaliza a partir de 97.5% do raio da arena, inclusive para além da faixa branca. Em modo livre a leitura é nula.
 - **Motivo** Os lados distinguem uma aproximação de frente de um empurrão lateral. A faixa já desenhada dá uma referência visível e a pose física mantém a leitura coerente com colisões.
 - **Consequências** O contrato da API do controlador ganha uma revisão aditiva. O painel de inspeção deriva a mesma leitura do tick observado, inclusive em replays antigos. A decisão de reagir cabe a cada estratégia. Origem de S2-FR-038 e S3-FR-042.
+
+## ADR-021 — Labirinto com progressão manual
+
+- **Data** 2026-11-22
+- **Status** Aceita por Wesley.
+- **Contexto e opções** O cenário livre demonstra colisão e sensores. Para oferecer navegação com chegada, avaliamos alterar o comportamento do modo livre ou acrescentar uma modalidade de exploração.
+- **Decisão** Acrescentar três mapas fixos, com 2, 4 e pelo menos 6 bifurcações na rota mais curta, respectivamente. Usar um robô idêntico nos três níveis. O centro físico determina a chegada. O usuário inspeciona o tick final e escolhe se avança com sua estratégia aplicada.
+- **Consequências** A Sala permanece como mundo livre de arquivo. O sumô continua como demonstração definida pela ADR-003. A modalidade adicional usa os contratos S1-FR-041, S2-FR-039 e S3-FR-043.

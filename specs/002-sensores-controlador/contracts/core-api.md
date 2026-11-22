@@ -61,3 +61,7 @@ As opções de `createSimulation`, `prepareSimulation` e `runHeadless` aceitam `
 ## Geometria da borda
 
 A biblioteca exporta `readEdge(world, pose, robotRadius): EdgeReading | null`. Usa uma pose física em metros e radianos e o raio do robô em metros. `ARENA_EDGE_INNER_RATIO` vale 0.975. O [contrato do controlador](controller-api.md) define a função sem argumentos que já recebe o contexto do próprio robô.
+
+## Conclusão de labirinto
+
+No primeiro tick positivo com centro dentro de `match.exit`, `status` passa a `finalizada`, `resultado` traz `motivo: "saida_alcancada"`, `vencedor` com o id do explorador e `tick`. O evento `fim_do_nivel` acompanha esse tick.

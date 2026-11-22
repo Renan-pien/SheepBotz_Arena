@@ -258,7 +258,7 @@ Como membro da equipe, quero que o robô tenha uma estimativa de onde acha que e
 | **Mundo** | nome, semente, `dt`, mapa, arena (opcional), partida (modo e limite de ticks), obstáculos, robôs |
 | **Mapa** | largura, altura |
 | **Arena** | raio |
-| **Partida** | modo (`free` ou `sumo`), limite de ticks |
+| **Partida** | modo (`free`, `sumo` ou `maze`), limite de ticks |
 | **Obstáculo** | `id`, centro (x, y), largura, altura |
 | **Configuração do robô** | `id`, pose inicial, raio, velocidades máximas, cor, laser (opcional) |
 | **Estado da simulação** | tick, tempo, estados dos robôs (a Spec 002 acrescenta status e resultado) |
@@ -339,7 +339,7 @@ O documento raiz é um objeto. Campos não listados geram `CAMPO_DESCONHECIDO`. 
 | `arena` | objeto | não | ausente | obrigatória no modo `sumo` |
 | `arena.radius` | número | sim, se `arena` existir | — | 0 < valor ≤ min(largura, altura)/2 |
 | `match` | objeto | não | `{ "mode": "free", "maxTicks": 3000 }` | — |
-| `match.mode` | texto | não | `"free"` | `"free"` ou `"sumo"` |
+| `match.mode` | texto | não | `"free"` | `"free"`, `"sumo"` ou `"maze"` |
 | `match.maxTicks` | inteiro | não | `3000` | 1 a 1 000 000 |
 | `obstacles` | lista | não | `[]` | 0 a 100 itens |
 | `obstacles[k].id` | texto | **sim** | — | formato `[A-Za-z0-9_-]`, 1 a 32 caracteres; único entre obstáculos |
@@ -396,3 +396,9 @@ definem os resultados esperados.
 | FR-032 a FR-035 | RB-43, RB-44, ADR-007 | S1-US2-AC1, S1-US3-AC1 e AC2. S1-T030 e S1-T034 para entradas inválidas, estado final e histórico. |
 | FR-036 a FR-039 | RB-24, RB-27 | S1-US3-AC1 a AC4 e S1-US4-AC5. S1-T047 para o isolamento do núcleo. |
 | FR-040 | RB-44, Q-002 | As poses esperadas usam a tolerância deste requisito. S1-T009 e S1-T010 definem as comparações de posição e ângulo. |
+
+## Extensão de US1 — Mundo de labirinto
+
+**FR-041** (ADR-021, RB-25). O modo `maze` exige um robô e uma saída retangular com centro e dimensões positivas em metros. O retângulo cabe inteiramente no mapa, tem interior livre de paredes e o centro do robô começa fora dele. A saída pertence exclusivamente ao labirinto.
+
+**S1-US1-AC12.** Dado um mundo de labirinto com um robô e saída válida, quando aberto, então suas coordenadas são preservadas. A ausência da saída, quantidade incorreta de robôs, saída fora do mapa, sobreposição com obstáculo ou centro inicial na saída geram erro no campo correspondente.
