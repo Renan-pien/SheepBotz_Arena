@@ -159,3 +159,7 @@ SimState 1 ── * RobotState   (RobotState.id = RobotConfig.id, mesma ordem)
 ## Saída de labirinto
 
 `World.match.exit` contém centro `(x,y)` e dimensões `(width,height)` em metros conforme o [contrato de mundo](contracts/world.md).
+
+### Perfil físico
+
+RobotConfig admite o ID de modelo opcional. O catálogo de S1-FR-042 fixa raio, peso e índices de força e tração. RobotState conserva somente os dados que mudam a cada tick.
