@@ -194,7 +194,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 ### 4.2 Cena 3D
 
 - **FR-005:** A cena DEVE representar o plano da simulação como o chão, com +x para a direita e +y para o fundo na vista inicial. *(RB-21, RB-36)*
-- **FR-006:** A cena DEVE mostrar: chão com grade de 0,1 m; paredes baixas nas bordas do mapa; arena, quando existir, como disco escuro com borda branca de largura igual a 5% do raio; obstáculos como caixas; robôs como cilindros na cor do mundo, com altura igual ao raio e um indicador de frente apontando para θ. *(RB-36)*
+- **FR-006:** A cena DEVE mostrar chão com grade de 0,1 m, paredes baixas nas bordas do mapa, arena como disco escuro com borda branca de largura igual a 5% do raio, e obstáculos como caixas. Robôs sem modelo são cilindros na cor do mundo com altura igual ao raio. Robôs do catálogo usam a carroceria de FR-048. A frente aponta para θ. *(RB-36, ADR-026)*
 - **FR-007:** A cena DEVE mostrar, para cada robô com laser, um segmento por raio, partindo do centro do robô até a distância lida; raios com leitura menor que o alcance máximo aparecem como **atingiu** (cor quente e marcador no ponto atingido) e os demais como **livres** (traço claro e translúcido). A distinção NÃO DEVE depender só da cor. *(RB-37)*
 - **FR-008:** A cena DEVE permitir ligar e desligar os raios e os rótulos com o `id` de cada robô. *(RB-37)*
 - **FR-009:** Robôs desativados DEVEM aparecer acinzentados com ícone de alerta; robôs fora da arena, com destaque de contorno. *(RB-25, ADR-003)*
@@ -368,3 +368,21 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 **S3-US3-AC14.** Dados azul e vermelho com linguagens independentes, ou o explorador de qualquer nível, quando o operador aplica uma estratégia, então pode avançar, voltar, continuar e reiniciar com resultado reproduzível. A gravação guarda a linguagem e o fonte. Replays antigos são JavaScript e assistir dispensa compilação.
 
 **S3-US3-AC15.** Dado um editor, quando o operador abre ? usando clique ou teclado, então vê o ciclo, sensores, movimento e exemplo da sua linguagem e modalidade. Fechar ou Escape devolve o foco ao botão e conserva o código.
+
+## Extensão de US1 — Escolher o fundo da luta de sumô (P2)
+
+Como operador, quero escolher o ambiente que a plateia verá ao redor do ringue. Posso demonstrar a troca com o duelo pausado e comparar o mesmo instante da luta.
+
+**FR-047** (RB-21, RB-28, RB-36, solicitação da equipe de 2026-11-23). Em Sumô, o seletor “Cenário” oferece “Clássico” (inicial), “Dojô de Bambu” e “Hangar Orbital”. O dojô tem piso de tatame e bambus. O hangar tem painéis metálicos com sinalização e luzes. A escolha afeta somente o ambiente ao redor do disco. O disco, a borda branca, o mapa, a câmera, os sensores e as regras de vitória conservam suas características. A escolha visual vale para a sessão da página, inclusive no modo apresentação. Livre e Labirinto exibem sua cena habitual.
+
+**S3-US1-AC11.** **Dado** o Duelo padrão no tick 1 pausado, **quando** a pessoa escolhe sucessivamente os três cenários, **então** cada opção apresenta seu próprio fundo na vista inicial e continua no tick 1 com a mesma câmera, disco de raio 0.385 m, robôs, leituras, eventos e comandos. Ao continuar até o fim, vencedor e tick final coincidem com os do mesmo duelo no Clássico. A escolha é operável pelo teclado.
+
+**S3-US1-AC12.** **Dado** o Hangar Orbital escolhido no sumô, **quando** a pessoa entra no Labirinto ou abre um mundo livre, **então** vê a cena habitual dessa modalidade. Ao voltar ao Sumô na mesma página, vê o Hangar Orbital selecionado. Reiniciar a luta conserva o fundo.
+
+## Extensão de US3 — Escalar as duas equipes no sumô (P1)
+
+**FR-048** (ADR-026, RB-21, RB-36, RB-40). Antes de iniciar uma nova luta de sumô, a pessoa pode abrir “Selecionar robôs”. A grade tem seis lutadores com retrato, nome e as quatro características de S1-FR-042. Nimbo tem carenagem oval baixa, Zarpa tem garfos frontais, Quimera tem dois módulos laterais, Torvelim tem rotor superior, Brontes tem esteiras largas e Baluarte tem uma lâmina frontal larga. A identificação de equipe inclui texto e cor na seleção e na visualização da luta. Os nomes pertencem aos modelos em todas as execuções.
+
+**S3-US3-AC16.** **Dado** o duelo aberto, **quando** Vermelha ocupa Nimbo, **então** a Azul pode escolher qualquer um dos outros cinco. Alterar a escolha vermelha libera Nimbo imediatamente. A reserva também vale na ordem inversa. Cancelar ou usar Escape conserva a configuração anterior. Confirmar requer duas escolhas distintas e inicia uma nova rodada pausada no tick 0 com os mesmos controladores e rascunhos. A pessoa pode usar o Duelo padrão sem fazer seleção.
+
+**S3-US3-AC17.** **Dado** um duelo com dois modelos selecionados, **quando** a pessoa avança, reinicia, exporta e abre a gravação, **então** o mesmo nome, corpo, raio e identificação de equipe acompanham cada robô. Replay exibe os modelos gravados e bloqueia nova escalação. Um arquivo antigo exibe o robô clássico. Um mundo importado que não comporta os novos tamanhos informa o erro e conserva a rodada anterior.

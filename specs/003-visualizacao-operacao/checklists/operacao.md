@@ -30,3 +30,10 @@ Os marcadores pertencem à pessoa revisora. Uma marcação indica aprovação da
 | CHK001–CHK004 | US1 usa o Duelo e o vetor de frente +y. US2 define as condições de avanço, atraso e aba em segundo plano. |
 | CHK005–CHK007 | US3 preserva a sessão e rascunhos em erros. US4 deriva os dados de um snapshot. US2/US6 explicitam foco e layout. |
 | CHK008–CHK010 | US5 fixa o intervalo inclusivo e a transição de volta ao vivo. SC-001 a SC-006 definem as medidas de conclusão. |
+
+## Revisão dos cenários de sumô · 2026-11-23
+
+- [x] CHK011 O FR-047 enumera o fundo inicial e os dois ambientes novos, distingue os motivos visuais e define o alcance da preferência por modalidade.
+- [x] CHK012 S3-US1-AC11 e AC12 permitem conferir a mesma luta, no mesmo tick, com qualquer fundo, e a seleção após reinício ou troca de modo.
+
+- [x] CHK013 FR-048, S3-US3-AC16/17 cobrem as duas ordens de reserva, cancelamento, aplicação, importação e leitura de modelos em replay.
