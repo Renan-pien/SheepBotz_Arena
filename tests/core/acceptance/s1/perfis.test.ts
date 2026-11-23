@@ -80,7 +80,7 @@ it('S1-US1-AC13: modelo desconhecido, raio divergente e dupla repetida são diag
   }
 });
 
-it('S1-US5-AC7: sob um empurrão idêntico os seis modelos parados cedem em ordem de tamanho', () => {
+it('S1-US5-AC7: sob um empurrão idêntico os nove modelos parados cedem em ordem de tamanho', () => {
   let previous = 0;
   for (const model of modelIds) {
     const source = document();
@@ -101,5 +101,32 @@ it('S1-US5-AC7: sob um empurrão idêntico os seis modelos parados cedem em orde
     const shift = result.state.robots[1]!.pose.x - radius;
     expect(shift).toBeGreaterThan(previous);
     previous = shift;
+  }
+});
+
+it('S1-US1-AC14: cada categoria contém três perfis físicos distintos, ordenados por peso', () => {
+  const expected = [
+    ['nimbo', 'light', 0.04, 0.2, 1, 6],
+    ['pulga', 'light', 0.042, 0.21, 1.5, 5.6],
+    ['zarpa', 'light', 0.044, 0.23, 2, 5],
+    ['quimera', 'medium', 0.048, 0.28, 3, 4],
+    ['arraia', 'medium', 0.05, 0.3, 3.5, 3.5],
+    ['torvelim', 'medium', 0.052, 0.32, 4, 3],
+    ['brontes', 'heavy', 0.056, 0.36, 5, 2],
+    ['monolito', 'heavy', 0.058, 0.38, 5.5, 1.5],
+    ['baluarte', 'heavy', 0.06, 0.4, 6, 1],
+  ];
+  expect(
+    modelIds.map((id) => {
+      const { weightClass, radius, massKg, force, traction } = robotModels[id];
+      return [id, weightClass, radius, massKg, force, traction];
+    }),
+  ).toEqual(expected);
+  for (const property of ['radius', 'massKg', 'force', 'traction'] as const) {
+    const values = modelIds.map((id) => robotModels[id][property]);
+    expect(new Set(values).size).toBe(9);
+    expect(values).toEqual(
+      [...values].sort((a, b) => (property === 'traction' ? b - a : a - b)),
+    );
   }
 });
