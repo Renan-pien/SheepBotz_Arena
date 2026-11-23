@@ -61,3 +61,7 @@ Aceitar exportação parcial durante a demonstração. O estado terminal requer 
 
 ### Versão 7 · fontes em Portugol
 Quando há Portugol, manter controllers com o texto original por ID e acrescentar languages com exatamente os mesmos IDs e valores javascript ou portugol. Validar estados como v6 no sumô, v4 no labirinto e v1 em mundo livre. V1–v6 conservam as linguagens JavaScript implícitas. Ler estados gravados não requer o runtime de Portugol.
+
+### Modelos de robôs · ADR-026
+
+A gravação conserva o JSON do mundo com seus IDs opcionais de modelo. Os frames referenciam os mesmos IDs de robô. O catálogo fixa os desenhos e atributos de cada modelo. A escolha do fundo é uma preferência de apresentação da página.

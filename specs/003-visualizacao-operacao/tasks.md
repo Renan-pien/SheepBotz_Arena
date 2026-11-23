@@ -98,3 +98,8 @@ navegador. A seguir entram inspeção e replay. A apresentação vem por
 - [X] T029 [US2] Exibir “Queimou” junto a cada infrator, preservar operação e replays v1–v6 e verificar pontos, pausa e navegação em `src/ui` e `tests/ui/s3` — S3-FR-045, S3-US2-AC17 e AC18.
 
 - [X] T030 [US3] Integrar Draft.language, Draft.source, SessionView.languages e Recording.languages (data-model.md) a sessão, arquivos, replay e tutorial do editor com testes de navegação e aplicação — S3-FR-046, S3-US3-AC14/15. Depende de S2-T049.
+
+- [X] T031 [US1] Oferecer os três fundos em `src/ui/scene/ArenaView.tsx`, integrar e liberar a decoração em `src/ui/scene/{graphics,scenery}.ts` e testar a troca em `tests/ui/s3/us1-cenarios.test.tsx`. Pronto quando os dois ambientes são visíveis e a troca conserva câmera, ringue, sensores e desfecho — S3-FR-047, S3-US1-AC11/12.
+
+- [X] T032 [US3] Integrar escalação exclusiva, validação e conservação de rascunhos a `src/ui/arena/session.ts`, com testes de aplicação, arquivo, gravação e erro em `tests/ui/s3/escalacao.test.tsx` — S3-FR-048, S3-US3-AC16/17. Depende de S1-T053.
+- [X] T033 [US3] Desenhar os seis modelos e retratos, montar a grade e exibir equipes na cena e no placar em `src/ui/{App.tsx,arena.css,scene/,panels/Roster.tsx}`, com testes em `tests/ui/s3/escalacao.test.tsx` — S3-FR-006/048, S3-US3-AC16/17. Depende de S3-T032.

@@ -58,11 +58,13 @@ export function checkWorldGeometry(
   const exit = world.match?.exit;
   const maze = world.match?.mode === 'maze';
   if (maze && world.robots && world.robots.length !== 1)
-    issues.push(errors.maze('robots', 'O labirinto exige exatamente um robô.'));
+    issues.push(
+      errors.matchRule('robots', 'O labirinto exige exatamente um robô.'),
+    );
   if (maze && !exit) issues.push(errors.required('match.exit'));
   if (exit && !maze)
     issues.push(
-      errors.maze('match.exit', 'A saída pertence ao modo labirinto.'),
+      errors.matchRule('match.exit', 'A saída pertence ao modo labirinto.'),
     );
   if (hasRectangle(exit)) {
     if (
@@ -71,7 +73,9 @@ export function checkWorldGeometry(
       (Math.abs(exit.x) + exit.width / 2 > maxX ||
         Math.abs(exit.y) + exit.height / 2 > maxY)
     )
-      issues.push(errors.maze('match.exit', 'A saída deve caber no mapa.'));
+      issues.push(
+        errors.matchRule('match.exit', 'A saída deve caber no mapa.'),
+      );
     if (
       rectangles.some(
         (wall) =>
@@ -80,7 +84,10 @@ export function checkWorldGeometry(
       )
     )
       issues.push(
-        errors.maze('match.exit', 'A saída deve estar livre de obstáculos.'),
+        errors.matchRule(
+          'match.exit',
+          'A saída deve estar livre de obstáculos.',
+        ),
       );
   }
 
@@ -103,7 +110,7 @@ export function checkWorldGeometry(
     if (x === undefined || y === undefined) return;
     const center = { x, y };
     if (hasRectangle(exit) && containsPoint(exit, center))
-      issues.push(errors.maze(path, 'O robô deve começar fora da saída.'));
+      issues.push(errors.matchRule(path, 'O robô deve começar fora da saída.'));
     if (sumo && arena !== undefined && distance(origin, center) > arena) {
       issues.push(errors.sumoOutsideArena(path));
     }

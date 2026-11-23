@@ -36,3 +36,5 @@
 - Revisão documental concluída. Os itens marcados atestam a qualidade da especificação. A execução dos testes e a medição de desempenho fazem parte da implementação e do fechamento.
 - A revisão cruzada da S1 conferiu a regra da arena, o reset com e sem histórico, as referências
   de campos nas tarefas e as checagens de CI em push e pull request. [Registro de consolidação](../../../docs/registro-de-consolidacao.md)
+
+- [x] FR-042 e S1-US5-AC6/7 fixam o caso de dois avanços e o de parada contra giro. S1-US1-AC13 distingue omissão, erro e compatibilidade.

@@ -1,4 +1,5 @@
 import { normalizeAngle } from '../math/angle';
+import { robotModels, type RobotModel } from '../models';
 import type {
   LaserConfig,
   Pose,
@@ -168,7 +169,36 @@ export function validateDocument(
   ) as PartialWorld;
   addDuplicateErrors(data.obstacles, 'obstacles', issues);
   addDuplicateErrors(data.robots, 'robots', issues);
-  return data;
+  const usedModels = new Set<RobotModel>();
+  const inputRobots = worldData.robots;
+  const robots = data.robots?.map((robot, index) => {
+    if (!robot?.model) return robot;
+    const path = `robots[${index}]`;
+    if (data.match?.mode === 'sumo' && usedModels.has(robot.model))
+      issues.push(
+        errors.matchRule(
+          path + '.model',
+          'O modelo já foi escolhido pela outra equipe.',
+        ),
+      );
+    usedModels.add(robot.model);
+    const radius = robotModels[robot.model].radius;
+    const input = Array.isArray(inputRobots) ? inputRobots[index] : undefined;
+    if (
+      isObject(input) &&
+      Object.hasOwn(input, 'radius') &&
+      robot.radius !== undefined &&
+      robot.radius !== radius
+    )
+      issues.push(
+        errors.wrongFormat(
+          path + '.radius',
+          `use o raio do modelo (${radius} m)`,
+        ),
+      );
+    return { ...robot, radius };
+  });
+  return { ...data, robots };
 }
 
 export function normalizeWorld(validated: PartialWorld): World {
@@ -180,11 +210,14 @@ export function normalizeWorld(validated: PartialWorld): World {
       ? world.match
       : { mode: world.match.mode, maxTicks: world.match.maxTicks },
     arena: arena ?? null,
-    robots: robots.map(({ x, y, theta, color, laser, ...robot }, index) => ({
-      ...robot,
-      initialPose: { x, y, theta: normalizeAngle(theta) },
-      color: color ?? colors[index % colors.length]!,
-      laser: laser ?? null,
-    })),
+    robots: robots.map(
+      ({ x, y, theta, color, laser, model, ...robot }, index) => ({
+        ...robot,
+        ...(model && { model }),
+        initialPose: { x, y, theta: normalizeAngle(theta) },
+        color: color ?? colors[index % colors.length]!,
+        laser: laser ?? null,
+      }),
+    ),
   };
 }

@@ -285,3 +285,9 @@ Nenhuma violação da constitution a justificar.
 ## ADR-021 · S1-FR-041
 
 Estender schema, tipos e validação geométrica da configuração de partida. A regra da modalidade lê a saída validada. A cinemática continua comum aos três modos.
+
+### Perfis físicos · S1-FR-042
+
+Manter um catálogo imutável por ID na API genérica do núcleo. Antes da validação geométrica, resolver o raio pelo catálogo e rejeitar conflito explícito. No cálculo de contatos, usar comando saturado e o deslocamento livre de cada candidato em relação à pose inicial. A correção preserva a ordem de pares, a odometria e o tratamento das paredes. O caminho legado mantém a mesma operação p/2.
+
+**Constitution Check I–IX.** S1-US1-AC13 e S1-US5-AC6/7 cobrem o novo contrato aditivo antes do código. Não há dependência externa, relógio, gerador global ou dependência visual. A exclusividade das equipes aplica-se ao sumô na validação de modalidade. Física e catálogo podem ser usados sem tela em qualquer mundo.

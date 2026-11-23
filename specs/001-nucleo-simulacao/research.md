@@ -88,3 +88,7 @@ Cada decisão registra alternativas e motivo. Decisões de stack estão na ADR-0
 
 - **Decisão:** SC-003 é medido por `npm run bench` (script fora da suíte de testes) e o resultado é registrado no fechamento da spec.
 - **Motivo:** testes que dependem de tempo real são proibidos pela constitution (Princípio V).
+
+### Contato de perfis · ADR-026
+
+Escolhemos guardar o ID no mundo e resolver o raio antes da validação geométrica. Guardar bônus por quadro duplicaria dados e poderia divergir da leitura dos sensores. Usar as poses candidatas livres para decidir avanço permite manter a correção sequencial dos pares da ADR-007.

@@ -1,3 +1,5 @@
+import { modelIds } from '../models';
+
 interface Common {
   readonly defaultValue?: unknown;
   readonly optional?: boolean;
@@ -62,6 +64,14 @@ const robot = {
   kind: 'object',
   fields: {
     id,
+    model: {
+      kind: 'text',
+      optional: true,
+      format: {
+        pattern: new RegExp('^(?:' + modelIds.join('|') + ')$'),
+        rule: 'escolha um dos modelos: ' + modelIds.join(', '),
+      },
+    },
     x: coordinate,
     y: coordinate,
     theta: { kind: 'number', defaultValue: 0 },

@@ -82,3 +82,13 @@ Aplique `function loop() { setSpeed(0, 1); }` a vermelho e deixe azul com o Gira
 
 ### Programar em Portugol e consultar a ajuda
 No Sumô, escolha Portugol no vermelho e mantenha JavaScript no azul. Abra **? Comandos**, consulte a borda, feche com Escape e confira o foco no botão. Aplique Guarda da borda. No duelo padrão, avance até a liberação aos 5 s e compare dois ticks usando Voltar e Avançar. Abra um .por com erro e aplique: confira o diagnóstico e a conservação do último estado. No Labirinto, aplique Desviar da parede, troque a dificuldade e confira o mesmo fonte. Salve o .por, exporte a gravação e abra-a em outra sessão: os estados e a linguagem devem aparecer antes de carregar o motor. A ajuda continua disponível no replay.
+
+### Comparar fundos do sumô
+
+1. Abra o Duelo padrão, avance um tick e escolha Dojô de Bambu em Cenário. Procure o tatame e os bambus ao redor do disco.
+2. Escolha Hangar Orbital e orbite a câmera. Os painéis, luzes e marcações do hangar aparecem ao redor da mesma borda branca. Confirme tick 1 e as mesmas leituras na inspeção.
+3. Entre no modo apresentação, volte, escolha Labirinto e depois Sumô. O hangar reaparece só no sumô. Reiniciar leva ao tick 0 com o mesmo cenário.
+
+### Escalar um combate
+
+Em Sumô, abra Selecionar robôs. Escolha Nimbo na Vermelha, confira a reserva ao selecionar a Azul e escolha Baluarte. Confirme, confira os dois modelos identificados na cena e avance a luta. Salve e abra a gravação e confira novamente os modelos. Em um arquivo sem perfis o duelo usa os robôs clássicos.

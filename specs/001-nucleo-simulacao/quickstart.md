@@ -83,3 +83,7 @@ npm run bench
 ```
 
 **Esperado:** 3 000 ticks com 2 robôs em menos de 1 s; registrar o tempo no fechamento da spec.
+
+### Perfis no núcleo
+
+Rode `npm test -- tests/core/acceptance/s1/perfis.test.ts`. Os confrontos de Nimbo e Baluarte devem reproduzir as posições de S1-US5-AC6/7 nos dois lados e a validação deve usar os raios efetivos.

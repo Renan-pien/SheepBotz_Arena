@@ -202,3 +202,11 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 |---|---|---|---|
 | RB-18, RB-41, ADR-025 | S2-FR-041 | S2-T049 (`44d8fd2`, `ca2a08b`) | [S2-US2-AC15/16 · módulo íntegro, memória, limites, sensores e comando efetivo](../tests/runtime/portugol.test.ts) |
 | RB-23, RB-41, ADR-025 | S3-FR-046 | S3-T030 (`0759152`) | [S3-US3-AC14/15 · rascunhos, arquivos, ajuda acessível, aplicação e replay](../tests/ui/s3/portugol.test.tsx) |
+
+## Seleção de robôs e cenários · ADR-026
+
+| Origem | Requisito | Tarefa e commit | Teste de aceitação | Estado |
+|---|---|---|---|---|
+| ADR-026, RB-27, RB-31, RB-38 | S1-FR-025, S1-FR-026, S1-FR-042 | S1-T052 (`359e4db`), S1-T053 (`0ddcec5`) | [S1-US1-AC13 e S1-US5-AC6/7 · modelos, raio, força e tração](../tests/core/acceptance/s1/perfis.test.ts) | Validado localmente |
+| ADR-026, RB-21, RB-28, RB-36 | S3-FR-047 | S3-T031 (`4dcaafd`) | [S3-US1-AC11/12 · projeção, troca de fundo, preservação da luta](../tests/ui/s3/us1-cenarios.test.tsx) | Validado localmente |
+| ADR-026, RB-21, RB-36, RB-40 | S3-FR-006, S3-FR-048 | S3-T032 (`3d83730`), S3-T033 (`2e98ff6`) | [S3-US3-AC16/17 · reservas, carrocerias, importação e replay](../tests/ui/s3/escalacao.test.tsx) | Validado localmente |

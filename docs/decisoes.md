@@ -347,3 +347,10 @@
 - **Decisão** Admitir o bônus B-001 nas specs existentes. Cada robô escolhe JavaScript ou Portugol, com decidir() a cada tick e tutorial por linguagem e modalidade. Usar o Core oficial e o módulo público Maker íntegros, empacotados pela Arena.
 - **Alternativas** A instalação padrão do Maker 0.1.0 omite o módulo. Alterar o repositório externo violaria RB-18. Executar livremente o Python produzido concederia recursos além dos sensores e motores. A Arena valida o programa antes de carregar uma instância privada por robô.
 - **Impacto** RB-18 e RB-41, S2-FR-041 e S3-FR-046.
+
+## ADR-026 — Seleção dos robôs e do cenário de sumô
+
+- **Data e aprovação** 2026-11-23. O solicitante pediu seis modelos exclusivos por duelo, com tamanhos e atributos diferentes, mais dois cenários. Na Q-016 escolheu a resistência ao empurrão quando parado.
+- **Alternativas** A tração poderia melhorar a recuperação depois do contato ou aumentar a resistência ao empurrão durante a parada.
+- **Decisão** Adotar a segunda opção. Usar quatro características por modelo, nomes fixos e reserva por equipe. Os dados dos modelos selecionados determinam as colisões também na execução sem tela. Os dois ambientes adicionais são decorativos.
+- **Consequências** Revisão aditiva de C21 e da ADR-007 para pares com perfil. O Duelo padrão de referência conserva suas dimensões e os mundos antigos conservam a física simétrica. O catálogo e as grandezas estão em S1-FR-042, a escolha e a cena em S3-FR-047/048.

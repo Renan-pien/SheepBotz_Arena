@@ -82,3 +82,11 @@
 
 ### Tutorial e carregamento por linguagem
 Manter um editor por robô permite disputar com linguagens diferentes. O diálogo nativo mantém a navegação por teclado no tutorial da modalidade atual e devolve o foco ao botão. Uma aplicação de Portugol aguarda o runtime do próprio site. Revisão da sessão e identidade do rascunho impedem uma resposta atrasada de substituir edição ou mundo posteriores.
+
+## Cenários do sumô · S3-FR-047
+
+A projeção do Duelo mostra o piso de 2 × 2 m à volta do disco. Na vista inicial, motivos baixos próximos a (0.38, 0.12, −0.55) m na cena estão visíveis nas proporções 1.5 e 0.8. Uma imagem atrás da janela ficaria coberta pelo piso opaco. Optamos por desenhar o entorno no mesmo espaço 3D, com materiais e geometrias simples já disponíveis. O fundo acompanha a órbita e dispensa arquivos externos.
+
+### Retratos e carrocerias · S3-FR-048
+
+Cada robô usa uma carroceria com proporções locais em unidades de raio. Os seis retratos são imagens transparentes renderizadas das mesmas malhas, com pintura neutra de catálogo. Evita-se manter seis contextos gráficos abertos no diálogo, e o retrato permanece visível quando a cena 3D está indisponível.

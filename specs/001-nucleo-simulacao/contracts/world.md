@@ -42,3 +42,7 @@ O formato do arquivo é definido na spec (Anexo B). Este contrato define como ca
 ## Revisão aditiva da ADR-021
 
 Em `match.mode = "maze"` o campo `match.exit = { x, y, width, height }` é obrigatório. Coordenadas de centro em metros, dimensões em (0, 100]. Limite do mapa inclusivo, contato de bordas com parede permitido, interiores disjuntos. Exigir um robô cujo centro inicial esteja fora do retângulo fechado. Nos demais modos a saída é inválida. Usar os caminhos `match.exit`, `robots` e `robots[i]` nos erros geométricos. O limite `maxTicks` regula o sumô.
+
+### Perfil físico opcional · ADR-026
+
+`robots[i].model` admite os seis IDs de S1-FR-042. O raio efetivo é o do perfil. Uma declaração explícita divergente gera FORMATO_INVALIDO em `robots[i].radius`. Sem modelo vale a validação anterior. Um modelo repetido no sumô gera REGRA_DA_MODALIDADE em `robots[i].model` na segunda ocorrência.

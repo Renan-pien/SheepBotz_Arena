@@ -546,3 +546,13 @@ No Chrome 157, a partir do build estático, aplicamos Portugol a um e depois aos
 Com Node 24.22.3, a suíte passou em 418 de 418 testes. A cobertura V8 de linhas do código TypeScript foi 89,17%. Os testes do adaptador também executam o Python oficial e o perfil da Arena via WebAssembly. Lint, verificação de tipos e build passaram. Os benchmarks S1 e S2 de 3000 ticks mediram 23,02 ms e 43,66 ms. Uma medição adicional com dois controladores Portugol chamando iot_desligar(2) levou 67,52 ms nos 3000 ticks após a largada; o resultado foi tempo_esgotado no tick 3250. A medição exclui o carregamento e a compilação. [Cobertura](cobertura/resumo.md)
 
 A validação de instalação usou um clone limpo de 0759152: npm ci, build estático e os 19 testes específicos passaram. Repetimos o fluxo do Chrome sobre esse build e a página carregou o runtime e os programas exclusivamente da própria origem. O Vite informa que o pacote principal supera 500 kB. O npm de sistema em Node 24.13 emitiu aviso de versão para dependências de teste; os testes e benchmarks usaram Node 24.22.3.
+
+## Seleção do sumô · 2026-11-23
+
+A inspeção do catálogo, do painel e do mundo Duelo padrão encontrou dois IDs de robô fixos e seleção independente de controladores. A reserva de um modelo por equipe foi acrescentada em S3-FR-048. A Q-016 resolveu a divergência da regra de contato da ADR-007 com os novos perfis. A física genérica ficou na S1 e os modelos, a escalação e os fundos visuais na S3.
+
+Na revisão de consistência, S1-FR-042 alimenta o mesmo raio para colisões, sensores e projeção. S3-FR-047 trata só do entorno do disco. S3-FR-048 reutiliza o ID de modelo no arquivo de mundo, fazendo o replay ler a mesma carroceria. A revisão desses requisitos, dos planos e das cinco tarefas da extensão não deixou pendência crítica ou alta.
+
+No Chrome com WebGL 2, conferimos os seis retratos, a reserva entre equipes e a troca dos três fundos com as mesmas poses. O placar de apresentação identificou Nimbo e Baluarte. Em uma janela de 390 px de largura, a grade abriu em duas colunas e Escape devolveu o foco ao seletor.
+
+Com Node 24.22.3, passaram os 428 testes com 90.45% de cobertura de linhas. Lint, verificação de tipos e build estático passaram. A execução completa isolada usou dois workers e os limites de tempo originais. [Relatório](cobertura/resumo.md)

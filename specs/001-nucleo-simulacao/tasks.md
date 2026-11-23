@@ -198,3 +198,6 @@ Tasks de setup usam `chore` ou `ci` e citam o RB (ex.: `Requisitos: RB-08`).
 Total de 36 critérios com testes de aceitação previstos, além dos testes unitários.
 
 - [X] T051 [US1] Testar e implementar validação de saída e robô em `src/core/world/`, `src/core/types.ts` e `tests/core/acceptance/s1/maze-world.test.ts` — S1-FR-041, S1-US1-AC12.
+
+- [X] T052 [US5] Escrever os testes de carga de perfil, exclusividade, raio efetivo, empurrões, espelhamento e determinismo em `tests/core/acceptance/s1/perfis.test.ts` antes do código — S1-FR-025/026/042, S1-US1-AC13, S1-US5-AC6/7.
+- [X] T053 [US5] Resolver o catálogo e os raios no carregador e integrar os pesos no contato em `src/core/{models,types,index}.ts`, `src/core/world/` e `src/core/sim/{contacts,step}.ts`. Aprovar T052 e regressões legadas — S1-FR-025/026/042.

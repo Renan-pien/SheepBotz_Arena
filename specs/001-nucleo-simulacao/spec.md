@@ -222,9 +222,9 @@ Como membro da equipe, quero que o robô tenha uma estimativa de onde acha que e
   - `n` = vetor unitário que vai do centro de i ao centro de j **no início do tick** (antes do movimento). Se esses centros coincidirem, `n = (1, 0)`.
   - `s = (c_j − c_i) · n`, usando os centros candidatos (projeção na direção `n`).
   - `p = r_i + r_j − s`
-  - `c_i ← c_i − n · p/2` e `c_j ← c_j + n · p/2`
+  - Sem perfis, `c_i ← c_i − n · p/2` e `c_j ← c_j + n · p/2`. Havendo perfil, aplicar FR-042.
   - Os dois robôs registram contato neste tick.
-- **FR-026:** Todos os robôs têm o mesmo peso. Quando dois robôs começam o tick encostados e um avança na direção do outro, que está parado, cada centro avança metade do deslocamento do robô que empurra. Se os dois começarem encostados e avançarem um contra o outro com velocidades iguais, cada um termina o tick na própria posição inicial. Esses resultados decorrem da regra do FR-025. *(ADR-003)*
+- **FR-026:** Robôs sem perfil têm o mesmo peso. Em um par sem perfis, quando começam o tick encostados e um avança na direção do outro, que está parado, cada centro avança metade do deslocamento do robô que empurra. Se ambos avançarem um contra o outro com velocidades iguais, cada um termina na posição inicial. *(ADR-003, ADR-026)*
 
 #### Obstáculos e paredes
 
@@ -288,7 +288,7 @@ Como membro da equipe, quero que o robô tenha uma estimativa de onde acha que e
 - Leituras de laser, controladores programáveis e regras de vitória (Spec 002).
 - Visualização, controles na tela e replay (Spec 003).
 - Obstáculos girados, circulares ou móveis; terrenos e rampas.
-- Atrito, inércia, aceleração, massa diferente entre robôs, deslizamento de rodas.
+- Atrito contínuo, inércia, aceleração e deslizamento de rodas. Os perfis opcionais afetam a geometria e o contato conforme FR-042.
 - Ruído nos sensores e na odometria.
 - Arquivo de mundo em YAML.
 
@@ -402,3 +402,24 @@ definem os resultados esperados.
 **FR-041** (ADR-021, RB-25). O modo `maze` exige um robô e uma saída retangular com centro e dimensões positivas em metros. O retângulo cabe inteiramente no mapa, tem interior livre de paredes e o centro do robô começa fora dele. A saída pertence exclusivamente ao labirinto.
 
 **S1-US1-AC12.** Dado um mundo de labirinto com um robô e saída válida, quando aberto, então suas coordenadas são preservadas. A ausência da saída, quantidade incorreta de robôs, saída fora do mapa, sobreposição com obstáculo ou centro inicial na saída geram erro no campo correspondente.
+
+## Extensão de US5 — Perfis físicos reproduzíveis
+
+**FR-042** (ADR-026, RB-27, RB-31, RB-38). O campo opcional `robots[i].model` escolhe um perfil fixo. O raio vem do perfil quando omitido. Se o mundo declarar o raio, deve coincidir com a tabela. Validar geometria, laser e deslocamento máximo com o raio físico efetivo. Modelo desconhecido ou raio divergente gera `FORMATO_INVALIDO` no campo. No sumô, repetir o mesmo modelo nos dois robôs gera `REGRA_DA_MODALIDADE` no modelo da segunda ocorrência. Robôs sem modelo continuam com o raio configurado e, em contato misto, usam peso 0.30 kg e índices de força e tração 1.
+
+| Modelo | Nome | Raio (m) | Peso (kg) | Força (1–6) | Tração (1–6) |
+|---|---|---:|---:|---:|---:|
+| nimbo | Nimbo | 0.040 | 0.20 | 1 | 6 |
+| zarpa | Zarpa | 0.044 | 0.23 | 2 | 5 |
+| quimera | Quimera | 0.048 | 0.28 | 3 | 4 |
+| torvelim | Torvelim | 0.052 | 0.32 | 4 | 3 |
+| brontes | Brontes | 0.056 | 0.36 | 5 | 2 |
+| baluarte | Baluarte | 0.060 | 0.40 | 6 | 1 |
+
+Para cada contato do FR-025, o peso multiplica um índice para determinar a resistência D. Se o comando efetivo for (0, 0), usar tração. Se o deslocamento livre deste tick apontar para o outro centro inicial (projeção estritamente positiva na normal voltada ao oponente), usar força. Nos demais casos usar 1. Para a penetração p, o centro i recua p × Dⱼ/(Dᵢ+Dⱼ) e j avança p × Dᵢ/(Dᵢ+Dⱼ) na normal n. A orientação e a odometria seguem os contratos anteriores.
+
+**S1-US5-AC6.** **Dado** Baluarte em (−0.060, 0) apontando para +x e Nimbo em (0.040, 0) apontando para −x, **quando** ambos avançam a 0.5 m/s por 0.02 s, **então** os centros terminam em (−0.051538, 0) e (0.048462, 0), com ambos os bumpers ativos. Inverter as equipes preserva o deslocamento por modelo. Repetir a execução reproduz o histórico.
+
+**S1-US5-AC7.** **Dado** o mesmo par, **quando** apenas Baluarte avança e Nimbo está parado, **então** Nimbo termina em x = 0.046667 m. Se Nimbo gira a 1 rad/s sem avanço, termina em x = 0.049231 m. Tolerância das posições ±0.001 m.
+
+**S1-US1-AC13.** **Dado** um arquivo com modelo válido e raio omitido, **quando** é carregado, **então** adota o raio da tabela inclusive na verificação de sobreposição. Um modelo desconhecido, um raio divergente e uma dupla repetida no sumô retornam os erros de FR-042. Um mundo sem modelos mantém os resultados de S1-US5-AC1 a AC5.

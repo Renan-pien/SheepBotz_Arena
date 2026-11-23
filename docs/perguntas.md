@@ -21,6 +21,7 @@
 | Q-013 | A execução sem interface deve reunir as falhas de carregamento dos controladores ou devolver só a primeira? | Time | Contrato de erros antes do tick 0 (S2) | Resolvida (ADR-012) |
 | Q-014 | Quando há um vencedor, o evento de fim da luta deve ficar associado a ele? | Time | Eventos publicados e filtro por robô (S2, S3) | Resolvida (ADR-013) |
 | Q-015 | Quais erros a execução sem interface devolve quando entradas incompatíveis coexistem com falhas de carregamento? | Time | Contrato de erros da S2 | Resolvida (ADR-014) |
+| Q-016 | Como a tração favorece os robôs menores no sumô? | Time | Física dos seis modelos | Resolvida (ADR-026) |
 
 ---
 
@@ -224,3 +225,12 @@
 - **Proposta padrão.** Usar `controllers.<id>` para associar ao controlador os erros `ROBO_INEXISTENTE` e `ENTRADA_CONFLITANTE`. Reunir os erros estruturais e as falhas dos controladores das entradas válidas, preservando a devolução conjunta aprovada na Q-013. O catálogo de erros e o cenário de aceite devem explicitar a regra escolhida.
 - **Resposta.** Proposta aprovada em 2026-11-17. Os dois erros de entrada do controlador usam `controllers.<id>`. A mesma resposta reúne os erros de entrada e as falhas de carregamento dos controladores com ID existente e sem comando constante concorrente.
 - **Virou** ADR-014 e alterações em S2-FR-011, S2-FR-012, US4 e Anexo E.
+
+## Q-016 — Como a tração favorece os robôs menores no sumô?
+
+- **Data** 2026-11-23. **Para quem** Time.
+- **Origem** Pedido da seleção de seis robôs. A ADR-007 e S1-FR-025/026 fixam peso igual e divisão simétrica do empurrão. A constituição fixa as dimensões do Duelo padrão.
+- **Decisão solicitada** Acrescentar perfis opcionais com tamanho, força, peso e tração. Os maiores levam vantagem quando os dois avançam de frente. Para o pequeno, a tração pode (A) reduzir o deslocamento quando parado sob empurrão ou (B) permitir recuperar a velocidade mais cedo depois do contato.
+- **Proposta** A. Dois robôs que recebam o mesmo empurrão, com peso e força iguais, percorrem distâncias diferentes se um deles estiver parado com maior tração. Preservar o contato simétrico nos mundos sem perfis e as poses das gravações existentes.
+- **Impacto** A escolha define o exemplo numérico da colisão. Os cenários decorativos podem ser verificados de forma independente.
+- **Resposta** Em 2026-11-23 o solicitante escolheu “Resistir mais ao empurrão quando parados”. A decisão integra a ADR-026 e S1-FR-042.

@@ -1,4 +1,5 @@
 export type * from './types';
+export { robotModels, modelIds, type RobotModel } from './models';
 export {
   readEdge,
   ARENA_EDGE_INNER_RATIO,

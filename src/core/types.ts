@@ -1,4 +1,5 @@
 import type { ControllerEngine } from './controller/runtime';
+import type { RobotModel } from './models';
 
 export interface Pose {
   readonly x: number; // metros
@@ -37,6 +38,7 @@ export interface Obstacle {
 }
 
 export interface RobotConfig {
+  readonly model?: RobotModel;
   readonly id: string;
   readonly initialPose: Pose; // theta já normalizado
   readonly radius: number;

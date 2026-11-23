@@ -1,5 +1,7 @@
 import {
   loadWorld,
+  robotModels,
+  type RobotModel,
   prepareSimulation,
   type ControllerEngine,
   type MatchResult,
@@ -10,6 +12,7 @@ import {
   type World,
 } from '../../core';
 import { initializeControllerEngine } from '../../runtime/controller-engine';
+import { teamFor, teams } from './teams';
 import {
   mazeLevelFromText,
   nextMazeLevel,
@@ -199,6 +202,43 @@ export class ArenaSession {
 
   chooseWorld(preset: WorldPreset) {
     this.openWorld(worldPresets[preset].text, preset);
+  }
+
+  selectModels(red: RobotModel, blue: RobotModel): boolean {
+    const { world, worldText, controllers, drafts, preset } = this.#view;
+    if (this.#replay || world.match.mode !== 'sumo') return false;
+    if (red === blue) {
+      this.reportError({
+        code: 'REGRA_DA_MODALIDADE',
+        path: 'robots',
+        message: 'Cada equipe precisa escolher um modelo diferente.',
+      });
+      return false;
+    }
+    const document = JSON.parse(worldText) as {
+      robots: {
+        id: string;
+        model?: RobotModel;
+        radius?: number;
+        color?: string;
+      }[];
+    };
+    for (const robot of document.robots) {
+      const team = teamFor(world, robot.id);
+      robot.model = team === 'red' ? red : blue;
+      robot.radius = robotModels[robot.model].radius;
+      robot.color = teams[team].color;
+    }
+    const text = JSON.stringify(document);
+    const parsed = loadWorld(text);
+    if (!parsed.ok) {
+      this.#publish({ errors: parsed.errors });
+      return false;
+    }
+    this.#replace(parsed.world, text, controllers, drafts, preset, {
+      status: 'pausada',
+    });
+    return this.#view.world === parsed.world;
   }
 
   nextLevel() {
