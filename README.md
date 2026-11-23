@@ -1,6 +1,6 @@
 # SheepBotz Arena
 
-**418 testes · 89% de cobertura**
+**428 testes · 90% de cobertura**
 
 Métricas geradas a partir dos relatórios com `npm run stats`.
 
@@ -35,6 +35,8 @@ npm run dev
 A tela abre o **Duelo padrão** com Caçador e Girador. Clique em **Executar**
 para ver a luta. Use **Inspeção** para consultar os sensores e **Ver replay**
 para voltar a um tick. Os controles de gravação usam arquivos JSON locais.
+
+Em **Sumô → Selecionar robôs**, escolha um modelo para cada equipe e confirme o duelo. O modelo escolhido fica reservado para sua equipe. Os maiores pesam mais e empurram com mais força. Os menores têm mais tração quando parados. O seletor **Cenário**, junto às vistas da câmera, alterna entre **Clássico**, **Dojô de Bambu** e **Hangar Orbital**.
 
 Em **Modo**, escolha **Sumô** ou **Labirinto**. O Labirinto abre pausado no **Fácil**. Na lista **Dificuldade**, você pode escolher **Fácil**, **Médio** ou **Difícil**. Cada troca abre o mapa no tick 0 com sua estratégia aplicada. Clique em **Executar** para acompanhar o Navegador ou aplique sua própria estratégia ao `explorador`. A chegada é a área quadriculada. A simulação pausa ao alcançá-la. **Próximo nível** leva a estratégia aplicada ao tick 0 do novo mapa. Também é possível voltar um tick ou rever a chegada no replay. Para explorar a sala livre original, use **Abrir mundo** com [Sala com obstáculos](examples/worlds/sala-com-obstaculos.json).
 
