@@ -109,3 +109,5 @@ O seletor nativo Cenário permite escolher Clássico, Dojô de Bambu ou Hangar O
 ### Selecionar robôs
 
 A escalação pertence ao sumô ao vivo. O modelo ocupado por uma equipe fica indisponível à outra. Cancelar descarta o rascunho da seleção. Confirmar substitui a rodada no tick 0 após validação completa do mundo. Uma falha preserva a sessão e informa os erros.
+
+A grade agrupa os nove perfis por Peso leve, Peso médio e Peso pesado. São admitidos duelos dentro e entre categorias. Gerar outro labirinto usa uma nova semente. Se as paredes sorteadas coincidirem com as atuais na mesma dificuldade, inverter o bit de paridade e gerar novamente. O mapa retangular transposto sempre distingue o segundo resultado. Abrir o replay usa o JSON integral da partida.
