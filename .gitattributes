@@ -1,0 +1,3 @@
+public/meupia/plugin_iot.py text eol=lf
+public/meupia/LICENSE-Maker.txt text eol=lf
+public/meupia/*.whl binary

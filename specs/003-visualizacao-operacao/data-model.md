@@ -31,3 +31,24 @@ os [contratos da S1](../001-nucleo-simulacao/contracts/world.md) e o
 O relógio e o ciclo de desenho leem a sessão, que é a única dona do avanço
 ao vivo. Apenas a sessão mantém a lista mutável de referências a snapshots
 da gravação corrente. Um snapshot entregue à interface nunca é editado.
+
+## Rodada ao vivo
+
+A seleção do prazo e o bloqueio após o primeiro avanço pertencem à sessão. O cursor lê o monitor do snapshot observado. A sessão retém um único registro do último empate com número de rodada, resultado, tempo e gravação limitada ao tick 100 000. O reset por impasse substitui a gravação corrente e os eventos pela nova rodada pausada. A gravação anterior é somente leitura.
+
+`Recording.version` distingue ausência de detector (1), critério individual (2) e critério individual com giro conjunto (3). A sessão conserva a versão ao reexportar um replay.
+
+## Inspeção do sensor de borda
+
+O cartão associa o robô do snapshot ao raio da configuração do mesmo robô no mundo e apresenta a leitura derivada [EdgeReading](../002-sensores-controlador/data-model.md#leitura-derivada-de-borda). A fonte dos dados é idêntica na sessão ao vivo e no replay.
+
+## Nível do catálogo
+
+O preset ao vivo identifica o fácil, médio ou difícil. O estado de simulação terminal conserva a pose na saída. A sessão ao vivo fica `pausada`. A troca explícita cria o histórico do novo mapa no tick 0, preservando controlador aplicado e rascunho.
+
+Na gravação de sumô v5, a versão identifica a espera. Os IDs em `falseStarters` registram a intenção observada antes da física. Os pontos da rodada estão em `resultado.pontos`. A tela deriva o aviso e a pontuação do snapshot selecionado.
+
+Em v6, `falseStartTick` guarda o primeiro quadro de movimento e `falseStarters` identifica os robôs marcados em cada snapshot durante os 0.50 s. `resultado.tick` é o tick do quadro final. A sessão ao vivo publica `pausada` ao atingi-lo.
+
+### Linguagem por robô
+Draft.language seleciona javascript ou portugol. Draft.source conserva o texto visível, com rascunho alternativo para a outra linguagem. SessionView.languages associa as linguagens aplicadas aos IDs dos robôs. Recording.languages registra o mesmo mapa no formato v7.

@@ -100,6 +100,8 @@ Como membro da equipe, quero escrever em JavaScript a lógica do meu robô, usan
 10. **Dado** dois robôs cujos controladores chamam `random()` 10 vezes cada, **Quando** a simulação é executada duas vezes com a mesma semente, **Então** cada robô recebe a mesma sequência nas duas execuções; **e Quando** a semente muda, **Então** as sequências mudam.
 11. **Dado** um controlador que chama `log("olá", 42)` no tick 0, **Quando** se passa 1 tick, **Então** há um evento do tipo `log` com o `id` do robô, tick 1 e mensagem "olá 42".
 12. **Dado** um controlador que inicializa `contador` em 0 e o incrementa no nível superior, registra o valor em `setup()` e a cada `loop()` incrementa e registra o contador, **Quando** se executam dois ticks, **Então** os logs têm mensagens "1" e "2" no tick 1 e "3" no tick 2. Após o reset, o primeiro tick volta a registrar "1" e "2".
+13. **Dado** raio de arena 0.385 m e raio de robô 0.05 m em (0.33, 0.00) m, **Quando** sua orientação for 0, π, −π/2 ou π/2 rad, **Então** só frente, traseira, esquerda ou direita, respectivamente, está ativa. Com θ = 0 rad a frente ativa exatamente em x = 0.325375 m, segue ativa além da faixa e desativa ao retornar ao interior.
+14. **Dado** um controlador personalizado, **Quando** consultar a borda em setup, em loop após um empurrão lateral e após um reset, **Então** ele recebe as leituras da pose física do tick observado e pode reagir. Alterar a leitura devolvida não interfere na próxima chamada. Em modo livre recebe nulo.
 
 ---
 
@@ -123,6 +125,11 @@ Como membro da equipe, quero colocar duas estratégias para lutar e saber quem v
 8. **Dado** o "Duelo padrão" com os dois robôs em "Parado", `match.maxTicks` = 100 e histórico habilitado, **Quando** se solicitam 110 ticks na execução sem interface, **Então** o estado devolvido tem `tick = 100` e `status = "finalizada"`. O histórico contém 101 estados, em ordem do tick 0 ao 100, e sua última entrada é o estado devolvido.
 9. **Dado** o mundo-base em modo `sumo`, com arena de raio 0,5 m, `dt` = 0,0625 s e `match.maxTicks` = 2, ambos os robôs com θ = 0 rad, `vermelho` em (0,4375 m, 0 m) com "Avança" e `azul` em (−0,25 m, 0 m) com "Parado", **Quando** se executa o primeiro tick, **Então** o centro de `vermelho` chega a (0,5 m, 0 m), `status` permanece `em_andamento` e `resultado` vale `null`.
 10. **Dado** o estado do tick 1 do cenário anterior, **Quando** se executa o tick 2, **Então** o centro de `vermelho` chega a (0,5625 m, 0 m), ultrapassando o raio da arena no mesmo tick em que o limite é alcançado. A luta termina no tick 2 com `resultado.vencedor = "azul"` e motivo `saida_da_arena`.
+11. **Dado** sumô com dt = 0.02 s e centros parados, **Quando** transcorrerem 250, 500 ou 1500 ticks respectivamente para 5, 10 ou 30 s, **Então** ocorre um único empate, inclusive com giro no eixo ou motores bloqueados.
+12. **Dado** movimento de 0.0004 m por passo, **Quando** o centro acumula 0.0012 m no terceiro passo, **Então** este é o novo tick de referência. Um empurrão também conta. Até 0.001 m inclusive, a referência permanece.
+13. **Dado** impasse no mesmo tick de um resultado ordinário, **Quando** encerrar a luta, **Então** vale o resultado ordinário. Sem opção, Parado × Girador continua até o tick 3000 do benchmark.
+14. **Dado** o Duelo padrão com Caçador nos dois robôs e primeiro contato no tick 8, **Quando** o prazo for 5, 10 ou 30 s, **Então** o giro conjunto termina em empate respectivamente no tick 258, 508 ou 1508. O tick anterior segue em andamento.
+15. **Dado** um par em contato, **Quando** o ponto médio se deslocar mais de 0.001 m, **Então** reiniciar o prazo conjunto naquele tick. Com folga superior a 0.002 m, descartar o intervalo. Voltar a uma folga pequena só inicia outro intervalo quando houver novo contato.
 
 ---
 
@@ -189,7 +196,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - **FR-001:** Cada robô PODE ter um laser, configurado no mundo por número de raios N, campo de visão `fov` e alcance máximo (Spec 001, Anexo B). *(RB-32)*
 - **FR-002:** O ângulo do raio k em relação à frente do robô DEVE ser `α_k = −fov/2 + k · fov/(N−1)` para N > 1, e `α_0 = 0` para N = 1. A direção absoluta é `θ + α_k`. *(RB-32)*
 - **FR-003:** Todos os raios DEVEM partir do centro do robô. *(RB-32)*
-- **FR-004:** A leitura de um raio DEVE ser a menor distância `t ≥ 0`, ao longo do raio, até: as paredes do mapa, os obstáculos e o corpo (círculo) dos **outros** robôs. O próprio robô é ignorado. A borda da arena **não** é detectada. *(RB-32, ADR-003)*
+- **FR-004:** A leitura de um raio DEVE ser a menor distância `t ≥ 0`, ao longo do raio, até: as paredes do mapa, os obstáculos e o corpo (círculo) dos **outros** robôs. O próprio robô é ignorado. O laser ignora a borda da arena. *(RB-32, ADR-003)*
 - **FR-005:** Se nada for atingido até o alcance máximo, ou se a menor distância for maior que ele, a leitura DEVE ser igual ao alcance máximo. *(RB-32)*
 - **FR-006:** Se a origem do raio estiver dentro de um obstáculo ou de outro robô, a leitura DEVE ser 0. *(RB-32)*
 - **FR-007:** No passo 1 da transição do tick `k` para `k + 1`, as leituras disponibilizadas aos controladores DEVEM corresponder às poses de todos os robôs no estado do tick `k`, antes de qualquer execução de controlador no passo 2 (Spec 001, FR-017). *(RB-27, ADR-009)*
@@ -197,12 +204,12 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 
 ### 4.2 Controlador: contrato
 
-- **FR-009:** Um controlador DEVE ser um script JavaScript síncrono em modo estrito, com uma função `loop()` obrigatória e uma função `setup()` opcional. Módulos, importação dinâmica, construções assíncronas e callbacks geradores para `setup()` ou `loop()` ficam fora do contrato. *(RB-35, ADR-016)*
+- **FR-009:** Na linguagem padrão, o controlador DEVE ser um script JavaScript síncrono em modo estrito, com uma função `loop()` obrigatória e uma função `setup()` opcional. Módulos, importação dinâmica, construções assíncronas e callbacks geradores para `setup()` ou `loop()` ficam fora do contrato. *(RB-35, ADR-016)*
 - **FR-010:** Cada robô PODE ter no máximo um controlador. Robô sem controlador e sem comando constante permanece com comando (0, 0). *(RB-35)*
 - **FR-011:** Na execução sem interface, com um mundo válido, a validação das entradas DEVE ocorrer antes do carregamento dos controladores. Para cada entrada de controlador, um ID ausente do mundo DEVE gerar `ROBO_INEXISTENTE` e a presença de um comando constante para o mesmo ID DEVE gerar `ENTRADA_CONFLITANTE`. As verificações são independentes e os dois códigos usam o caminho `controllers.<id>`. A validação de comandos mantém os códigos e caminhos da Spec 001 (S1-FR-035). A resposta DEVE reunir os erros de entrada e as falhas de carregamento das entradas de controlador válidas (FR-012). Qualquer erro impede a publicação do tick 0. *(RB-43, ADR-014)*
 - **FR-012:** O controlador DEVE ser carregado e verificado antes de publicar o estado inicial do tick 0. As instruções de nível superior DEVEM ser executadas uma vez por carregamento, sem acesso à API do robô. Erro de sintaxe, forma fora do contrato síncrono (FR-009), ausência de `loop()` ou falha na execução dessas instruções DEVEM gerar `CONTROLADOR_INVALIDO` no caminho `controllers.<id>` e impedir o início da simulação. O erro identifica a forma rejeitada, informa que `loop()` é obrigatória quando ausente ou preserva a mensagem original da falha de sintaxe ou de avaliação. Com um mundo válido, a execução sem interface DEVE verificar o código de todos os controladores com ID existente e sem comando constante para o mesmo ID, mesmo que haja erros em outras entradas. Cada falha de carregamento DEVE aparecer como um `CONTROLADOR_INVALIDO` na mesma resposta (FR-011). *(RB-35, RB-43, ADR-010, ADR-012, ADR-014, ADR-016)*
 - **FR-013:** `setup()` DEVE ser executada uma única vez, no tick 1, imediatamente antes da primeira execução de `loop()` daquele robô; as funções de leitura já funcionam dentro dela. *(RB-35)*
-- **FR-014:** `loop()` DEVE ser executada uma vez por tick para cada robô ativo, no passo 2 do tick, na ordem dos robôs no arquivo. *(RB-35)*
+- **FR-014:** `loop()` DEVE ser executada uma vez por tick de disputa (inclusive durante a espera inicial) para cada robô ativo, no passo 2 do tick, na ordem dos robôs no arquivo. *(RB-35)*
 - **FR-015:** Variáveis do controlador DEVEM persistir entre ticks. Ao reiniciar a simulação, cada controlador DEVE ser recarregado do zero conforme FR-012. O novo `setup()`, se definido, é executado no primeiro passo da nova execução, conforme FR-013. *(RB-35, ADR-010)*
 
 ### 4.3 Controlador: API (detalhes no Anexo B)
@@ -216,6 +223,8 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - **FR-022:** `log(...valores)` DEVE registrar um evento do tipo `log` com o `id` do robô, o tick em execução e a mensagem formada pelos valores convertidos em texto e separados por um espaço. Máximo de 1 000 eventos de log por robô por simulação; os excedentes são ignorados e um único evento `limite_de_logs` é registrado. *(RB-35)*
 - **FR-023:** O tick registrado em eventos DEVE ser o tick em execução (o estado resultante daquele passo); o primeiro tick é 1. *(RB-27)*
 - **FR-024:** A API do Anexo B DEVE estar disponível apenas durante a execução síncrona de `setup()` e `loop()`, inclusive para as funções auxiliares chamadas por elas. O acesso do controlador aos dados do simulador DEVE ficar restrito a essa API. O ambiente do controlador NÃO DEVE oferecer acesso ao relógio real, aleatoriedade sem semente, APIs do host, agendamento de trabalho ou avaliação dinâmica de código. Após a carga, o estado do controlador só DEVE mudar durante suas chamadas síncronas. Avançar em lote ou um tick por vez com as mesmas entradas DEVE produzir os mesmos estados, eventos e histórico, quando habilitado. *(RB-27, RB-35, ADR-010, ADR-016)*
+
+- **FR-038:** Todo controlador de sumô, de exemplo ou criado pelo usuário, DEVE poder chamar `readEdge()` sem argumentos em setup e loop. Cada chamada devolve uma nova leitura de quatro booleanos (frente, traseira, esquerda e direita relativas ao robô). Cada ponto está no perímetro, a um raio do centro, na direção correspondente. O ponto está ativo se sua distância à origem da arena for maior ou igual a 0.975 vezes o raio da arena. Ele volta a ficar inativo abaixo desse limiar. A pose usada é a pose física do tick observado, inclusive no tick 0 e após a resolução dos empurrões. No modo livre o retorno é nulo, mesmo se houver arena. A estratégia escolhe a reação. *(RB-35, ADR-020)*
 
 ### 4.4 Controlador: erros
 
@@ -231,6 +240,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
   1. Se exatamente um robô estiver fora, a luta termina com vitória do outro, motivo `saida_da_arena`.
   2. Se os dois estiverem fora, a luta termina em empate, motivo `ambos_sairam`.
   3. Senão, se o tick atual for igual a `match.maxTicks`, a luta termina em empate, motivo `tempo_esgotado`.
+  4. Se o detector estiver habilitado e o prazo de FR-037 vencer, a luta termina em empate por `falta_de_progresso` (ADR-018).
 - **FR-031:** O estado DEVE incluir `status` (`em_andamento` ou `finalizada`) e `resultado`. Enquanto a luta estiver em andamento, `resultado` DEVE ser `null`. Ao terminar, `resultado` DEVE conter `{ vencedor, motivo, tick }`, com `resultado.vencedor` igual ao `id` do vencedor ou `null` em empate. No tick final, o sistema DEVE registrar um único evento `fim_da_luta` da partida, sem robô associado em qualquer desfecho. *(RB-25, ADR-013)*
 - **FR-032:** Um pedido de avanço que alcance ou ultrapasse o fim da luta DEVE devolver o estado final. Pedidos posteriores DEVEM devolver o mesmo estado e preservar o histórico. Quando habilitado, o histórico devolvido por `runHeadless()` e por `getHistory()` DEVE conter o estado inicial do tick 0 e um estado por tick efetivamente executado, em ordem, com uma única entrada para o tick final. *(RB-43, ADR-011)*
 - **FR-033:** No modo `free`, o status DEVE permanecer `em_andamento` e o resultado `null`, inclusive quando a execução sem interface devolve o estado no tick solicitado. *(RB-25, ADR-003)*
@@ -240,6 +250,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 - **FR-034:** O estado de cada robô DEVE acrescentar aos campos da Spec 001 as leituras do laser da pose publicada (FR-008) e a situação (`ativo` ou `desativado`). O estado da simulação DEVE acrescentar status, resultado e a lista de eventos ocorridos até aquele tick, em ordem. *(RB-43, RB-45)*
 - **FR-035:** O sistema DEVE oferecer os mundos de exemplo "Duelo padrão" (Spec 001, Anexo A) e "Sala com obstáculos" (Anexo C). *(RB-25)*
 - **FR-036:** O sistema DEVE oferecer os controladores de exemplo do Anexo D, com exatamente o comportamento descrito. *(RB-25)*
+- **FR-037:** Quando solicitado em sumô por 5, 10 ou 30 s (ADR-018), contar o tempo desde a liberação, se houver largada, ou desde o tick 0 nas demais execuções, reiniciando no último progresso. Após resolver todos os contatos, comparar cada centro físico (x, y) com sua própria referência. Se qualquer distância euclidiana exceder 0.001 m, atualizar ambas as referências e zerar a contagem naquele tick. Orientação, comandos e odometria não entram na medida. Em paralelo, iniciar uma contagem conjunta no contato entre os robôs (inclusive tangência inicial). Usar o ponto médio dos centros físicos após todos os contatos. Enquanto a folga entre as superfícies for de até 0.002 m, manter a referência do par até o deslocamento do ponto médio exceder 0.001 m. Nesse tick, usar o novo ponto médio e reiniciar a contagem conjunta. Acima da folga, descartar a contagem conjunta até novo contato. Aproximar-se sem tocar não inicia a contagem. No primeiro tick em que qualquer um dos dois intervalos atingir o prazo em tempo simulado (ADR-019), encerrar com vencedor nulo, motivo falta_de_progresso e um único evento fim_da_luta. Saída da arena, saída simultânea e limite de ticks mantêm precedência. O modo livre e a execução sem opção seguem as regras anteriores.
 
 ---
 
@@ -251,7 +262,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 | **Leituras do laser** | lista de N distâncias, do raio 0 ao raio N−1 |
 | **Controlador** | `id` do robô, texto do código |
 | **Evento** | tipo (`log`, `erro_controlador`, `limite_de_logs`, `fim_da_luta`), tick, mensagem e `id` do robô quando associado. `fim_da_luta` pertence à partida e não tem robô associado. |
-| **Resultado da luta** | vencedor (`id` ou nulo), motivo (`saida_da_arena`, `ambos_sairam`, `tempo_esgotado`), tick |
+| **Resultado da luta** | vencedor (`id` ou nulo), motivo (`saida_da_arena`, `ambos_sairam`, `tempo_esgotado`, `falta_de_progresso`), tick |
 | **Estado do robô** (acréscimos) | leituras do laser correspondentes ao estado publicado (FR-008), situação (ativo ou desativado) |
 | **Estado da simulação** (acréscimos) | status, resultado, eventos |
 | **Histórico** | lista opcional de estados em ordem, do tick 0 até o último tick executado (FR-032) |
@@ -262,7 +273,7 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 
 - **SC-001:** 100% dos cenários de aceitação desta spec passam dentro da tolerância da Spec 001 (FR-040 de lá).
 - **SC-002:** Duas execuções da mesma luta, com os mesmos controladores e a mesma semente, produzem estados e eventos idênticos em todos os ticks.
-- **SC-003:** O "Duelo padrão", com "Parado" em `vermelho` e "Girador" em `azul`, DEVE terminar no tick 3 000 com motivo `tempo_esgotado`, em menos de 2 s no ambiente de referência da Spec 001 (Intel Core i5-1334U, Linux x64 e Node 24.22.3). A medição cobre uma chamada sem interface de 3 000 ticks com o histórico desabilitado, desde a entrada com mundo e controladores em memória até o retorno do estado final. A inicialização do processo e a leitura de arquivos ficam fora da medição. [Ambiente de referência](../../docs/registro-de-consolidacao.md#evidências-para-o-pr-da-spec-001)
+- **SC-003:** Sem solicitar a detecção de impasse, o "Duelo padrão", com "Parado" em `vermelho` e "Girador" em `azul`, DEVE terminar no tick 3 000 com motivo `tempo_esgotado`, em menos de 2 s no ambiente de referência da Spec 001 (Intel Core i5-1334U, Linux x64 e Node 24.22.3). A medição cobre uma chamada sem interface de 3 000 ticks com o histórico desabilitado, desde a entrada com mundo e controladores em memória até o retorno do estado final. A inicialização do processo e a leitura de arquivos ficam fora da medição. [Ambiente de referência](../../docs/registro-de-consolidacao.md#evidências-para-o-pr-da-spec-001)
 - **SC-004:** Cada falha de carregamento devolve um erro estruturado e impede o início da simulação. Na execução sem interface, todas as falhas de carregamento são devolvidas na mesma resposta (FR-012). Todos os casos de erro durante `setup()` ou `loop()` desativam o robô e registram um evento conforme FR-026, preservando a execução do tick.
 - **SC-005:** Um membro da equipe consegue, partindo do "Caçador", escrever uma estratégia própria e colocá-la para lutar em menos de 15 minutos, consultando apenas o Anexo B.
 
@@ -275,19 +286,19 @@ Como membro da equipe, quero exemplos prontos de arena e de estratégias, para c
 
 ## 7. Premissas e decisões
 
-- Convenções C5, C6, C13, C14, C15, C22 e C23 do AGENTS.md §10 foram fixadas nesta spec (ADR-007, aceita).
+- Convenções C5, C6, C13, C14, C15, C22 e C23 do AGENTS.md §10 foram fixadas nesta spec (ADR-007, com C23 atualizada pela ADR-020).
 - Laser em vez de sonar (proposta padrão de Q-008).
 - Enquanto a forma de chamada da suíte externa aguarda confirmação do professor (Q-001), os contratos da S2 partem das duas entradas da Spec 001: API de biblioteca e comando sem interface. [Q-001](../../docs/perguntas.md#q-001--como-a-suíte-oculta-interage-com-o-código-regenerado)
-- Sem sensor de borda (proposta padrão de Q-007); o controlador pode usar a odometria e `arenaRadius`. O sensor de borda está no backlog (B-003).
+- Sensor de borda universal de quatro lados em sumô (Q-007, ADR-020).
 - Controladores executam no mesmo processo do simulador; o isolamento do FR-024 é de **acesso a dados**, não de segurança contra código malicioso (a equipe executa o próprio código).
 
 ## 8. Fora do escopo
 
 - Proteção contra laços infinitos ou controladores lentos (exigiria limite de tempo real, o que quebraria o determinismo).
-- Sonar, câmera, sensor de cor ou de borda.
+- Sonar, câmera e sensor de cor de uso geral.
 - Ruído nas leituras.
-- Controladores em Portugol (B-001) e controle remoto via WebSocket (B-002).
-- Contagem regressiva de início de luta, rounds múltiplos e placar entre lutas.
+- Controle remoto via WebSocket (B-002). O bônus B-001 foi incorporado pela ADR-025.
+- Pontuação acumulada entre lutas. A largada é definida em FR-040. A operação da rodada seguinte após impasse pertence à S3 (ADR-018).
 - Regras de sumô com mais de dois robôs.
 
 ---
@@ -314,10 +325,11 @@ do controlador ocorre durante uma chamada síncrona prevista no FR-024.
 | Função | Devolve | Descrição |
 |---|---|---|
 | `readLaser()` | lista de números | Cópia das leituras do início do passo, do raio 0 (direita) ao raio N−1 (esquerda). Lista vazia sem laser. |
+| `readEdge()` | `{ front, rear, left, right }` ou `null` | Quatro booleanos independentes no perímetro do próprio robô (FR-038). |
 | `readBumper()` | verdadeiro/falso | Se houve contato no tick anterior |
 | `readOdometry()` | `{ x, y, theta }` | Pose estimada pela odometria |
 | `setSpeed(v, w)` | nada | Define velocidade linear (m/s) e angular (rad/s); exige dois números finitos; saturada pelos limites do robô |
-| `getInfo()` | `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }` | Informações do próprio robô e do tempo |
+| `getInfo()` | `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }` | Informações do próprio robô e do tempo. Em duelo com largada, inclui também o booleano `startReleased` |
 | `random()` | número em [0, 1) | Número pseudoaleatório determinístico pela semente |
 | `log(...valores)` | nada | Registra uma mensagem de log |
 
@@ -372,6 +384,7 @@ function loop() {}
 
 ```js
 function loop() {
+  if (getInfo().startReleased === false) return;
   setSpeed(1, 0);
 }
 ```
@@ -380,6 +393,7 @@ function loop() {
 
 ```js
 function loop() {
+  if (getInfo().startReleased === false) return;
   setSpeed(0, 3);
 }
 ```
@@ -388,6 +402,7 @@ function loop() {
 
 ```js
 function loop() {
+  if (getInfo().startReleased === false) return;
   const leituras = readLaser();
   const info = getInfo();
   if (leituras.length === 0) {
@@ -407,6 +422,7 @@ function loop() {
 
 ```js
 function loop() {
+  if (getInfo().startReleased === false) return;
   const l = readLaser();
   const frente = Math.min(l[3], l[4], l[5]);
   if (readBumper() || frente < 0.4) {
@@ -433,6 +449,8 @@ Com um mundo válido, o resultado sem interface reúne as ocorrências desta tab
 |---|---|
 | RB-23, RB-35 | FR-009 a FR-027 |
 | RB-25 | FR-027 a FR-033, FR-035, FR-036 |
+| ADR-018, ADR-019 | FR-037 |
+| RB-35, ADR-020 | FR-038 |
 | RB-27 | FR-007, FR-021, FR-023, FR-024 |
 | RB-31 | FR-027 |
 | RB-32 | FR-001 a FR-008, FR-016 |
@@ -448,3 +466,31 @@ Com um mundo válido, o resultado sem interface reúne as ocorrências desta tab
 | ADR-013 | FR-031 |
 | ADR-014 | FR-011, FR-012 |
 | ADR-016 | FR-009, FR-012, FR-024 |
+
+## Extensão de US5 — Navegar até a saída (P2)
+
+**FR-039** (ADR-021, RB-25). Os três mundos de labirinto têm corredores da mesma largura e explorador com diâmetro de 0.20 m e laser de nove raios. O menor percurso de centro a centro de casas ortogonais cresce em extensão e número de bifurcações. Uma bifurcação é uma casa com três ou mais direções transitáveis. Cada nível termina no primeiro tick em que o centro físico, após correção dos contatos, entra na saída, inclusive no limite. Registrar um único evento de conclusão. O tempo é simulado e livre.
+
+**S2-US5-AC4.** Dados os níveis fácil, médio e difícil, quando se mede a menor rota da partida à saída, então há 7, 14 e 18 passagens de 0.50 m, com 2, 4 e 6 bifurcações. O fácil tem becos curtos, o médio tem ramificação fora da rota e o difícil tem ao menos um ciclo alcançável e becos mais profundos.
+
+**S2-US5-AC5.** Dado o explorador, quando percorre cada mapa com o exemplo de navegação, então chega à saída com o centro físico, registra a chegada uma vez e conserva o tick final em novos avanços. Um robô separado da saída por uma parede continua em andamento mesmo quando a odometria atravessa a marca.
+
+## Extensão de US3 — Largada de sumô (P1)
+
+**FR-040** (ADR-023). No duelo com largada, todo robô observa seus sensores e pode chamar `setSpeed(0, 0)` durante os primeiros 5 s simulados. Qualquer chamada válida com componente linear ou angular diferente de zero, inclusive em setup, é queima se o tempo observado antes do passo for menor que 5 s. Vale também quando outra chamada sobrescreve o comando ou ocorre erro posterior. Julgar ambos no mesmo tick antes de aplicar movimento. A espera regular conserva poses, comandos efetivos e medições. Na primeira queima, mostrar o movimento segundo AC19. Os prazos de combate e impasse começam no primeiro estado com tempo de pelo menos 5 s. O modo legado da biblioteca e da CLI mantém os exemplos numéricos de US3 sem espera. A leitura `getInfo().startReleased` indica a liberação nas rodadas com largada.
+
+**S2-US3-AC16.** Dado um único infrator durante a espera, quando solicita avanço, ré ou giro, então fixa o desfecho naquele passo e publica um único evento de fim após a demonstração. O adversário ganha 1 ponto e o infrator 0. A ordem dos robôs, um comando posterior e uma falha posterior conservam essa decisão.
+
+**S2-US3-AC17.** Dados dois infratores no mesmo tick, quando ambos os controladores terminam sua vez, então há um empate e 0 pontos por robô.
+
+**S2-US3-AC18.** Dado dt de 0.02 s, quando o controlador observa o tick 249 (4.98 s), então ainda há fiscalização. No tick observado 250 (5.00 s) o movimento é permitido e aparece no estado 251. Com dt que não divide 5 s, liberar no primeiro tick observado com tempo ≥ 5 s. Uma espera regular preserva toda a duração de combate.
+
+**S2-US3-AC19** (FR-040, ADR-024). Dada uma queima no passo que publica o tick K, quando a simulação avança, então aplica desde esse passo o primeiro comando válido de movimento de cada infrator, respeitando limites, contatos, sensores e odometria. Os outros robôs permanecem sem tração. O julgamento encerra a participação das estratégias na rodada. A lista de infratores fica fixa, mesmo ao atravessar 5 s, ao ocorrer um empurrão ou ao sair da arena. O resultado e o único evento de fim aparecem no primeiro tick que completa 0.50 s de demonstração. Com dt de 0.02 s e K=1, há movimento nos ticks 1 a 25 e pausa na posição do tick 25. Com dt de 0.03 s, há 16 passos inteiros e 0.02 s de movimento no último passo. O relógio continua mostrando tick × dt.
+
+## Controladores opcionais em Portugol
+
+**FR-041** (RB-18, RB-41, ADR-025). Aceitar uma estratégia em Portugol com decidir() obrigatória e preparar() opcional. Executar a inicialização da estratégia uma vez e decidir() uma vez por passo de disputa, com os mesmos dados observados, regras, semente e efeitos definidos para o controlador existente. Cada robô tem memória própria. O contrato do adaptador delimita os comandos e o perfil da linguagem.
+
+**S2-US2-AC15.** Dados dois controladores com o mesmo contador inicialmente zero, quando avançam dois ticks ambos observam 1 e 2. Reset repete a sequência. Um arquivo que pede outro módulo ou comando fora do contrato é recusado antes da rodada. Uma falha em execução desativa apenas seu robô.
+
+**S2-US2-AC16.** Dado um programa com usar "maker", quando aciona o pino virtual 2, então avança a 0.20 m/s; ao desligá-lo para. Os comandos de velocidade assinada, sensores, tempo, sorteio e registro também seguem a rodada e a modalidade.

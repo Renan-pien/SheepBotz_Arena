@@ -478,3 +478,71 @@ ensaio foi descartada. O fechamento é rastreado pelo PR #6 e pela tag
 `spec-003-fechada`.
 [Ensaio 3](ensaio-regeneracao.md#ensaio-3--2026-11-18) ·
 [PR #6](https://github.com/Renan-pien/SheepBotz_Arena/pull/6)
+
+## Validação do impasse no sumô · 2026-11-21
+
+As tarefas S2-T043 e S3-T022 passaram na suíte de 337 testes em 50 arquivos. Lint e build de produção passaram. A cobertura de linhas foi 88.88%. No Windows x64 com Node 24.22.3 e Intel Core i5-1335U, o benchmark S2 sem detector encerrou por `tempo_esgotado` no tick 3000 em 60.64 ms.
+
+No navegador, o Duelo com Parado × Girador, prazo de 5 s e velocidade de reprodução 4× registrou empate no tick 250 (5.00 s simulados). O painel mostrou o replay do empate e a nova rodada pausada no tick 0, com Executar habilitado e Pausar desabilitado. [Testes e cobertura](cobertura/resumo.md) · [Matriz de rastreabilidade](rastreabilidade.md#incremento-de-impasse--adr-018)
+
+## Giro conjunto no Duelo padrão · 2026-11-21
+
+Com o Caçador de exemplo aplicado aos dois robôs, o primeiro contato ocorreu no tick 8. Os três testes de aceitação encerraram a rodada no tick 258 (5 s após o contato), 508 (10 s) e 1508 (30 s). No teste de interface, retroceder do tick 507 para o 506 fez o tempo restante passar de 0.02 s para 0.04 s. A rodada ficou pausada no tick 0 após o empate e avançou apenas após um clique.
+
+A suíte completa passou com 346 testes em 50 arquivos e 89.03% de cobertura de linhas. Lint e build de produção passaram. O benchmark S2 sem detector percorreu os 3000 ticks em 67.76 ms no Windows x64 com Node 24.22.3. O teste de gravação v2 conservou o resultado por tempo e o mesmo documento na reexportação. [Cobertura](cobertura/resumo.md) · [Rastreabilidade](rastreabilidade.md#regra-de-tempo-no-giro-conjunto--adr-019)
+
+## Sensor de borda universal · 2026-11-21
+
+A suíte passou com 361 testes em 52 arquivos e 89.11% de cobertura de linhas. O sensor passou nos quatro sentidos, no limiar exato, além da faixa, em lados simultâneos, com raios diferentes e em modo livre. Após um empurrão lateral, a estratégia detectou a borda pela pose real enquanto a odometria continuava em y = 0.32 m. Uma estratégia personalizada aplicada à sessão comandou recuo após ler a borda frontal. O painel acompanhou avanço, retrocesso, reset e os replays v1, v2 e v3.
+
+Build de produção e lint passaram, inclusive a verificação de um script personalizado com `readEdge()` pelos mesmos globais dos exemplos. O benchmark S2 completou 3000 ticks em 128.80 ms e encerrou por tempo esgotado em Windows x64 com Node 24.22.3. [Cobertura](cobertura/resumo.md) · [Matriz de rastreabilidade](rastreabilidade.md#sensor-de-borda--adr-020)
+
+## 2026-11-22 · Três níveis de labirinto
+
+O percurso mínimo entre centros de células tem 3.50, 7.00 e 9.00 m, respectivamente com 2, 4 e 6 bifurcações. O Navegador usa o laser e a odometria para explorar a malha de 0.50 m. A chegada considera as coordenadas físicas, inclusive o limite do retângulo.
+
+| Nível | Tick de chegada no Chrome com WebGL | Tempo simulado |
+|---|---:|---:|
+| Fácil | 194 | 9.70 s |
+| Médio | 348 | 17.40 s |
+| Difícil | 1188 | 59.40 s |
+
+Na interface em Chromium, a verificação percorreu os três mundos, recuou um tick e reproduziu cada chegada. O clique em Próximo nível abriu o mundo seguinte no tick 0. A suíte verificou a leitura das gravações anteriores, o replay do labirinto e a continuidade da estratégia aplicada.
+
+A suíte local passou com 378 testes e 89.52% das linhas cobertas. Lint e build de produção passaram. O Vite avisou sobre o tamanho do pacote principal. Benchmark S2 com Node 24.22.3 em Windows x64: 3 000 ticks em 144.14 ms, com empate por tempo. [Cobertura](cobertura/resumo.md) · [Rastreabilidade](rastreabilidade.md#labirinto--adr-021)
+
+## 2026-11-22 · Modo e dificuldade
+
+No Chrome, a lista Modo apresentou Sumô e Labirinto. Ao escolher Labirinto, a lista Dificuldade mostrou Fácil, Médio e Difícil. A troca direta carregou o mapa escolhido. Após concluir o Médio, Próximo nível selecionou Difícil no tick 0. Voltar ao Sumô ocultou Dificuldade.
+
+A suíte completa passou com 380 testes e 89.59% de cobertura de linhas. Os testes de interface verificaram a estratégia aplicada, o rascunho, a pausa no tick 0 e a identificação de mundos importados e de replay. Lint e build passaram. [Tarefa e testes](rastreabilidade.md#seleção-de-modo-e-dificuldade--adr-022) · [Cobertura](cobertura/resumo.md)
+
+## 2026-11-22 · Cursor nos editores de estratégia
+
+Antes do ajuste, o Chrome aplicava preto ao cursor nativo nos editores de vermelho, azul e explorador. A cor aplicada após a correção foi `#f1f6fc`, com contraste de 15.81:1 sobre o fundo `#0f1c2c`.
+
+Nos três editores, dois cliques em posições distintas deslocaram a barra. As setas direita e esquerda moveram um caractere e as setas para baixo e para cima mudaram de linha. As capturas de tela confirmaram a barra clara no ponto do clique e após deslocamentos horizontal e vertical. Uma letra digitada em cada rascunho entrou no ponto esperado.
+
+A suíte passou com 381 testes e 89.59% de cobertura de linhas. Lint e build passaram. [Matriz de rastreabilidade](rastreabilidade.md#cursor-de-inserção-dos-controladores) · [Cobertura](cobertura/resumo.md)
+
+## Largada de sumô · 2026-11-22
+
+O Chrome no Windows executou o Duelo padrão com os exemplos aplicados. O relógio mostrou 5,00 s no início e 4,98 s após um passo. O duelo terminou por saída da arena no tick 284 (5,68 s). Ao aplicar giro imediato só a vermelho, azul recebeu 1 ponto no tick 1. Voltar e avançar, inclusive no replay, recuperou o resultado. Com giro imediato nos dois editores houve empate sem pontos no tick 1.
+
+A suíte completa passou em 393 de 393 testes. A cobertura de linhas foi de 89,97% no projeto e 99,06% no núcleo. ESLint, TypeScript e build Vite passaram. O build emitiu o aviso de tamanho do pacote principal. Com Node 24.22.3 no Windows x64, o benchmark do núcleo executou 3 000 ticks em 32,30 ms e o da S2 em 59,96 ms. [Relatório de cobertura](cobertura/resumo.md)
+
+## Demonstração da queima · 2026-11-22
+
+No Chrome com WebGL 2, a indicação “vermelho · Queimou” ficou dentro da área visível da cena e acompanhou o deslocamento mesmo com “Mostrar rótulos” desligado. A infração ocorreu no tick 1, foi possível pausar durante o movimento e a rodada terminou no tick 25 com 1 ponto para azul. Voltar do fim e percorrer o replay restaurou a indicação. Com os dois robôs avançando cedo, apareceram dois rótulos e houve empate sem pontos. Com as estratégias padrão, vermelho venceu por saída da arena no tick 284.
+
+A suíte completa passou em 399 de 399 testes. Os testes incluem barreira física, empurrão, queima no último tick da espera, comando sobrescrito e replay antigo. Cobertura de linhas de 90,01% no projeto e 99,07% no núcleo. Lint, TypeScript e build passaram. O Vite emitiu o aviso de tamanho do pacote principal. Os benchmarks S1 e S2 executaram 3 000 ticks em 22,86 ms e 36,68 ms, respectivamente, com Node 24.22.3 no Windows x64. [Cobertura](cobertura/resumo.md)
+
+## MeuPiá Maker na IDE · 2026-11-22
+
+S2-T049 e S3-T030, ADR-025. Conferimos os hashes do wheel 1.4.1 e do módulo oficial inalterado do Maker, a rejeição de operações fora do perfil, o orçamento determinístico e a memória por carga. A suíte com o motor real verificou o comando do pino e a leitura de borda após a largada, a desativação isolada em erro e a reprodução do resultado após reset.
+
+No Chrome 157, a partir do build estático, aplicamos Portugol a um e depois aos dois robôs. Conferimos 252 ticks do duelo misto, retrocesso, erro de compilação preservando a execução, os três níveis do labirinto, exportação e importação da gravação v7, ajuda em replay e retorno do foco. O botão **? Comandos** aparece junto ao nome do robô. Os recursos do motor vieram da própria origem.
+
+Com Node 24.22.3, a suíte passou em 418 de 418 testes. A cobertura V8 de linhas do código TypeScript foi 89,17%. Os testes do adaptador também executam o Python oficial e o perfil da Arena via WebAssembly. Lint, verificação de tipos e build passaram. Os benchmarks S1 e S2 de 3000 ticks mediram 23,02 ms e 43,66 ms. Uma medição adicional com dois controladores Portugol chamando iot_desligar(2) levou 67,52 ms nos 3000 ticks após a largada; o resultado foi tempo_esgotado no tick 3250. A medição exclui o carregamento e a compilação. [Cobertura](cobertura/resumo.md)
+
+A validação de instalação usou um clone limpo de 0759152: npm ci, build estático e os 19 testes específicos passaram. Repetimos o fluxo do Chrome sobre esse build e a página carregou o runtime e os programas exclusivamente da própria origem. O Vite informa que o pacote principal supera 500 kB. O npm de sistema em Node 24.13 emitiu aviso de versão para dependências de teste; os testes e benchmarks usaram Node 24.22.3.

@@ -2,7 +2,7 @@
 
 ```bash
 npm run sim -- --world <mundo.json> --ticks <N> \
-  [--command <id>=<v>,<w>]... [--controller <id>=<arquivo.js>]... [--history] [--pretty]
+  [--command <id>=<v>,<w>]... [--controller <id>=<arquivo.js>]... [--sumo-start-delay] [--history] [--pretty]
 ```
 
 Herdam-se os argumentos e os hábitos de saída do [comando v1](../../001-nucleo-simulacao/contracts/cli.md).
@@ -26,3 +26,9 @@ um tick menor. Os exemplos e verificações estão no [quickstart](../quickstart
 A falha de leitura de um controlador usa
 `Não foi possível ler o arquivo de controlador '<caminho>'.` em stderr,
 com stdout vazio. O diagnóstico distingue controlador de mundo.
+
+## Impasse opcional
+
+A opção `--stall-seconds` aceita `5`, `10` ou `30` e solicita detecção durante a execução headless. Omissão mantém o comportamento anterior. Argumento inválido é erro de uso (saída 2). A CLI devolve o estado terminal sem iniciar outra rodada.
+
+`--sumo-start-delay` aplica a espera fixa de cinco segundos a um duelo de sumô. O comando conserva o comportamento original quando a opção é omitida.

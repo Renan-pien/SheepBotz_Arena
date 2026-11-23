@@ -1,7 +1,14 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { releaseTick, SUMO_START_SECONDS, stallStartTick } from '../core';
 import { speeds, startTicker, type PlaybackSpeed } from './arena/clock';
 import { ArenaSession } from './arena/session';
-import { worldPresets, type WorldPreset } from './arena/catalog';
+import {
+  mazeLevelFromText,
+  mazeLevels,
+  nextMazeLevel,
+  worldPresets,
+  type MazeLevel,
+} from './arena/catalog';
 import { chosenFile, downloadText, LocalFiles } from './arena/files';
 import { encodeRecording, recordingName } from './arena/recording';
 import { Controllers } from './panels/Controllers';
@@ -11,6 +18,11 @@ import { ArenaView } from './scene/ArenaView';
 import './arena.css';
 
 const tabs = ['Controladores', 'Inspeção', 'Eventos'] as const;
+
+// Um mundo importado pode estar fora do catálogo. Uma lista nativa selecionaria a primeira opção.
+function clearSelection(select: HTMLSelectElement | null) {
+  if (select) select.selectedIndex = -1;
+}
 
 export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const [session] = useState(() => supplied ?? new ArenaSession());
@@ -22,8 +34,24 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
   const { world, snapshot, status, speed, behind } = view;
   const running = status === 'executando';
   const replay = view.mode === 'replay';
-  const stopped = status === 'finalizada' || view.replayLast === snapshot.tick;
-  const result = resultLabel(snapshot);
+  const stopped =
+    snapshot.status === 'finalizada' ||
+    status === 'finalizada' ||
+    view.replayLast === snapshot.tick;
+  const mode = world.match.mode;
+  const difficulty =
+    mode === 'maze' ? mazeLevelFromText(view.worldText) : undefined;
+  const startTick = snapshot.sumoStartDelay ? releaseTick(world.dt) : 0;
+  const waitingForStart = snapshot.tick < startTick;
+  const result = resultLabel(snapshot, difficulty === 'dificil');
+  const nextLevel =
+    !replay &&
+    snapshot.resultado?.motivo === 'saida_alcancada' &&
+    nextMazeLevel(view.preset) ? (
+      <button type="button" onClick={() => session.nextLevel()}>
+        Próximo nível
+      </button>
+    ) : null;
 
   useEffect(() => {
     if (running) return startTicker((elapsed) => session.pulse(elapsed));
@@ -43,7 +71,8 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
       )
         return;
       const target = event.target instanceof Element ? event.target : null;
-      if (target?.closest('input, textarea, select, [contenteditable]')) return;
+      if (target?.closest('input, textarea, select, dialog, [contenteditable]'))
+        return;
       if (event.key === ' ' && !target?.closest('button, a')) {
         event.preventDefault();
         if (session.getSnapshot().status === 'executando') session.pause();
@@ -101,26 +130,41 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
         </div>
         <div className="world-actions">
           <label>
-            Mundo{' '}
+            Modo{' '}
             <select
-              value={view.preset}
+              value={mode === 'free' ? undefined : mode}
+              ref={mode === 'free' ? clearSelection : undefined}
               disabled={replay}
               onChange={(event) =>
-                session.chooseWorld(event.target.value as WorldPreset)
+                session.chooseWorld(
+                  event.target.value === 'maze' ? 'facil' : 'duelo',
+                )
               }
             >
-              {Object.entries(worldPresets).map(([key, preset]) => (
-                <option key={key} value={key}>
-                  {preset.name}
-                </option>
-              ))}
-              {view.preset === '' && (
-                <option value="" disabled>
-                  {world.name}
-                </option>
-              )}
+              <option value="sumo">Sumô</option>
+              <option value="maze">Labirinto</option>
             </select>
           </label>
+          {mode === 'maze' && (
+            <label>
+              Dificuldade{' '}
+              <select
+                value={difficulty}
+                ref={difficulty ? undefined : clearSelection}
+                disabled={replay}
+                onChange={(event) =>
+                  session.chooseDifficulty(event.target.value as MazeLevel)
+                }
+              >
+                {mazeLevels.map((level) => (
+                  <option key={level} value={level}>
+                    {worldPresets[level].difficulty}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {view.preset === '' && <span>{world.name}</span>}
           <label className="file-control">
             Abrir mundo{' '}
             <input
@@ -182,7 +226,11 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
             Exportar gravação
           </button>
           {replay && (
-            <button type="button" onClick={() => session.exitReplay()}>
+            <button
+              type="button"
+              disabled={view.loading !== null}
+              onClick={() => void session.exitReplay()}
+            >
               Sair do replay
             </button>
           )}
@@ -223,6 +271,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           </div>
           <strong>{formatNumber(snapshot.time, 2)} s</strong>
           {result && <strong className="scoreboard-result">{result}</strong>}
+          {nextLevel}
         </section>
       )}
       <div
@@ -275,11 +324,16 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
       {result && !presenting && (
         <section className="match-result" aria-label="Resultado">
           <strong>{result}</strong>
+          {nextLevel}
           {!replay && (
             <>
               <button
                 type="button"
-                aria-label="Reiniciar luta"
+                aria-label={
+                  world.match.mode === 'maze'
+                    ? 'Reiniciar nível'
+                    : 'Reiniciar luta'
+                }
                 onClick={() => session.reset()}
               >
                 Reiniciar
@@ -289,6 +343,18 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
               </button>
             </>
           )}
+        </section>
+      )}
+      {view.lastDraw && (
+        <section className="match-result" aria-label="Último empate">
+          <strong>
+            Rodada {view.lastDraw.round} · Empate por falta de progresso · tick{' '}
+            {view.lastDraw.result.tick} · {formatNumber(view.lastDraw.time, 2)}{' '}
+            s
+          </strong>
+          <button type="button" onClick={() => session.replayLastDraw()}>
+            Ver replay do empate
+          </button>
         </section>
       )}
       <footer className="transport" aria-label="Controles de tempo">
@@ -325,25 +391,47 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           >
             Pausar
           </button>
-          <button
-            type="button"
-            disabled={running || stopped}
-            onClick={() => session.step()}
+          <div
+            className="tick-controls"
+            role="group"
+            aria-label="Passo a passo"
           >
-            Avançar 1 tick
-          </button>
-          {replay && (
+            <button
+              type="button"
+              disabled={running || stopped}
+              onClick={() => session.step()}
+            >
+              Avançar 1 tick
+            </button>
             <button
               type="button"
               disabled={running || snapshot.tick === 0}
               onClick={() => session.back()}
             >
-              Voltar 1 tick
+              Voltar 1 Tick
             </button>
-          )}
+          </div>
           <button type="button" onClick={() => session.reset()}>
             Reiniciar
           </button>
+          {!replay && world.match.mode === 'sumo' && (
+            <label>
+              Regra de Tempo{' '}
+              <select
+                value={view.stallSeconds}
+                disabled={running || view.roundStarted}
+                onChange={(event) =>
+                  session.setStallSeconds(Number(event.target.value))
+                }
+              >
+                {[5, 10, 30].map((seconds) => (
+                  <option key={seconds} value={seconds}>
+                    {seconds} s
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <label>
             Velocidade{' '}
             <select
@@ -364,6 +452,27 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
           <span data-testid="current-tick">Tick {snapshot.tick}</span>
           <span>{formatNumber(snapshot.time, 2)} s</span>
           <span>{status}</span>
+          {waitingForStart && !snapshot.falseStarters && !result && (
+            <span>
+              Largada em {formatNumber(SUMO_START_SECONDS - snapshot.time, 2)} s
+            </span>
+          )}
+          {snapshot.stall && !waitingForStart && !snapshot.falseStarters && (
+            <span>
+              Tempo até impasse:{' '}
+              {formatNumber(
+                Math.max(
+                  0,
+                  snapshot.stall.limitSeconds -
+                    (snapshot.tick -
+                      Math.max(startTick, stallStartTick(snapshot.stall))) *
+                      world.dt,
+                ),
+                2,
+              )}{' '}
+              s
+            </span>
+          )}
           {replay && <span>Replay</span>}
           {view.limitReached && (
             <span role="status">limite de gravação atingido</span>

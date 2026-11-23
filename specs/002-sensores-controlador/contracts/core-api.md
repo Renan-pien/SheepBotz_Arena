@@ -18,6 +18,8 @@ type ControllerOptions =
 type HeadlessInput = {
   readonly world: string;
   readonly commands?: Readonly<Record<string, Command>>;
+  readonly stallSeconds?: 5 | 10 | 30;
+  readonly sumoStartDelay?: boolean;
   readonly ticks: number;
   readonly history?: boolean;
 } & ControllerOptions;
@@ -52,3 +54,20 @@ function runHeadless(input: HeadlessInput): HeadlessResult;
 Os nomes, unidades e campos da S1 permanecem, e os campos da S2 são aditivos. Em `sumo`, a
 execução passa a respeitar o encerramento da S2. Em `free`, ela devolve o estado no tick solicitado
 e permanece em andamento. Ver [estado](state.md) e [CLI](cli.md).
+
+## Detector de impasse
+
+As opções de `createSimulation`, `prepareSimulation` e `runHeadless` aceitam `stallSeconds` com valor 5, 10 ou 30. Em `createInitialState(world, stallSeconds?)`, o prazo é o segundo argumento. Omissão desliga a regra. Valor diferente gera `RangeError`. O monitor atua no sumô. O reset recarrega o mesmo prazo.
+
+## Geometria da borda
+
+A biblioteca exporta `readEdge(world, pose, robotRadius): EdgeReading | null`. Usa uma pose física em metros e radianos e o raio do robô em metros. `ARENA_EDGE_INNER_RATIO` vale 0.975. O [contrato do controlador](controller-api.md) define a função sem argumentos que já recebe o contexto do próprio robô.
+
+## Conclusão de labirinto
+
+No primeiro tick positivo com centro dentro de `match.exit`, `status` passa a `finalizada`, `resultado` traz `motivo: "saida_alcancada"`, `vencedor` com o id do explorador e `tick`. O evento `fim_do_nivel` acompanha esse tick.
+
+### Largada de sumô (ADR-023)
+`sumoStartDelay?: boolean` em createSimulation, prepareSimulation e runHeadless. A omissão mantém a execução legada. Quando ativo no sumô, cada snapshot contém `sumoStartDelay: true`. Desde o tick da queima até o fim da demonstração, `falseStarters` contém os IDs na ordem do mundo e `falseStartTick` o primeiro tick com movimento. O comando efetivo de cada infrator fica fixo por 0.50 s. O resultado tem motivo `queima_da_largada` (um infrator) ou `queima_dupla` (ambos), vencedor ou null e `pontos` com os dois IDs e os pontos da rodada. O combate dispõe de maxTicks passos completos após a liberação.
+
+Na CLI, `--sumo-start-delay` ativa a mesma opção para reproduzir a rodada da interface.

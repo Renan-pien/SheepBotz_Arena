@@ -6,7 +6,13 @@ import type {
   SimState,
   World,
 } from '../types';
-import { evaluateSumo } from '../match/sumo';
+import { evaluateMaze } from '../match/maze';
+import {
+  advanceStall,
+  evaluateSumo,
+  FALSE_START_MOTION_SECONDS,
+  SUMO_START_SECONDS,
+} from '../match/sumo';
 import { resolveRobotContacts } from './contacts';
 import { integratePose, saturate } from './kinematics';
 import { resolveObstaclesAndWalls } from './obstacles';
@@ -62,35 +68,84 @@ export function step(
   world: World,
   state: SimState,
   commands: Readonly<Record<string, Command>>,
+  attempts?: ReadonlyMap<string, Command>,
 ): SimState {
   if (state.status === 'finalizada') return state;
+  // Durante a demonstração, os motores mantêm o comando efetivo do primeiro passo.
+  if (state.falseStartTick !== undefined) return move(world, state, {});
+  if (state.sumoStartDelay && state.time < SUMO_START_SECONDS) {
+    const tick = state.tick + 1;
+    const motion = new Map<string, Command>();
+    for (const { id } of world.robots) {
+      const command =
+        attempts?.get(id) ??
+        (Object.hasOwn(commands, id) ? commands[id] : undefined);
+      if (command && (command.v !== 0 || command.w !== 0))
+        motion.set(id, command);
+    }
+    if (!motion.size) return { ...state, tick, time: tick * world.dt };
+    return move(
+      world,
+      { ...state, falseStartTick: tick, falseStarters: [...motion.keys()] },
+      Object.fromEntries(motion),
+    );
+  }
+  return move(world, state, commands);
+}
+
+function move(
+  world: World,
+  state: SimState,
+  commands: Readonly<Record<string, Command>>,
+): SimState {
+  const tick = state.tick + 1;
+  const dt =
+    state.falseStartTick === undefined
+      ? world.dt
+      : Math.min(
+          world.dt,
+          FALSE_START_MOTION_SECONDS - (tick - state.falseStartTick) * world.dt,
+        );
   const candidates = world.robots.map((config, index) => {
     const previous = state.robots[index]!;
     const requested = Object.hasOwn(commands, config.id)
       ? commands[config.id]!
       : previous.command;
     const command =
-      previous.situacao === 'desativado'
+      previous.situacao === 'desativado' && state.falseStartTick === undefined
         ? { v: 0, w: 0 }
         : saturate(requested, config);
     return {
       config,
       previous,
       command,
-      pose: integratePose(previous.pose, command, world.dt),
+      pose: integratePose(previous.pose, command, dt),
       contacted: false,
     };
   });
-  const robots = resolveEnvironment(resolveContacts(candidates), world).map(
-    (robot) => updateMeasurements(robot, world.dt),
+  const contacts = resolveContacts(candidates);
+  const robots = resolveEnvironment(contacts, world).map((robot) =>
+    updateMeasurements(robot, dt),
   );
-  const tick = state.tick + 1;
   const next: SimState = {
     ...state,
+    ...(state.stall &&
+      state.falseStartTick === undefined && {
+        stall: advanceStall(
+          state.stall,
+          robots,
+          tick,
+          world,
+          contacts[0]!.contacted,
+        ),
+      }),
     tick,
     time: tick * world.dt,
     robots: withLaser(world, robots),
   };
-  const result = evaluateSumo(world, next);
+  const result =
+    world.match.mode === 'maze'
+      ? evaluateMaze(world, next)
+      : evaluateSumo(world, next);
   return result ? completeMatch(next, result) : next;
 }

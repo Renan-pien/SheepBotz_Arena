@@ -13,6 +13,8 @@ através da [biblioteca](core-api.md) ou da [CLI](cli.md), separada do JSON de m
 | `match.mode` e `arena.radius` | Ativam a regra de saída por centro no modo `sumo`. A arena é distinta das paredes do mapa para o laser. |
 | `match.maxTicks` | Limite de desempate por tempo no modo `sumo`. |
 
-Os exemplos são o "Duelo padrão" da S1 e "Sala com obstáculos" do Anexo C da [Spec 002](../spec.md).
+Os exemplos de sumô e modo livre são o "Duelo padrão" da S1 e "Sala com obstáculos" do Anexo C da [Spec 002](../spec.md).
 O valor `maxTicks` em `free` não encerra a simulação. Nomes, geometria e laser passam pelo
 validador de mundo existente.
+
+Os três mundos de labirinto usam `match.mode = "maze"` e `match.exit`. O Anexo da ADR-021 no [plano](../plan.md) fixa a geometria. `maxTicks` aplica-se somente ao sumô.

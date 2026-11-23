@@ -80,8 +80,10 @@ function attachViewport(host: HTMLElement, labels: HTMLElement, world: World) {
       contents.update(frame, rays);
       frame.forEach((robot, i) => {
         const element = labelNodes[i]!;
-        element.hidden = !showLabels && !robot.disabled;
-        element.textContent = robot.disabled ? '⚠ ' + robot.id : robot.id;
+        element.hidden = !showLabels && !robot.disabled && !robot.falseStart;
+        element.classList.toggle('false-start', robot.falseStart);
+        const name = robot.disabled ? '⚠ ' + robot.id : robot.id;
+        element.textContent = robot.falseStart ? name + ' · Queimou' : name;
         element.title = robot.disabled ? robot.id + ' · desativado' : robot.id;
       });
     },
@@ -211,9 +213,14 @@ export function ArenaView({
         <p className="scene-fallback">
           Visualização 3D indisponível neste navegador. A simulação pode ser
           operada pelos controles.
+          {snapshot.falseStartTick !== undefined &&
+            snapshot.falseStarters?.map((id) => (
+              <span key={id}> {id} · Queimou</span>
+            ))}
         </p>
       </div>
       <div className="scene-toolbar">
+        {world.match.exit && <span>▦ Saída quadriculada</span>}
         <div role="group" aria-label="Vistas da câmera">
           <button
             type="button"

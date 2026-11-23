@@ -93,3 +93,9 @@ Abra `http://127.0.0.1:4173/` em Chromium. No console, `document.documentElement
 deve devolver `"ok"`. A fixture verifica a indisponibilidade de `Promise` e `Array.fromAsync`
 no controlador e compara execução em lote com execução em passos intercalados com microtarefas
 do host. O atributo `data-history` publica os cinco estados para comparação com o teste Node.
+
+### Julgar a largada no terminal
+Execute `npm run sim -- --world examples/worlds/duelo-padrao.json --ticks 25 --sumo-start-delay --command vermelho=0,1`. O resultado deve registrar queima de vermelho e um ponto para azul. Acrescente `--command azul=-1,0` para reproduzir a queima dupla. Ambos os casos registram a infração no tick 1 e terminam no tick 25. Com `--history`, confira as poses intermediárias e o evento final único.
+
+### Conferir o adaptador Portugol
+Após npm ci, execute `npm test -- --run tests/runtime/portugol.test.ts`. A suíte usa a distribuição local de Pyodide, o Core e o Maker oficiais. Verifica a integridade dos arquivos, comandos do pino, isolamento, limites, sensores, memória por robô e reset. O perfil aceito está no [contrato do controlador](contracts/controller-api.md#perfil-portugol--adr-025).

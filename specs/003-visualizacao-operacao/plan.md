@@ -240,12 +240,24 @@ luta segue em andamento e a frase completa de desfecho ao terminar.
 
 ### Gravação e observação
 
+No modo ao vivo, o tick do snapshot publicado é o cursor. A sessão guarda o motor
+e seus controladores no último tick calculado. Retroceder ou revisitar um tick da
+gravação usa seu snapshot completo. O motor só calcula um passo novo ao alcançar
+o próprio estado, preservando closures, sorteios e contadores de log. A gravação
+exporta somente o prefixo até o cursor. Reinício e troca de configuração abrem
+um histórico novo. Após o limite da gravação, uma janela circular conserva os
+estados recentes. Para recuperar um estado fora da janela, a sessão reconstrói
+o motor com o mundo, fontes aplicadas e semente originais e reconstitui a janela
+até o tick pedido. A sessão publica apenas o estado de destino.
+
 ```ts
 // arena/recording.ts
 export interface Recording {
   readonly world: string;
   readonly controllers: Readonly<Record<string, string>>;
   readonly createdAt: string;
+  readonly version: 1 | 2 | 3;
+  readonly stallSeconds?: 5 | 10 | 30;
   readonly states: readonly SimState[];
 }
 type DecodeResult =
@@ -258,7 +270,7 @@ export function recordingName(name: string, createdAt: string): string;
 
 O discriminador e a versão entram na serialização. Em memória, cada
 estado possui seu prefixo de `events`. Estados cuja contagem não muda
-reutilizam a referência do prefixo. O codec valida o [formato v1](contracts/gravacao.md).
+reutilizam a referência do prefixo. O codec valida os [formatos v1 a v6](contracts/gravacao.md).
 
 A região de cena publica `data-tick`, `data-rays` e `data-labels`.
 A região de inspeção publica `data-tick`. O tick é uma string decimal
@@ -278,3 +290,35 @@ inspecionáveis. O quickstart mede em Chromium o percurso completo sem
 misturar o relógio em tempo real com a suíte determinística.
 
 [Pesquisa](research.md) · [Modelo](data-model.md) · [Quickstart](quickstart.md)
+
+## Transição por impasse
+
+O núcleo decide o resultado. A sessão guarda a última gravação e resumo do impasse, reinicia pelo reset da simulação e publica o tick zero pausado em uma transição. O lote termina com a rodada. O cursor de retrocesso publica a contagem contida no snapshot. Guardar apenas uma rodada anterior. A importação deriva os dados do detector das poses gravadas sem executar estratégias.
+
+A v3 registra o sumô com detector anterior à largada. A v5 registra a largada com encerramento imediato. Desde a ADR-024, as novas rodadas de sumô usam v6. O leitor seleciona a regra histórica pelo número da versão. A UI e o núcleo usam o mesmo cálculo de tempo de impasse, a partir das referências do snapshot.
+
+## Borda no cartão de inspeção
+
+Consultar o sensor da S2 com a pose do snapshot exibido, o raio do robô correspondente e o mundo. Usar essa leitura em pausa, retrocesso e replay. O raio interno da faixa desenhada e o limiar físico usam a mesma proporção.
+
+## ADR-021 · S3-FR-043
+
+Catalogar os três JSONs por ordem de nível. Desenhar uma chegada quadriculada no piso. Reusar o estado terminal e a navegação pelo histórico. Ao avançar de nível, preparar uma nova simulação com o controlador aplicado e rascunho preservado. O replay apenas consome snapshots.
+
+## Seleção em dois passos · S3-FR-044
+
+Derivar Modo de `world.match.mode` e Dificuldade do preset ou do texto de um mapa conhecido. A sessão prepara Duelo ou Fácil quando o usuário troca de modo. A mudança direta de dificuldade compartilha a transição de Próximo nível. Vincular o controlador aplicado e o rascunho do único robô de origem ao explorador do destino, inclusive se o identificador no arquivo importado for diferente. Publicar a nova sessão apenas após validar mapa e controlador.
+
+### Cursor de inserção dos controladores · S3-US3-AC13
+
+O CodeMirror usa o cursor nativo do navegador. Aplicar `caret-color: #f1f6fc` ao conteúdo editável dentro de `.code-editor`, sobre o fundo `#0f1c2c`. O navegador mantém a seleção, a navegação por teclado e o piscar do cursor conforme as preferências do usuário.
+
+### Largada · S3-FR-045
+Solicitar a regra em toda preparação de sumô vivo. Projetar a contagem do snapshot e os pontos do resultado terminal em tela normal e apresentação. A v5 registra as tentativas no tick da infração. Revalidar o resultado com a mesma regra do núcleo. Versões anteriores mantêm a cronologia original. Nenhum contador de pontos é incrementado ao navegar no histórico.
+
+### Identificação da queima e replay · ADR-024
+
+Projetar o texto no mesmo ponto do robô usado pelos rótulos da câmera. No arquivo v6, persistir o tick inicial e os infratores em cada quadro da demonstração. Validar continuidade, comando por robô, duração, resultado e evento final inclusive em gravações parciais. Reproduzir snapshots sem executar estratégias. A v5 conserva sua validação própria.
+
+### Editor de linguagens e ajuda
+S3-FR-046 usa o cartão existente e rascunhos independentes por linguagem. Preparar o interpretador uma vez sob demanda. Associar a linguagem por ID ao criar a simulação. Descartar uma aplicação assíncrona ultrapassada por edição ou troca de sessão. Exibir o tutorial contextual em diálogo com retorno de foco e Escape. Gravação v7 carrega os metadados das linguagens e conserva as regras físicas do formato anterior de cada modalidade.

@@ -281,3 +281,7 @@ O resultado é `{ ok: true, world }` com o mundo normalizado ou `{ ok: false, er
 ## Complexidade
 
 Nenhuma violação da constitution a justificar.
+
+## ADR-021 · S1-FR-041
+
+Estender schema, tipos e validação geométrica da configuração de partida. A regra da modalidade lê a saída validada. A cinemática continua comum aos três modos.

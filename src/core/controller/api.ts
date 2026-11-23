@@ -1,4 +1,5 @@
 import type { Command, RobotState, SimEvent, World } from '../types';
+import { readEdge } from '../sensors/edge';
 import { createControllerRandom } from './random';
 import { errorDetail, type ControllerBindings } from './runtime';
 
@@ -7,6 +8,8 @@ export interface ControllerFrame {
   readonly tick: number;
   readonly observedTime: number;
   readonly events: SimEvent[];
+  startReleased?: boolean;
+  firstMotion?: Command;
   command?: Command;
   failure?: string;
 }
@@ -30,12 +33,16 @@ export function createControllerScope(world: World, index: number) {
       return draw();
     },
     readLaser: () => [...frame().robot.laser],
+    readEdge: () => readEdge(world, frame().robot.pose, config.radius),
     readBumper: () => frame().robot.bumper,
     readOdometry: () => ({ ...frame().robot.odometry }),
     getInfo() {
       const active = frame();
       return {
         id,
+        ...(active.startReleased !== undefined && {
+          startReleased: active.startReleased,
+        }),
         tick: active.tick - 1,
         time: active.observedTime,
         dt: world.dt,
@@ -58,6 +65,8 @@ export function createControllerScope(world: World, index: number) {
         throw new TypeError(active.failure);
       }
       active.command = { v, w };
+      if (active.startReleased === false && (v !== 0 || w !== 0))
+        active.firstMotion ??= active.command;
     },
     log(...values) {
       const active = frame();

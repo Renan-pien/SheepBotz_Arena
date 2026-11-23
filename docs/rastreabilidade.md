@@ -137,3 +137,68 @@ Os 49 cenários estão indexados no [mapa de tarefas da S3](../specs/003-visuali
 | RB-20, Constituição VIII | S3-FR-037 | S3-T006 (`90daf33`), S3-T016 (`2be4b5f`), S3-T017 (`7573965`) | [S3-US6-AC3](../tests/ui/s3/us6-apresentacao.test.tsx) | Validado localmente |
 | RB-20, Constituição VIII | S3-FR-038 | S3-T016 (`2be4b5f`), S3-T017 (`7573965`), S3-T018 (`755c56c`) | [S3-US6-AC3](../tests/ui/s3/us6-apresentacao.test.tsx), [Quickstart em Chromium](../specs/003-visualizacao-operacao/quickstart.md#medição-de-referência-da-implementação) | Validado localmente |
 | RB-20 | S3-FR-039 | S3-T016 (`2be4b5f`), S3-T017 (`7573965`), S3-T018 (`755c56c`) | [S3-US6-AC3](../tests/ui/s3/us6-apresentacao.test.tsx), [Quickstart em Chromium](../specs/003-visualizacao-operacao/quickstart.md#medição-de-referência-da-implementação) | Validado localmente |
+| RB-24, RB-28, RB-40, ADR-017 | S3-FR-002, S3-FR-012, S3-FR-029 | S3-T021 | [S3-US2-AC11](../tests/ui/s3/us2-operacao.test.tsx), [S3-US2-AC12](../tests/runtime/rewind.test.ts), [S3-US2-AC13](../tests/ui/s3/us5-recording.test.tsx) | Retrocesso ao vivo, retomada e limite de gravação verificados |
+
+## Incremento de impasse — ADR-018
+
+| Origem | Requisito | Tarefa | Testes | Status |
+|---|---|---|---|---|
+| ADR-018, RB-25 | S2-FR-037 | S2-T043 (`3bbd567`, `96b23d8`) | [S2-US3-AC11 a AC13](../tests/core/acceptance/s2/us3-impasse.test.ts), [CLI](../tests/cli/run-cli.test.ts) | Verificado |
+| ADR-018, RB-24 | S3-FR-040 | S3-T022 (`c07d3f3`, `07368f8`) | [S3-US2-AC14](../tests/ui/s3/us2-impasse.test.tsx), [S3-US2-AC15](../tests/runtime/stall-reset.test.ts) | Verificado |
+| ADR-018, RB-40 | S3-FR-041 | S3-T022 (`c07d3f3`, `07368f8`) | [S3-US5-AC12](../tests/ui/s3/us2-impasse.test.tsx) | Verificado |
+
+## Regra de Tempo no giro conjunto — ADR-019
+
+| Origem | Requisito | Tarefa e commit | Testes de aceitação | Estado |
+|---|---|---|---|---|
+| ADR-019, RB-25 | S2-FR-037 | S2-T044 (`3dc6c45`) | [S2-US3-AC14 e AC15 · Caçadores, contato, empurrão e separação](../tests/core/acceptance/s2/us3-impasse.test.ts) | Validado localmente |
+| ADR-019, RB-24 | S3-FR-040 | S3-T023 (`add5249`) | [S3-US2-AC16 · seletor, contagem e ação explícita](../tests/ui/s3/us2-impasse.test.tsx), [retrocesso com os controladores reais](../tests/runtime/stall-reset.test.ts) | Validado localmente |
+| ADR-019, RB-40 | S3-FR-041 | S3-T023 (`add5249`) | [S3-US5-AC13 · preservação de v2 e replay do giro](../tests/runtime/stall-reset.test.ts), [validação da gravação v3](../tests/ui/s3/us2-impasse.test.tsx) | Validado localmente |
+
+## Sensor de borda — ADR-020
+
+| Origem | Requisito | Tarefa e commit | Testes de aceitação | Estado |
+|---|---|---|---|---|
+| Q-007, B-003, ADR-020, RB-35 | S2-FR-038 | S2-T045 (`f680f40`) | [S2-US2-AC13 e AC14 · lados, limites, empurrão e reset](../tests/core/acceptance/s2/us2-borda.test.ts), [estratégia personalizada aplicada à sessão](../tests/runtime/edge-strategy.test.ts) | Validado localmente |
+| ADR-020, RB-39 | S3-FR-042 | S3-T024 (`7ae5d5d`) | [S3-US4-AC7 · inspeção, retrocesso, reset e replays](../tests/ui/s3/us4-inspecao.test.tsx) | Validado localmente |
+
+## Labirinto · ADR-021
+
+| Origem | Requisito | Tarefa e commits | Testes de aceitação | Estado |
+|---|---|---|---|---|
+| RB-25, ADR-021 | S1-FR-041 | S1-T051 (`c3c641b`) | [S1-US1-AC12 · mundo e saída](../tests/core/acceptance/s1/maze-world.test.ts) | Validado localmente |
+| RB-25, ADR-021 | S2-FR-039 | S2-T046 (`a3db897`, `611f8e0`) | [S2-US5-AC4 e AC5 · topologia e percurso do explorador](../tests/core/acceptance/s2/maze.test.ts) | Validado localmente |
+| RB-22, RB-24, ADR-021 | S3-FR-043 | S3-T025 (`5cc60e2`) | [S3-US3-AC10 · chegada, pausa, retrocesso, replay e progressão](../tests/ui/s3/maze.test.tsx) | Validado localmente |
+
+## Seleção de modo e dificuldade · ADR-022
+
+| Origem | Requisitos | Tarefa e commit | Testes de aceitação | Estado |
+|---|---|---|---|---|
+| RB-22, RB-24, ADR-022 | S3-FR-019, S3-FR-043, S3-FR-044 | S3-T026 (`1bf574f`) | [S3-US3-AC10, AC11 e AC12 · progressão, troca direta, rascunho, arquivos e replay](../tests/ui/s3/maze.test.tsx) | Validado localmente |
+
+## Cursor de inserção dos controladores
+
+| Origem | Requisitos | Tarefa e commit | Verificação | Estado |
+|---|---|---|---|---|
+| RB-23, RB-20 | S3-FR-023, S3-FR-038 | S3-T027 (`06d5d54`) | [S3-US3-AC13 · cor do cursor nos três editores](../tests/ui/s3/us3-controladores.test.tsx) e [clique, setas e inserção no Chrome](registro-de-consolidacao.md#2026-11-22--cursor-nos-editores-de-estratégia) | Validado localmente |
+
+## Largada de sumô · ADR-023
+
+| Origem | Requisito | Tarefa e commit | Testes | Estado |
+|---|---|---|---|---|
+| ADR-023, RB-25, RB-27 | S2-FR-040 | S2-T047 (`d6a6941`) | [S2-US3-AC16 a AC18 · fronteira, empate e vitória](../tests/core/acceptance/s2/us3-largada.test.ts) e [comandos constantes na CLI](../tests/cli/run-cli.test.ts) | Validado localmente |
+| ADR-023, RB-24, RB-40 | S3-FR-045 | S3-T028 (`a82dbb3`) | [S3-US2-AC17 · pausa, pontos da rodada, reinício, rewind e replay v5](../tests/ui/s3/us2-largada.test.tsx) e [verificação no Chrome](registro-de-consolidacao.md#largada-de-sumô--2026-11-22) | Validado localmente |
+
+## Movimento visível após a queima · ADR-024
+
+| Origem | Requisito | Tarefa e commit | Teste | Estado |
+|---|---|---|---|---|
+| ADR-024, RB-25, RB-27 | S2-FR-040 | S2-T048 (`d54b503`) | [S2-US3-AC16 a AC19 · primeiro comando, decisão, duração, contatos e bloqueio](../tests/core/acceptance/s2/us3-largada.test.ts) | Validado localmente |
+| ADR-024, RB-24, RB-40 | S3-FR-045 | S3-T029 (`ad71d1d`) | [S3-US2-AC17/18 · identificação, pausa, retrocesso, replay v5 e v6](../tests/ui/s3/us2-largada.test.tsx) e [verificação no Chrome](registro-de-consolidacao.md#demonstração-da-queima--2026-11-22) | Validado localmente |
+
+## Controladores em Portugol e tutorial · ADR-025
+
+| Origem | Requisito | Tarefa | Evidência |
+|---|---|---|---|
+| RB-18, RB-41, ADR-025 | S2-FR-041 | S2-T049 (`44d8fd2`, `ca2a08b`) | [S2-US2-AC15/16 · módulo íntegro, memória, limites, sensores e comando efetivo](../tests/runtime/portugol.test.ts) |
+| RB-23, RB-41, ADR-025 | S3-FR-046 | S3-T030 (`0759152`) | [S3-US3-AC14/15 · rascunhos, arquivos, ajuda acessível, aplicação e replay](../tests/ui/s3/portugol.test.tsx) |

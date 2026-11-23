@@ -1,16 +1,17 @@
-# Contrato de gravação · v1
+# Contrato de gravação · v1 a v7
 
 Arquivo JSON UTF-8, independente do estado atual da tela.
 
 | Chave | Tipo e invariante |
 |---|---|
 | `format` | Constante `sheepbotz-arena`. |
-| `version` | Inteiro `1`. |
+| `version` | Inteiro `1` sem detector, `2` com critério individual, `3` com os critérios individual e conjunto sem largada, `4` em labirinto, `5` no sumô com queima imediata e `6` no sumô com demonstração de 0.50 s. A versão `7` guarda a linguagem de cada robô. |
+| `stallSeconds` | Obrigatório nas versões 2, 3, 5 e 6 e na versão 7 de sumô. Inteiro 5, 10 ou 30 em sumô. |
 | `world` | Texto original do mundo, aceito pelo validador da S1. |
 | `controllers` | Objeto com o texto do controlador aplicado de cada ID, exatamente na mesma associação do mundo. |
 | `createdAt` | Data UTC em ISO 8601 no formato de `Date.toISOString()`. |
 | `events` | Lista em ordem acumulada, com os campos do estado da S2. Eventos de partida têm ID nulo. |
-| `states` | De 1 a 100 001 objetos. Cada um contém todos os campos de `SimState`, com a lista `events` representada por `eventCount`. |
+| `states` | De 1 a 100 001 objetos. Cada um guarda tick, tempo, robôs, status, resultado e o prefixo de eventos por `eventCount`. O monitor da v2 é derivado das poses. |
 
 `states[k]` representa o tick `k`, tempo `k × dt`, robôs na mesma ordem
 e com os IDs do mundo. `eventCount` é o comprimento do prefixo de `events`
@@ -34,3 +35,29 @@ preserva a sessão anterior. A UI gera o nome
 `sheepbotz-<nome>-<AAAA-MM-DD-HHmm>.json` com o tempo UTC de criação.
 No nome, transliterar acentos e substituir espaços ou caracteres fora de
 letras e dígitos por hífen, com `mundo` como componente padrão.
+
+## Extensão v2 (ADR-018)
+
+A v2 registra a configuração em `stallSeconds`. Na leitura, reconstruir os centros de referência e o tempo sem progresso em ordem de tick a partir das poses gravadas, conforme a regra individual da ADR-018. Conferir o resultado com o prazo escolhido. A v1 mantém os motivos de encerramento anteriores à ADR-018.
+
+## Extensão v3 (ADR-019)
+
+Na v3, um estado pode incluir `pairContact: true` para registrar colisão entre os robôs. Se presente, requer tick positivo e ambos os bumpers ativos. Omissão significa falso. A leitura reconstrói as duas contagens sequencialmente, usando esse sinal, os raios do mundo e as poses gravadas. O resultado deve coincidir com a regra da versão do arquivo. Ao salvar um replay importado, preservar a versão original.
+
+A inspeção de borda da ADR-020 deriva as leituras do mundo e da pose gravada em cada tick. Isso se aplica às versões 1, 2 e 3, inclusive a arquivos gravados antes da revisão da API. Exibir a leitura dispensa executar o controlador.
+
+## Versão 4 · Labirinto
+
+Reservada a mundos `maze`, sem `stallSeconds`. Usa os estados e prefixos de eventos existentes. Conferir `fim_do_nivel` único no último tick positivo e validar `saida_alcancada` pela pose física e pelo id do robô. Uma chegada antecipada em estado em andamento invalida o arquivo. As versões 1–3 conservam seus modos anteriores.
+
+### Versão 5 · Sumô com largada
+A versão 5 identifica a espera fixa de 5 s e usa o mesmo stallSeconds e contato do par da v3. Durante a espera a física permanece no estado inicial. O último estado com queima registra falseStarters, uma lista dos infratores distintos na ordem dos robôs. O resultado registra motivo, tick, vencedor e pontos por ID. Validar a janela pelo tempo anterior ao passo, poses e comandos imóveis, vínculo entre infratores, vencedor e pontos e evento final único. Não executar os scripts ao ler. V1–v4 conservam as próprias regras.
+
+### Versão 6 · Demonstração da queima
+
+Em todo quadro desde a infração, inclusive no último, gravar `falseStartTick` (primeiro tick com movimento) e `falseStarters` (IDs não repetidos em ordem do mundo). Ambos os campos estão ausentes antes da queima. O primeiro tick da demonstração deve partir de tempo observado menor que 5 s. Os infratores conservam seus comandos saturados e os demais ficam sem tração. Valem os limites de movimento da arena e a física continua a atualizar as leituras.
+
+Aceitar exportação parcial durante a demonstração. O estado terminal requer o primeiro tick que completa 0.50 s de movimento, um evento de fim, vencedor e pontos compatíveis com os infratores iniciais. Guardar o resultado no último estado e exibir separadamente o tick da infração. A reprodução usa as poses gravadas. A v5 conserva os sensores, as poses imóveis e o fim imediato inclusive ao exportar novamente.
+
+### Versão 7 · fontes em Portugol
+Quando há Portugol, manter controllers com o texto original por ID e acrescentar languages com exatamente os mesmos IDs e valores javascript ou portugol. Validar estados como v6 no sumô, v4 no labirinto e v1 em mundo livre. V1–v6 conservam as linguagens JavaScript implícitas. Ler estados gravados não requer o runtime de Portugol.

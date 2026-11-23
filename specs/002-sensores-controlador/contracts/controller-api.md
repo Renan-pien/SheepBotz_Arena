@@ -1,6 +1,6 @@
-# Contrato da API do controlador · v1
+# Contrato da API do controlador · JavaScript v3 e Portugol v1
 
-O controlador é um script JavaScript síncrono em modo estrito. Declara `loop()` e pode declarar `setup()`.
+Na linguagem padrão, o controlador é um script JavaScript síncrono em modo estrito. Declara `loop()` e pode declarar `setup()`.
 Instruções no nível superior são avaliadas uma vez por carga, inclusive no reset, sem acesso
 às funções do robô. Um erro de sintaxe, forma de script incompatível com a execução síncrona,
 ausência de `loop()` ou falha durante a avaliação gera `CONTROLADOR_INVALIDO` antes do tick 0.
@@ -18,7 +18,7 @@ exceção que sai do callback gera `erro_controlador`. Essas regras também vale
 ## Fases e dados disponíveis
 
 No primeiro tick executado, `setup()` roda imediatamente antes de `loop()`. Ambas observam a
-pose e os sensores publicados no tick 0. Em cada passo `k → k + 1`, `loop()` é chamada uma vez
+pose e os sensores publicados no tick 0. Em cada passo de disputa `k → k + 1`, `loop()` é chamada uma vez
 por robô ativo, na ordem do mundo, e observa os dados do tick `k`. A API está disponível durante
 essas chamadas e seus auxiliares síncronos.
 
@@ -28,9 +28,10 @@ produzem os mesmos estados, eventos e histórico para as mesmas entradas.
 | Função | Retorno e efeito |
 |---|---|
 | `readLaser()` | Cópia mutável de `number[]` na ordem do raio 0 ao último. Lista vazia sem laser. |
+| `readEdge()` | Em sumô, novo objeto `{ front, rear, left, right }` de booleanos por chamada. Em modo livre, `null`. Disponível desde o primeiro `setup()`, inclusive sem laser. |
 | `readBumper()` | Booleano com o contato registrado no estado observado. Falso no tick 0. |
 | `readOdometry()` | Cópia de `{ x, y, theta }` em metros e radianos. |
-| `getInfo()` | Cópia de `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }`. `tick` e `time` são observados. `laser` é `{ rays, fov, maxRange }` ou `null` e `arenaRadius` é o raio em metros ou `null`. |
+| `getInfo()` | Cópia de `{ id, tick, time, dt, radius, maxLinearSpeed, maxAngularSpeed, arenaRadius, laser }`. `startReleased` é acrescentado em sumô com largada. `tick` e `time` são observados. `laser` é `{ rays, fov, maxRange }` ou `null` e `arenaRadius` é o raio em metros ou `null`. |
 | `setSpeed(v, w)` | Recebe dois números finitos em m/s e rad/s. O último comando válido do passo é aplicado após saturação pela física. Sem chamada, vale o comando efetivo anterior. |
 | `random()` | Número em `[0, 1)`. Usa a semente do mundo e o índice do robô. `setup()` e `loop()` compartilham apenas a sequência daquele robô. |
 | `log(...valores)` | Converte cada valor de um log aceito com `String(valor)` e junta com um espaço. Registra ID do robô e tick `k + 1`. São aceitos até 1 000 logs por robô por execução. Descarte tentativas excedentes antes de converter os argumentos. A tentativa 1 001 gera o aviso único `limite_de_logs`. |
@@ -47,3 +48,22 @@ Para uma exceção com `message`, use seu texto. Sem `message`, converta o valor
 
 A [pesquisa R4](../research.md#r4--sequência-pseudoaleatória-por-robô) fixa o algoritmo e os
 vetores do gerador. Os scripts fornecidos como exemplo são os do Anexo D da [spec](../spec.md).
+
+## Sensor de borda (ADR-020)
+
+A partir da pose física do tick observado, cada ponto fica a um raio de robô do centro. Os ângulos relativos para frente, traseira, esquerda e direita são 0, π, +π/2 e −π/2. Cada valor é verdadeiro desde a margem interna da faixa (0.975 × raio da arena, inclusive) para fora. A revisão v2 acrescenta essa função às estratégias predefinidas e personalizadas.
+
+### Liberação da largada
+Em rodada com a regra, `getInfo().startReleased` é booleano e usa o tempo anterior ao passo. Para uma estratégia compatível com execuções legadas, usar `if (getInfo().startReleased === false) return;` antes de comandar movimento. Na execução legada o campo é omitido. Durante a espera os sensores, logs e sorteios continuam disponíveis.
+
+No tick de infração, concluir os callbacks dos dois robôs. Durante a demonstração, conservar o primeiro comando de movimento válido de cada infrator, inclusive se uma chamada posterior falhar. As estratégias só voltam a ser chamadas numa nova execução da rodada.
+
+## Perfil Portugol · ADR-025
+Arquivo .por com usar "maker", decidir() obrigatória e preparar() opcional, ambas sem argumentos. O bloco inicio e preparar() rodam no primeiro passo antes de decidir(). Variáveis globais persistem até reset. Aceitar funções auxiliares, variáveis escalares, se, enquanto, para, retorno, aritmética, comparações e consulta por índice. Cada callback dispõe de 4096 entradas em funções e iterações. Limitar o fonte a 32 KiB. Diagnosticar operações e módulos fora do perfil antes de aplicar.
+
+- definir_velocidade(v,w), ler_laser(), ler_contato(), aleatorio() e registrar(...) delegam às operações homólogas da Arena. escreva também registra no log. ler_laser_central() devolve o raio central ou zero sem raios.
+- ler_borda(lado) aceita frente, traseira, esquerda e direita; fora do sumô devolve falso. ler_odometria() devolve uma cópia com x, y e theta, consultáveis por chave. tempo_simulado() e largada_liberada() observam o tick corrente; a largada está liberada quando a regra está ausente.
+- iot_configurar_pino(2,"SAIDA"), iot_ligar(2) e iot_desligar(2) utilizam o módulo público do Maker. Nível alto aplica (0.20,0) e nível baixo (0,0). Só existe esse pino virtual. Esperas são escritas com tempo_simulado().
+- O programa vê apenas dados e operações do próprio robô. Uma tentativa de usar recurso indisponível na carga produz CONTROLADOR_INVALIDO. Uma falha em callback segue erro_controlador.
+
+O perfil trabalha com inteiros de até 256 bits, reais finitos e textos de até 4096 caracteres. Literais de lista aceitam até 1024 escalares e 4096 caracteres de texto no total. Leituras por índice usam as cópias locais. Operações de hardware físico, espera bloqueante, atributos de objetos e outros plugins ficam fora do perfil. A cota de trabalho reinicia na inicialização e em cada decisão.

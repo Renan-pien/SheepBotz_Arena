@@ -25,25 +25,24 @@ deslocamento, as duas vistas e centralização. Confira o comportamento
 em 1024 px e 1023 px com teclado, sem depender só dos indicadores de cor.
 
 Execute. O Duelo com Caçador e Girador termina com vitória de vermelho
-por saída da arena, tick 34, 0,68 s. Reinicie, avance um tick e confira
+por saída da arena, tick 284, 5,68 s. Reinicie, avance um tick e confira
 que contador, painel e cena permanecem no mesmo tick. Em execução,
 oculte a aba e volte. O estado permanece pausado e conserva o tick.
 
 ## Cargas e erros
 
-Abra Sala com obstáculos e observe o Desviador. Abra o JSON do mesmo
-mundo como arquivo para confirmar que começa com Parado. Abra um mundo
+Selecione **Modo → Labirinto**, confira **Dificuldade → Fácil** e execute o Navegador até a chegada quadriculada. Confira o tempo final, volte um tick e avance. Clique em Próximo nível e confirme o tick 0 pausado e o mesmo código. Confira **Dificuldade → Médio**. Escolha **Difícil** diretamente e verifique que o mapa abriu pausado no tick 0 com a estratégia aplicada. Execute até a chegada. Exporte a chegada e abra a gravação. Abra o arquivo `examples/worlds/sala-com-obstaculos.json` para confirmar o modo livre com Parado. Abra um mundo
 inválido e confira todos os erros e a preservação do mundo anterior.
 No cartão, carregue um rascunho com erro, tente aplicar e conserve a sessão.
 Salve o rascunho, restaure um exemplo válido e aplique para voltar ao tick 0.
 
 ## Replay
 
-Após a luta padrão, clique em Ver replay e confira intervalo 0 a 34.
+Após a luta padrão, clique em Ver replay e confira intervalo 0 a 284.
 Vá ao tick 20, volte e avance. Exporte, abra o arquivo e compare os estados
-com a gravação anterior e com o resultado CLI de referência. Verifique a
+com a gravação anterior e com o resultado da CLI com `--sumo-start-delay --stall-seconds 10`. Verifique a
 preservação da sessão ao abrir uma versão desconhecida e o retorno ao
-vivo no tick 0 ao sair do replay. [Contrato v1](contracts/gravacao.md)
+vivo no tick 0 ao sair do replay. [Contrato de gravação](contracts/gravacao.md)
 
 ## Desempenho e apresentação
 
@@ -73,3 +72,13 @@ controle. Os 35 estados exportados corresponderam à saída da CLI.
 O ensaio também confirmou órbita, roda, arraste direito, Shift com
 arraste, mudança de vista, rejeição de arquivo inválido, saída do replay,
 edição por arquivo, apresentação e layout a 1024 e 1023 px.
+
+### Conferir o cursor de texto no navegador
+
+Na aba **Controladores** do Sumô, clique entre dois caracteres do código de `vermelho`, depois em outro ponto da mesma linha. Confira se a barra clara aparece no ponto do último clique. Use as setas direita e esquerda para mover um caractere e as setas para baixo e para cima para mudar de linha. Digite uma letra e confira onde ela entrou no rascunho. Repita em `azul` e, em **Modo → Labirinto**, no editor de `explorador`.
+
+### Testar queima de largada
+Aplique `function loop() { setSpeed(0, 1); }` a vermelho e deixe azul com o Girador de exemplo. No tick 0 confira “Largada em 5,00 s”. Avance uma vez e confira “vermelho · Queimou” enquanto ele gira. Clique em Executar e confira a pausa no tick 25 com um ponto para azul. Volte e avance para rever o resultado. Aplique o mesmo código a azul e execute novamente para ver os dois rótulos e o empate sem pontos. Reiniciar abre outra espera completa.
+
+### Programar em Portugol e consultar a ajuda
+No Sumô, escolha Portugol no vermelho e mantenha JavaScript no azul. Abra **? Comandos**, consulte a borda, feche com Escape e confira o foco no botão. Aplique Guarda da borda. No duelo padrão, avance até a liberação aos 5 s e compare dois ticks usando Voltar e Avançar. Abra um .por com erro e aplique: confira o diagnóstico e a conservação do último estado. No Labirinto, aplique Desviar da parede, troque a dificuldade e confira o mesmo fonte. Salve o .por, exporte a gravação e abra-a em outra sessão: os estados e a linguagem devem aparecer antes de carregar o motor. A ajuda continua disponível no replay.

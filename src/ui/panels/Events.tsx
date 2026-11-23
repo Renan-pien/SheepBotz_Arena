@@ -6,6 +6,7 @@ const typeLabels: Record<SimEvent['type'], string> = {
   erro_controlador: 'Erro de controlador',
   limite_de_logs: 'Limite de logs',
   fim_da_luta: 'Fim da luta',
+  fim_do_nivel: 'Fim do nível',
 };
 const eventLimit = 500;
 

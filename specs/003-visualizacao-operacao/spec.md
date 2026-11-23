@@ -52,7 +52,7 @@ Como membro da equipe (ou da plateia), quero ver a arena, os robôs e o que cada
 6. **Dado** a opção "Mostrar raios" desligada, **Quando** a cena é desenhada, **Então** nenhum raio aparece, e a simulação continua idêntica.
 7. **Dado** o "Sala com obstáculos", **Quando** é carregado, **Então** a cena mostra as paredes do mapa, os três obstáculos e o robô `explorador` com 9 raios, sem arena.
 8. **Dado** um robô desativado (Spec 002), **Quando** a cena é desenhada, **Então** ele aparece acinzentado, com um ícone de alerta.
-9. **Dado** um rótulo visível, **Quando** "Mostrar rótulos" é desligado, **Então** o rótulo desaparece e o estado exibido é preservado. Na luta padrão, o contorno destaca azul ao sair da arena no tick 34.
+9. **Dado** um rótulo visível, **Quando** "Mostrar rótulos" é desligado, **Então** o rótulo desaparece e o estado exibido é preservado. Na luta padrão, o contorno destaca azul ao sair da arena no tick 284.
 10. **Dado** uma câmera deslocada, **Quando** o usuário escolhe "Centralizar", **Então** o ponto de interesse volta ao centro da área enquadrada, preservando a vista de cima ou 3D selecionada.
 
 ---
@@ -77,6 +77,12 @@ Como membro da equipe, quero executar, pausar, avançar tick a tick e reiniciar 
 8. **Dado** a simulação finalizada, **Quando** o usuário olha os controles, **Então** "Executar" e "Avançar 1 tick" estão desabilitados e "Reiniciar" está habilitado.
 9. **Dado** o foco fora de campos de texto, do editor e de controles que usam a tecla pressionada, **Quando** o usuário pressiona Espaço, **Então** alterna entre executar e pausar. Seta para a direita avança 1 tick quando a simulação está parada e R reinicia. Com o foco no editor, essas teclas conservam sua função de edição.
 10. **Dado** a execução, **Quando** a aba fica em segundo plano e volta à frente, **Então** a simulação permanece pausada no último estado, sem avançar ticks pelo tempo fora da aba.
+11. **Dado** o Duelo parado no tick 10, **Quando** o usuário clica duas vezes em “Voltar 1 Tick”, ao lado de “Avançar 1 tick”, **Então** cena, inspeção, eventos e gravação corrente terminam no tick 8. No tick 0 e durante a execução o botão fica desabilitado.
+12. **Dado** um controlador com memória, registros e sorteios, **Quando** a sessão volta e retoma por passo ou execução contínua, **Então** todos os estados e eventos são idênticos aos de uma execução contínua com as mesmas entradas, inclusive em ticks novos. Voltar do fim da luta remove o resultado até avançar de novo ao tick final.
+13. **Dado** um mundo livre além de 100 000 ticks, **Quando** o usuário retrocede e avança através desse limite, **Então** cada ação percorre exatamente um tick e a gravação vai do tick 0 ao menor entre o tick exibido e 100 000.
+14. **Dado** prazo de 5 s no Duelo, **Quando** houver pausa, retrocesso e retomada, **Então** o tempo segue os ticks observados, e a escolha só reabre ao começar outra rodada.
+15. **Dado** o tick 499 com cinco segundos de impasse quase completos, **Quando** um passo ou um lote atingir o tick 500, **Então** registrar um empate, descartar o saldo do lote e publicar a próxima rodada pausada no tick 0. Pulsos adicionais deixam o tick em zero. Novo avanço explícito reproduz o primeiro passo original.
+16. **Dado** o Duelo com dois Caçadores e “Regra de Tempo” em 10 s, **Quando** a rodada passar do tick 757 ao 758, inclusive após retroceder, **Então** registrar o empate, disponibilizar o replay e restaurar o tick 0 pausado. No tick 757 resta 0.02 s.
 
 ---
 
@@ -90,13 +96,13 @@ Como membro da equipe, quero escolher ou abrir um mundo e escrever a estratégia
 
 **Cenários de aceitação:**
 
-1. **Dado** o seletor de mundos, **Quando** o usuário escolhe "Sala com obstáculos", **Então** a cena e os painéis passam a refletir esse mundo no tick 0, com o controlador "Desviador" no robô `explorador`.
+1. **Dado** o seletor de modo, **Quando** o usuário escolhe Labirinto, **Então** a cena e os painéis passam a refletir esse mundo no tick 0, com o controlador "Navegador" no robô `explorador`.
 2. **Dado** o botão "Abrir mundo", **Quando** o usuário escolhe um arquivo de mundo válido, **Então** o mundo é carregado no tick 0 e todos os robôs começam com o controlador "Parado".
 3. **Dado** um arquivo de mundo com 3 erros, **Quando** o usuário o abre, **Então** aparece a lista dos 3 erros, cada um com código, caminho e mensagem em pt-BR, e o mundo anterior continua carregado e intacto.
-4. **Dado** a aba "Controladores", **Quando** o usuário escolhe um exemplo para um robô (Parado, Avança, Girador, Caçador ou Desviador), **Então** o código do exemplo aparece no editor daquele robô.
+4. **Dado** a aba "Controladores", **Quando** o usuário escolhe um exemplo para um robô (Parado, Avança, Girador, Caçador, Desviador ou Navegador), **Então** o código do exemplo aparece no editor daquele robô.
 5. **Dado** um código alterado e não aplicado, **Quando** o usuário olha o cartão do robô, **Então** aparece o aviso "alterações não aplicadas"; **Quando** clica em "Aplicar", **Então** o código é verificado e, se válido, a simulação é reiniciada com o novo controlador.
 6. **Dado** um código com erro de sintaxe, **Quando** o usuário clica em "Aplicar", **Então** aparece `CONTROLADOR_INVALIDO` com o detalhe original (e a linha, quando disponível). O código aplicado, a gravação e o modo em curso são preservados e o rascunho segue editável.
-7. **Dado** um editor de controlador, **Quando** o usuário clica em "Salvar código", **Então** o navegador baixa um arquivo `.js` com o código; **Quando** clica em "Abrir código" e escolhe um arquivo `.js`, **Então** o código aparece no editor, ainda não aplicado.
+7. **Dado** um editor de controlador em JavaScript, **Quando** o usuário clica em "Salvar código", **Então** o navegador baixa um arquivo `.js` com o código; **Quando** clica em "Abrir código" e escolhe um arquivo `.js`, **Então** o código aparece no editor, ainda não aplicado.
 8. **Dado** um robô cujo controlador falha durante a execução, **Quando** o erro ocorre, **Então** o cartão do robô mostra "desativado" com a mensagem do erro, e a simulação continua.
 9. **Dado** que há rascunhos nos dois robôs, **Quando** o usuário aplica um deles, **Então** só esse código muda na configuração em execução e o rascunho do outro permanece. "Restaurar exemplo" repõe no editor o último exemplo escolhido para aquele robô, com o exemplo inicial como padrão, deixando a aplicação a cargo de "Aplicar".
 
@@ -116,8 +122,9 @@ Como membro da equipe, quero ver em números o que cada robô está sentindo e f
 2. **Dado** a simulação avançando, **Quando** o estado muda, **Então** o painel mostra os valores do estado exibido na cena (nunca de outro tick).
 3. **Dado** um robô empurrado, **Quando** o usuário olha o cartão, **Então** vê a pose real, a odometria e a diferença entre elas em metros.
 4. **Dado** a aba "Eventos", **Quando** ocorrem logs, erros de controlador ou o fim da luta, **Então** cada evento aparece com tick, robô, tipo e mensagem, em ordem, com erros destacados. É possível filtrar por robô e por tipo. O evento da luta aparece como "Partida", sem associação ao vencedor. Dos eventos que atendem aos filtros, aparecem os 500 mais recentes em ordem e a quantidade oculta.
-5. **Dado** os controladores padrão, **Quando** a luta termina, **Então** aparece o aviso de resultado "Vitória de vermelho — saída da arena · tick 34 · 0,68 s", com os botões "Reiniciar" e "Ver replay".
+5. **Dado** os controladores padrão, **Quando** a luta termina, **Então** aparece o aviso de resultado "Vitória de vermelho — saída da arena · tick 284 · 5,68 s", com os botões "Reiniciar" e "Ver replay".
 6. **Dado** uma luta que termina por tempo, **Quando** ela termina, **Então** o aviso diz "Empate — tempo esgotado"; se os dois saírem juntos, "Empate — os dois saíram da arena".
+7. **Dado** um robô de sumô que cruza a faixa entre dois ticks, **Quando** a inspeção avança, retrocede, reinicia ou exibe uma gravação v1, v2 ou v3, **Então** as quatro leituras correspondem ao tick mostrado. No modo livre, a inspeção informa que a borda está indisponível.
 
 ---
 
@@ -132,9 +139,9 @@ Como membro da equipe, quero rever qualquer momento da luta, avançando e voltan
 **Cenários de aceitação:**
 
 1. **Dado** uma execução no modo ao vivo, **Quando** os ticks avançam, **Então** todos os estados, desde o tick 0, ficam gravados automaticamente.
-2. **Dado** uma luta encerrada no tick 34, **Quando** o usuário clica em "Ver replay", **Então** a tela entra no modo replay pausada no tick 0, com a linha do tempo de 0 a 34 e a edição de mundo e de controladores bloqueada.
+2. **Dado** o Duelo atual encerrado no tick 284, **Quando** o usuário clica em "Ver replay", **Então** a tela entra no modo replay pausada no tick 0, com a linha do tempo de 0 a 284 e a edição de mundo e de controladores bloqueada.
 3. **Dado** o modo replay, **Quando** o usuário arrasta a linha do tempo até o tick 20, **Então** a cena, o contador e o painel de inspeção mostram exatamente o estado 20 gravado.
-4. **Dado** o modo replay no tick 20, **Quando** o usuário usa "Voltar 1 tick" (ou a seta para a esquerda) e "Avançar 1 tick", **Então** vai ao tick 19 e ao tick 20, respectivamente; "Executar" reproduz a gravação na velocidade escolhida.
+4. **Dado** o modo replay no tick 20, **Quando** o usuário usa "Voltar 1 Tick" (ou a seta para a esquerda) e "Avançar 1 tick", **Então** vai ao tick 19 e ao tick 20, respectivamente; "Executar" reproduz a gravação na velocidade escolhida.
 5. **Dado** uma gravação, **Quando** o usuário clica em "Exportar gravação", **Então** o navegador baixa um arquivo com o mundo, os controladores e todos os estados.
 6. **Dado** o arquivo exportado, **Quando** o usuário clica em "Abrir gravação" e o escolhe, **Então** a tela entra no modo replay pausada no tick 0 e reproduz exatamente os estados exportados, inclusive quando a gravação é parcial.
 7. **Dado** um arquivo de gravação corrompido ou de outro tipo, **Quando** o usuário tenta abri-lo, **Então** aparece o erro `GRAVACAO_INVALIDA` com a explicação, e a tela continua como estava.
@@ -142,6 +149,8 @@ Como membro da equipe, quero rever qualquer momento da luta, avançando e voltan
 9. **Dado** o modo replay, **Quando** o usuário clica em "Sair do replay", **Então** volta ao modo ao vivo pausado no tick 0, com o mundo e os controladores da gravação. Se houver falha na preparação ao vivo, os erros são exibidos e o replay permanece disponível no mesmo tick.
 10. **Dado** uma execução livre no tick 100 000, **Quando** ela chega ao tick 100 001, **Então** o estado ao vivo avança, a tela informa "limite de gravação atingido" e a gravação contém exatamente 100 001 estados, do tick 0 ao 100 000.
 11. **Dado** o replay no primeiro ou último tick gravado, **Quando** o usuário tenta ir além da extremidade correspondente, **Então** o cursor permanece naquela posição. A reprodução contínua para ao atingir o último tick.
+12. **Dada** uma gravação legada ou uma rodada empatada, **Quando** o replay alcança o último tick, **Então** conserva o último estado e não prepara uma nova batalha.
+13. **Dada** uma gravação anterior à regra de giro em que os dois Caçadores passam do tick 508, **Quando** aberta e salva novamente, **Então** conserva o resultado e a contagem individuais. Uma gravação com largada reproduz o empate no tick 758 para o prazo de 10 s.
 
 ---
 
@@ -194,7 +203,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 
 ### 4.3 Controles de tempo
 
-- **FR-012:** A tela DEVE oferecer "Executar", "Pausar", "Avançar 1 tick" e "Reiniciar", com habilitação coerente ao estado (por exemplo, "Avançar 1 tick" só com a simulação pausada; "Executar" e "Avançar" desabilitados após o fim da luta). *(RB-24)*
+- **FR-012:** A tela DEVE oferecer "Executar", "Pausar", "Avançar 1 tick", "Voltar 1 Tick" e "Reiniciar". Os dois comandos de passo ficam adjacentes e disponíveis com a sessão parada quando existe um passo naquela direção. Retroceder deixa a sessão pausada no estado anterior completo. Retomar reproduz a trajetória, incluindo a memória e os sorteios de cada estratégia. "Executar" e "Avançar" ficam desabilitados após o fim da luta. *(RB-24, ADR-017)*
 - **FR-013:** A tela DEVE exibir o tick atual, o tempo atual (em segundos, 2 casas decimais) e o status ("pronta", "executando", "pausada", "finalizada"). "Pronta" identifica uma sessão parada no tick 0 após carregar ou reiniciar. *(RB-24)*
 - **FR-014:** A tela DEVE oferecer as velocidades 0,25×, 0,5×, 1×, 2× e 4×; em 1×, o tempo simulado acompanha o tempo real dentro da resolução de um passo, se o computador acompanhar. *(RB-24)*
 - **FR-015:** Nenhum tick DEVE ser pulado; quando o computador não acompanhar a velocidade escolhida, a execução desacelera e o aviso "abaixo do tempo real" é mostrado. *(RB-24, RB-27)*
@@ -204,11 +213,11 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 
 ### 4.4 Mundos e controladores
 
-- **FR-019:** A tela DEVE oferecer um seletor com os mundos de exemplo (Spec 002, FR-035) e um botão "Abrir mundo" para escolher um arquivo `.json`. *(RB-22)*
+- **FR-019:** A tela DEVE oferecer o seletor Modo com Sumô e Labirinto (FR-044) e um botão "Abrir mundo" para escolher um arquivo `.json`. *(RB-22)*
 - **FR-020:** Ao abrir um mundo inválido, a tela DEVE listar todos os erros (código, caminho, mensagem) e manter o mundo anterior. *(RB-46)*
-- **FR-021:** Ao carregar um mundo, os controladores iniciais DEVEM ser: no "Duelo padrão", `vermelho` com "Caçador" e `azul` com "Girador"; no "Sala com obstáculos", `explorador` com "Desviador"; em mundos abertos de arquivo, "Parado" para todos. *(RB-22, RB-23, ADR-003)*
+- **FR-021:** Ao carregar um mundo, os controladores iniciais DEVEM ser: no "Duelo padrão", `vermelho` com "Caçador" e `azul` com "Girador"; nos três labirintos, `explorador` com "Navegador"; em mundos abertos de arquivo, "Parado" para todos. *(RB-22, RB-23, ADR-003)*
 - **FR-022:** A tela inicial DEVE abrir com o "Duelo padrão" e seus controladores iniciais, no tick 0, pausada. *(RB-24, ADR-003)*
-- **FR-023:** A aba "Controladores" DEVE ter um cartão por robô (com `id` e cor), contendo: seletor de exemplos (Spec 002, Anexo D), editor de código com fonte monoespaçada e números de linha, aviso de "alterações não aplicadas" e os botões "Aplicar", "Restaurar exemplo", "Abrir código" (`.js`) e "Salvar código" (`.js`). *(RB-23)*
+- **FR-023:** A aba "Controladores" DEVE ter um cartão por robô (com `id` e cor), contendo: seletor de exemplos (Spec 002, Anexo D), editor de código com fonte monoespaçada, números de linha e cursor de inserção visível no editor em foco, aviso de "alterações não aplicadas" e os botões "Aplicar", "Restaurar exemplo", "Abrir código" e "Salvar código" (`.js` ou `.por` conforme FR-046). *(RB-23)*
 - **FR-024:** "Aplicar" DEVE verificar o controlador; se inválido, mostrar a mensagem de `CONTROLADOR_INVALIDO` e manter o controlador anterior; se válido, reiniciar a simulação com ele. *(RB-23, ADR-014)*
 - **FR-025:** Erros de controlador durante a execução DEVEM aparecer no cartão do robô ("desativado" + mensagem) e na aba "Eventos". *(RB-23, RB-39)*
 
@@ -218,11 +227,13 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 - **FR-027:** A aba "Eventos" DEVE listar os eventos (tick, robô, tipo, mensagem) em ordem, com filtro por robô e por tipo, destacando erros; DEVE exibir os 500 mais recentes e informar quantos foram ocultados. *(RB-39, ADR-013)*
 - **FR-028:** Ao fim de uma luta, a tela DEVE mostrar um aviso de resultado com vencedor (ou empate), motivo em pt-BR ("saída da arena", "tempo esgotado", "os dois saíram da arena"), tick e tempo, e os botões "Reiniciar" e "Ver replay". *(RB-25)*
 
+- **FR-042:** A inspeção DEVE identificar Frente, Traseira, Esquerda e Direita de cada robô de sumô e exibir em texto se cada lado está na borda ou no interior, conforme S2-FR-038. A leitura acompanha o tick exibido, inclusive em replay de gravações anteriores. No modo livre informa indisponibilidade. *(RB-39, ADR-020)*
+
 ### 4.6 Gravação e replay
 
 - **FR-029:** Toda execução no modo ao vivo DEVE ser gravada automaticamente, desde o tick 0, até 100 000 ticks. *(RB-40)*
 - **FR-030:** A gravação DEVE conter: identificação do formato e sua versão, o mundo (texto original), os controladores de cada robô (texto), a data de criação e a lista de estados completos e consecutivos, a partir do tick 0, incluindo eventos e resultado. *(RB-40)*
-- **FR-031:** O modo replay DEVE exibir exclusivamente os estados gravados, sem executar o núcleo nem os controladores; DEVE oferecer linha do tempo, "Executar", "Pausar", "Avançar 1 tick", "Voltar 1 tick" e as mesmas velocidades do modo ao vivo; e DEVE bloquear a edição de mundo e de controladores. *(RB-40)*
+- **FR-031:** O modo replay DEVE exibir exclusivamente os estados gravados, sem executar o núcleo nem os controladores; DEVE oferecer linha do tempo, "Executar", "Pausar", "Avançar 1 tick", "Voltar 1 Tick" e as mesmas velocidades do modo ao vivo; e DEVE bloquear a edição de mundo e de controladores. *(RB-40)*
 - **FR-032:** A tela DEVE permitir "Exportar gravação" (baixar arquivo `.json` com nome `sheepbotz-<nome do mundo>-<AAAA-MM-DD-HHmm>.json`) e "Abrir gravação". *(RB-40)*
 - **FR-033:** Ao abrir uma gravação inválida (estrutura incorreta, versão desconhecida, mundo inválido ou estados incompatíveis com o mundo), a tela DEVE mostrar o erro `GRAVACAO_INVALIDA` com a explicação e manter o estado anterior. *(RB-40)*
 - **FR-034:** Reexecutar no núcleo o mundo e os controladores de uma gravação produzida pela aplicação, com a mesma semente e até seu último tick gravado, DEVE produzir estados idênticos aos gravados. *(RB-27, RB-40)*
@@ -237,6 +248,8 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 - **FR-037:** Todos os controles DEVEM ser acessíveis por teclado, com foco visível e rótulo textual (inclusive botões com ícone). *(RB-20, Constituição VIII)*
 - **FR-038:** Textos e controles DEVEM ter contraste mínimo de 4,5:1 com o fundo. *(RB-20, Constituição VIII)*
 - **FR-039:** O layout DEVE funcionar a partir de 1024 px de largura, com a cena ao centro e o painel lateral recolhível; abaixo disso, o painel passa para baixo da cena. *(RB-20)*
+- **FR-040:** Conforme ADR-018 e ADR-019, no sumô ao vivo, usar a lista “Regra de Tempo” para selecionar 5, 10 ou 30 segundos de tolerância temporal, inicialmente 10, junto aos controles. Fixar a escolha a partir do primeiro passo, inclusive após retroceder a zero. Exibir o menor tempo restante entre as contagens individual e conjunta ativas. Pausa conserva o tempo restante. Retroceder recupera a contagem do tick observado. Um empate por impasse encerra a rodada sem pontos, registra seu número, motivo, tick e tempo e restaura o estado inicial com as mesmas fontes aplicadas, semente e prazo. A rodada seguinte fica pausada no tick 0, aguardando Executar ou Avançar 1 tick.
+- **FR-041:** Conforme ADR-018, mostrar o último empate e disponibilizar o replay da última rodada empatada até o limite de gravação já definido. Cada rodada começa com histórico próprio. Gravações anteriores continuam legíveis e o replay termina no último estado gravado, inclusive quando o motivo é impasse.
 
 ---
 
@@ -300,7 +313,7 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 │   [☑ Raios] [☑ Rótulos]                       │                      │
 ├───────────────────────────────────────────────┴──────────────────────┤
 │ [▶ Executar] [⏸] [⏭ 1 tick] [↺ Reiniciar]  Vel.: [1× ▾]              │
-│ Tick 34 · 0,68 s · finalizada     (no replay: ◀ linha do tempo ▶)    │
+│ Tick 284 · 5,68 s · finalizada     (no replay: ◀ linha do tempo ▶)    │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -318,8 +331,40 @@ Como apresentador do pitch, quero uma tela limpa e legível de longe, para que a
 | RB-22 | FR-019 a FR-022 |
 | RB-23 | FR-023 a FR-025 |
 | RB-24 | FR-012 a FR-018 |
+| ADR-018, ADR-019 | FR-040, FR-041 |
+| RB-39, ADR-020 | FR-042 |
 | RB-28 | FR-001, FR-002, FR-004 |
 | RB-37 | FR-007, FR-008 |
 | RB-39 | FR-026 a FR-028 |
 | RB-40 | FR-029 a FR-035 |
 | RB-17, RB-20 e Constituição VIII | FR-003, FR-017 e FR-036 a FR-039 |
+
+## Extensão de US3 — Escolher o nível (P2)
+
+**FR-043** (ADR-021, RB-22, RB-24). Os três níveis estão disponíveis na lista Dificuldade do Labirinto (FR-044). A Sala pode ser importada de arquivo. A saída tem marca própria no piso. A chegada suspende o avanço no tick final e mostra a conclusão e o tempo. Nos dois primeiros mapas de catálogo, o comando explícito “Próximo nível” carrega o seguinte pausado no tick 0 com o controlador aplicado. O último informa “Labirinto concluído”. Replay apenas reproduz o nível gravado.
+
+**S3-US3-AC10.** Dada a chegada ao vivo, quando passa tempo real, o nível permanece no tick final. Ao retroceder um tick e avançar, o resultado volta uma vez. Quando o usuário escolhe o próximo nível, a estratégia aplicada continua disponível e o histórico começa no tick 0. A gravação reproduz o tick de chegada e o replay conserva o nível.
+
+**FR-044** (ADR-022, RB-22, RB-24). Modo oferece exatamente Sumô e Labirinto. A escolha de Labirinto abre o Fácil pausado no tick 0. Apenas no labirinto aparece Dificuldade, com Fácil, Médio e Difícil em ordem. Mudar de dificuldade ao vivo abre o mapa escolhido pausado no tick 0 e conserva o código aplicado e o rascunho do explorador. Próximo nível atualiza essa mesma indicação. Em replay, as listas são de consulta.
+
+**S3-US3-AC11.** Dado o Sumô inicial, quando o usuário entra em Labirinto, então vê Fácil selecionado e o simulador pausado. Quando muda diretamente para Difícil e depois Médio, inclusive durante uma execução, cada nível inicia pausado no tick 0 com a mesma estratégia. Ao escolher Sumô, a lista Dificuldade desaparece. Uma nova entrada em Labirinto começa no Fácil.
+
+**S3-US3-AC12.** Dado um mundo de arquivo ou replay, quando a tela mostra os controles, o nome do mundo pode ser consultado. Um mundo livre deixa Modo sem seleção e um labirinto personalizado deixa Dificuldade sem seleção. Os arquivos não acrescentam opções às listas. No replay de um nível do catálogo a dificuldade correspondente aparece selecionada e bloqueada.
+
+**S3-US3-AC13** (FR-023, FR-038, RB-23). Dado um editor de estratégia em Sumô ou Labirinto, quando o usuário clica entre dois caracteres, então vê a barra de inserção nessa posição, com contraste mínimo de 4.5:1 sobre o fundo. Quando usa as setas, a barra acompanha o ponto de inserção. O próximo caractere digitado aparece nessa posição.
+
+## Extensão de US2 — Operar a largada (P1)
+
+**FR-045** (ADR-023). Toda rodada de sumô ao vivo, inclusive de arquivo, exibe a contagem restante desde 5.00 s. Congelar na pausa, recalcular ao retroceder, reiniciar em 5.00 s no reset. A queima fixa o desfecho no tick da infração e encerra a rodada depois de mostrar 0.50 s de movimento (ADR-024). Identificar quem queimou e quem recebeu o ponto ou o empate sem pontos. Os pontos pertencem ao resultado publicado no último tick da demonstração. Os exemplos disponíveis na interface aguardam a liberação. Livre e Labirinto conservam sua operação.
+
+**S3-US2-AC17.** Dada uma rodada com queima, quando o usuário pausa, avança, volta e revê o fim ao vivo ou em replay, então vê o tempo e o resultado do tick escolhido, com uma única atribuição do ponto. Reiniciar volta ao tick zero. Uma gravação anterior reproduz seus tempos originais.
+
+**S3-US2-AC18** (FR-045, ADR-024). Dado um ou dois infratores, quando a demonstração começa, então cada infrator recebe “Queimou” junto ao próprio robô, inclusive com os nomes ocultos. O texto acompanha a pose em execução, pausa, passo, retrocesso e replay. Permanece no quadro final para inspeção e desaparece ao voltar antes da infração ou reiniciar. Na velocidade 1×, o duelo padrão iniciado com queima no primeiro passo pausa no tick 25. O replay de arquivo anterior conserva seus ticks originais.
+
+## Linguagem e tutorial do controlador
+
+**FR-046** (RB-18, RB-41, RB-23, ADR-025). Cada cartão oferece JavaScript por padrão e Portugol (meuPiá Maker). Alternar preserva o rascunho de cada linguagem. Abrir e salvar usam .js ou .por. Aplicar com sucesso volta ao tick 0 aguardando ação. Falha de carga conserva a execução e mostra o diagnóstico. O explorador conserva seu código ao mudar de dificuldade. O botão visível ? abre ajuda contextual com comandos e exemplo, operável por teclado.
+
+**S3-US3-AC14.** Dados azul e vermelho com linguagens independentes, ou o explorador de qualquer nível, quando o operador aplica uma estratégia, então pode avançar, voltar, continuar e reiniciar com resultado reproduzível. A gravação guarda a linguagem e o fonte. Replays antigos são JavaScript e assistir dispensa compilação.
+
+**S3-US3-AC15.** Dado um editor, quando o operador abre ? usando clique ou teclado, então vê o ciclo, sensores, movimento e exemplo da sua linguagem e modalidade. Fechar ou Escape devolve o foco ao botão e conserva o código.

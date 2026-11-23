@@ -1,5 +1,6 @@
 // Variação do Caçador que usa também os raios laterais.
 function loop() {
+  if (getInfo().startReleased === false) return;
   const leituras = readLaser();
   const info = getInfo();
   if (leituras.length === 0) {

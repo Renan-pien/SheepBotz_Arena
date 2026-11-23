@@ -1,4 +1,7 @@
+import { Fragment } from 'react';
+import { readEdge } from '../../core';
 import type {
+  EdgeReading,
   Pose,
   RobotConfig,
   RobotState,
@@ -14,6 +17,13 @@ const formats = [1, 2, 3].map(
       maximumFractionDigits: digits,
     }),
 );
+const edgeSides = [
+  ['front', 'Frente'],
+  ['rear', 'Traseira'],
+  ['left', 'Esquerda'],
+  ['right', 'Direita'],
+] as const;
+
 const degreesPerRadian = 180 / Math.PI;
 
 export function formatNumber(value: number, digits: 1 | 2 | 3): string {
@@ -23,12 +33,39 @@ export function formatNumber(value: number, digits: 1 | 2 | 3): string {
 const reason = {
   saida_da_arena: 'saída da arena',
   ambos_sairam: 'os dois saíram da arena',
+  falta_de_progresso: 'falta de progresso',
   tempo_esgotado: 'tempo esgotado',
 };
 
-export function resultLabel(state: SimState): string | null {
+export function resultLabel(state: SimState, lastLevel = false): string | null {
   const result = state.resultado;
   if (!result) return null;
+  if (result.motivo === 'saida_alcancada')
+    return (
+      (lastLevel ? 'Labirinto concluído' : 'Nível concluído') +
+      ' em ' +
+      formatNumber(state.time, 2) +
+      ' s · tick ' +
+      result.tick
+    );
+  const timing =
+    state.falseStartTick === undefined
+      ? 'tick ' + result.tick
+      : 'infração no tick ' +
+        state.falseStartTick +
+        ' · fim no tick ' +
+        result.tick;
+  if (result.motivo === 'queima_dupla')
+    return 'Queima de largada dos dois robôs — empate sem pontos · ' + timing;
+  if (result.motivo === 'queima_da_largada')
+    return (
+      'Queima de largada de ' +
+      state.falseStarters![0] +
+      ' — vitória de ' +
+      result.vencedor +
+      ' (+1 ponto) · ' +
+      timing
+    );
   const title = result.vencedor ? 'Vitória de ' + result.vencedor : 'Empate';
   return (
     title +
@@ -57,7 +94,11 @@ function poseLabel(pose: Pose) {
 function SensorCard({
   robot,
   config,
+  edge,
+  maze,
 }: {
+  edge: EdgeReading | null;
+  maze: boolean;
   robot: RobotState;
   config: RobotConfig;
 }) {
@@ -89,6 +130,23 @@ function SensorCard({
           {bumper ? 'ativo' : 'inativo'}
         </dd>
       </dl>
+      <section aria-label="Sensor de borda">
+        <strong>Sensor de borda</strong>
+        {edge ? (
+          <dl className="sensor-values">
+            {edgeSides.map(([key, label]) => (
+              <Fragment key={key}>
+                <dt>{label}</dt>
+                <dd>{edge[key] ? 'Na borda' : 'Interior'}</dd>
+              </Fragment>
+            ))}
+          </dl>
+        ) : (
+          <p className="muted">
+            {maze ? 'Indisponível no labirinto' : 'Indisponível no modo livre'}
+          </p>
+        )}
+      </section>
       {laser ? (
         <table className="laser-table">
           <caption>Laser</caption>
@@ -144,6 +202,8 @@ export function Inspection({
           key={robot.id}
           robot={robot}
           config={world.robots[index]!}
+          maze={world.match.mode === 'maze'}
+          edge={readEdge(world, robot.pose, world.robots[index]!.radius)}
         />
       ))}
     </section>

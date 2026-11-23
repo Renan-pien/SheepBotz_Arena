@@ -93,6 +93,9 @@ export const errors = {
       `Em '${path}', maxLinearSpeed × dt (${displacement} m) é maior que o raio do robô (${radius} m); reduza a velocidade máxima ou o dt.`,
     );
   },
+  maze(path: string, message: string) {
+    return error('REGRA_DA_MODALIDADE', path, `Em '${path}': ${message}`);
+  },
   sumoCount(count: number) {
     return error(
       'REGRA_DA_MODALIDADE',

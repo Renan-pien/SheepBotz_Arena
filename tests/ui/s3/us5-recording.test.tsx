@@ -6,12 +6,12 @@ import {
   recordingName,
 } from '../../../src/ui/arena/recording';
 import { ArenaSession } from '../../../src/ui/arena/session';
-import { idleEngine, testEngine } from './support';
+import { idleEngine, testEngine, runDefaultDuel } from './support';
 
 function duel() {
   const session = new ArenaSession(testEngine);
   session.play();
-  session.pulse(800);
+  runDefaultDuel(session);
   return session;
 }
 
@@ -20,16 +20,18 @@ it('S3-US5-AC1: grava tick zero e cada tick de um lote', () => {
     duel()
       .recording()
       .states.map(({ tick }) => tick),
-  ).toEqual(Array.from({ length: 35 }, (_, index) => index));
+  ).toEqual(Array.from({ length: 285 }, (_, index) => index));
 });
 
 it('S3-US5-AC8: a gravação é igual à reexecução com mesmas entradas', () => {
   const recording = duel().recording();
   const result = runHeadless({
     world: recording.world,
+    stallSeconds: recording.stallSeconds,
     controllers: recording.controllers,
     controllerEngine: testEngine,
-    ticks: 34,
+    sumoStartDelay: true,
+    ticks: 284,
     history: true,
   });
   if (!result.ok) throw new Error(JSON.stringify(result.errors));
@@ -50,7 +52,7 @@ it('S3-US5-AC8: a gravação é igual à reexecução com mesmas entradas', () =
   );
 });
 
-it('S3-US5-AC10: para de registrar no tick 100 000 e continua a execução', () => {
+it('S3-US5-AC10 / S3-US2-AC13: preserva o limite da gravação ao avançar e retroceder', () => {
   const session = new ArenaSession(idleEngine);
   session.openWorld(
     JSON.stringify({
@@ -70,6 +72,16 @@ it('S3-US5-AC10: para de registrar no tick 100 000 e continua a execução', () 
   const states = session.recording().states;
   expect(states).toHaveLength(100_001);
   expect(states.at(-1)?.tick).toBe(100_000);
+  session.pause();
+  for (let i = 0; i < 600; i++) session.step();
+  for (let i = 0; i < 600; i++) session.back();
+  expect(session.getSnapshot().snapshot).toEqual(view.snapshot);
+  for (let tick = view.snapshot.tick; tick > 99_999; tick--) session.back();
+  expect(session.getSnapshot().limitReached).toBe(false);
+  expect(session.recording().states.at(-1)).toEqual(states[99_999]);
+  for (let tick = 100_000; tick <= view.snapshot.tick; tick++) session.step();
+  expect(session.getSnapshot().snapshot).toEqual(view.snapshot);
+  expect(session.recording().states).toHaveLength(100_001);
 });
 
 it('aceita gravação parcial no tick zero sem executar scripts', () => {
@@ -99,7 +111,7 @@ function replaceAt(data: unknown, path: readonly string[], value: unknown) {
 
 it.each<[string, unknown]>([
   ['format', 'outro'],
-  ['version', 2],
+  ['version', 99],
   ['createdAt', 'inválido'],
   ['world', '{'],
   ['world', {}],
@@ -129,10 +141,10 @@ it.each<[string, unknown]>([
   ['states.1.robots.0.situacao', 'parado'],
   ['states.1.resultado', {}],
   ['states.1.status', 'finalizada'],
-  ['states.34.resultado', null],
-  ['states.34.resultado.motivo', 'incorreto'],
-  ['states.34.resultado.vencedor', null],
-  ['states.34.resultado.tick', 33],
+  ['states.284.resultado', null],
+  ['states.284.resultado.motivo', 'incorreto'],
+  ['states.284.resultado.vencedor', null],
+  ['states.284.resultado.tick', 33],
 ])('rejeita incoerência em %s com erro estruturado', (field, value) => {
   const document: unknown = JSON.parse(encodeRecording(duel().recording()));
   replaceAt(document, field.split('.'), value);

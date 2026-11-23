@@ -21,3 +21,10 @@ export function closestPointOnRect(point: Point, rect: Rect): Point {
     ),
   };
 }
+
+export function containsPoint(rectangle: Rect, point: Point): boolean {
+  return (
+    Math.abs(point.x - rectangle.x) <= rectangle.width / 2 &&
+    Math.abs(point.y - rectangle.y) <= rectangle.height / 2
+  );
+}

@@ -1,5 +1,10 @@
 import { parseArgs } from 'node:util';
-import { runHeadless, type Command } from '../core';
+import {
+  isStallSeconds,
+  runHeadless,
+  type StallSeconds,
+  type Command,
+} from '../core';
 import { initializeControllerEngine } from '../runtime/controller-engine';
 
 interface CliIo {
@@ -9,6 +14,8 @@ interface CliIo {
 }
 
 interface CliInput {
+  readonly sumoStartDelay: boolean;
+  readonly stallSeconds?: StallSeconds;
   readonly file: string;
   readonly ticks: number;
   readonly commands: Readonly<Record<string, Command>>;
@@ -18,7 +25,7 @@ interface CliInput {
 }
 
 const usage =
-  'Uso: npm run sim -- --world <arquivo.json> --ticks <N> [--command <id>=<v>,<w>]... [--controller <id>=<arquivo.js>]... [--history] [--pretty]\n';
+  'Uso: npm run sim -- --world <arquivo.json> --ticks <N> [--command <id>=<v>,<w>]... [--controller <id>=<arquivo.js>]... [--sumo-start-delay] [--stall-seconds <5|10|30>] [--history] [--pretty]\n';
 
 function parseInput(argv: readonly string[]): CliInput | undefined {
   const { values } = parseArgs({
@@ -26,6 +33,8 @@ function parseInput(argv: readonly string[]): CliInput | undefined {
     options: {
       world: { type: 'string' },
       ticks: { type: 'string' },
+      'sumo-start-delay': { type: 'boolean', default: false },
+      'stall-seconds': { type: 'string' },
       command: { type: 'string', multiple: true },
       controller: { type: 'string', multiple: true },
       history: { type: 'boolean', default: false },
@@ -37,6 +46,10 @@ function parseInput(argv: readonly string[]): CliInput | undefined {
   const ticks = Number(values.ticks);
   if (!Number.isInteger(ticks)) return undefined;
 
+  const limit = values['stall-seconds'];
+  const stallSeconds = limit === undefined ? undefined : Number(limit);
+  if (stallSeconds !== undefined && !isStallSeconds(stallSeconds))
+    return undefined;
   const commands: Record<string, Command> = Object.create(null);
   for (const entry of values.command ?? []) {
     const match = /^([^=,]+)=([^=,]+),([^=,]+)$/.exec(entry);
@@ -53,6 +66,8 @@ function parseInput(argv: readonly string[]): CliInput | undefined {
     controllerFiles[id] = file;
   }
   return {
+    stallSeconds,
+    sumoStartDelay: values['sumo-start-delay'],
     file: values.world,
     ticks,
     commands,
@@ -96,6 +111,8 @@ export function runCli(argv: readonly string[], io: CliIo): number {
     ticks: input.ticks,
     commands: input.commands,
     history: input.history,
+    stallSeconds: input.stallSeconds,
+    sumoStartDelay: input.sumoStartDelay,
   };
   const result = runHeadless(
     controllerFiles.length

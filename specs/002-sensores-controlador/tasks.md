@@ -221,3 +221,18 @@ Setup T001–T002 → Fundação T003–T008 → US1 T009–T016 → US2 T017–
 1. Validar o **MVP na US1** com o quickstart de laser e os critérios da fase, após setup e fundação.
 2. Completar US2 e US3 para uma luta de ponta a ponta. Executar US4 e US5 na ordem com seus checkpoints.
 3. Fechar as validações da CLI, navegador, desempenho e cobertura na fase final. O ensaio de regeneração, o merge e a tag seguem o fechamento separado do AGENTS.md §15 e §18.
+
+## Incremento de sumô
+- [X] T043 [US3] Testar S2-US3-AC11 a AC13, implementar estado de progresso, regra de empate, opções de biblioteca e CLI — src/core/{match,sim,api}, src/cli/run-cli.ts, testes de sumô e CLI — S2-FR-037. Pronto com casos físicos e benchmark legado verificados.
+
+- [X] T044 [US3] Testar S2-US3-AC14/15 e implementar o giro após contato, limites inclusivos e encerramento determinístico — `src/core/match/sumo.ts`, `src/core/sim/step.ts`, `src/core/types.ts`, `src/core/index.ts`, testes de impasse — S2-FR-037, ADR-019. Campos [StallState.pair, StallState.sinceTick, StallState.pairContact](data-model.md). Pronto com o duelo e as fronteiras verificados.
+
+- [X] T045 [US2] Testar S2-US2-AC13/14 e implementar o sensor no núcleo e na API comum — `src/core/sensors/edge.ts`, `src/core/index.ts`, `src/core/controller/api.ts`, `eslint.config.js`, `tests/core/acceptance/s2/us2-borda.test.ts`, `tests/runtime/edge-strategy.test.ts` — S2-FR-038. Campos [EdgeReading.front, EdgeReading.rear, EdgeReading.left, EdgeReading.right](data-model.md#leitura-derivada-de-borda). Pronto com quatro direções, empurrão, limites, cópia e controlador personalizado validados.
+
+- [X] T046 [US5] Medir a geometria, percorrer os três mundos com o Navegador e testar a chegada após contatos. Entregar mundos, controlador e regra em `examples/`, `src/core/match/`, `tests/core/acceptance/s2/maze.test.ts` — S2-FR-039, S2-US5-AC4 e AC5.
+
+- [X] T047 [US3] Testar primeiro a fronteira temporal, comandos e igualdade de ticks. Implementar fiscalização e resultado na API, runner, simulação e regra de sumô, incluindo a opção --sumo-start-delay da CLI — S2-FR-040, S2-US3-AC16 a AC18.
+
+- [X] T048 [US3] Testar a fronteira temporal e a decisão imutável, guardar o primeiro comando e integrar 0.50 s de movimento com colisões em `src/core/{controller,sim,match,api}` e na CLI — S2-FR-040, S2-US3-AC16 a AC19.
+
+- [X] T049 [US2] Testar pacote, funções públicas, isolamento, persistência e limites antes da IDE; implementar adaptador em src/runtime/portugol e dependências locais — S2-FR-041, S2-US2-AC15/16.

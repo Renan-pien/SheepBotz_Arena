@@ -53,6 +53,10 @@ registra os testes e a cobertura no registro e tem seu próprio commit.
 - [X] T019 Atualizar README, rodar `npm run stats`, versionar métricas e conferir workflow em push e PR, rastrear os 39 requisitos — `README.md`, `docs/cobertura/resumo.md`, `docs/cobertura/coverage-summary.json`, `docs/rastreabilidade.md` — RB-08, RB-09, RB-12, S3-FR-001. **Dep.** T018. **Pronto** Métricas reproduzíveis e matriz preenchida.
 - [X] T020 Registrar a demonstração aprovada de SC-003 e SC-006. Cronometrar a troca por um exemplo e a conclusão do Duelo. Conferir vencedor e motivo no placar, sem consultar o código — `docs/registro-de-consolidacao.md`, `specs/003-visualizacao-operacao/spec.md` — S3-SC-003, S3-SC-006, RB-17, S3-FR-021, S3-FR-028. **Dep.** T018. **Pronto** Exceção, duração, vencedor e motivo registrados.
 
+## Incremento · Retrocesso ao vivo
+
+- [X] T021 [US2] Verificar e implementar o retrocesso ao vivo, a continuação determinística e a gravação até o cursor — `src/ui/App.tsx`, `src/ui/arena/session.ts`, testes S3-US2-AC11 a AC13 e matriz de rastreabilidade — S3-FR-002, S3-FR-012, S3-FR-029. **Dep.** T015. **Pronto** Passos repetidos, desfecho, memória, sorteios, logs e limite da gravação conferidos em comparação com a execução contínua.
+
 ## Dependências e cobertura
 
 Fluxo por fase T001 → T002 → T003 (RED) → T004 → pares de US1 a US6 → T018
@@ -64,7 +68,7 @@ A sessão e o App são compartilhados e seguem a sequência da tabela.
 | História | Cenários | Teste | Implementação |
 |---|---:|---|---|
 | US1 · Cena | S3-US1-AC1 a S3-US1-AC10 | T005 | T006 |
-| US2 · Tempo | S3-US2-AC1 a S3-US2-AC10 | T007 | T008 |
+| US2 · Tempo | S3-US2-AC1 a S3-US2-AC13 | T007, T021 | T008, T021 |
 | US3 · Cargas | S3-US3-AC1 a S3-US3-AC9 | T009 | T010 |
 | US4 · Observação | S3-US4-AC1 a S3-US4-AC6 | T011 | T012 |
 | US5 · Replay | S3-US5-AC1 a S3-US5-AC11 | T013 | T014, T015 |
@@ -75,3 +79,22 @@ A sessão e o App são compartilhados e seguem a sequência da tabela.
 A entrega mínima reúne cena, controles de tempo, mundos e scripts no
 navegador. A seguir entram inspeção e replay. A apresentação vem por
 último. A publicação, a regeneração e a tag pertencem ao fechamento.
+
+## Incremento de operação do sumô
+- [X] T022 [US2, US5] Testar S3-US2-AC14/15 e S3-US5-AC12, integrar seleção, reset pausado, registro do empate e leitura v1/v2 — src/ui/{arena,panels,App.tsx}, testes de sessão, UI e replay, métricas e matriz — S3-FR-040, S3-FR-041. Depende de S2-T043. Pronto com suíte, build, lint e cobertura aprovados.
+
+- [X] T023 [US2, US5] Exibir Regra de Tempo e a contagem efetiva, preservar o reset pausado e implementar leitura e exportação conforme [Recording.version](data-model.md) — App, sessão, codec, testes S3-US2-AC16 e S3-US5-AC13, matriz e métricas — S3-FR-040, S3-FR-041, ADR-019. Depende de S2-T044. Pronto com retrocesso, v1/v2/v3, build, lint e cobertura verificados.
+
+- [X] T024 [US4] Mostrar a leitura física da borda nos cartões e compartilhar o limiar com a cena — `src/ui/panels/Inspection.tsx`, `src/ui/scene/graphics.ts`, `tests/ui/s3/us4-inspecao.test.tsx`, README e rastreabilidade — S3-FR-042. Depende de S2-T045. Pronto com S3-US4-AC7 (ao vivo, retrocesso, reset, modo livre e replays antigos), suíte completa, lint e build.
+
+- [X] T025 [US3] Integrar seleção, chegada visível, replay e troca explícita com estratégia preservada em `src/ui/` e `tests/ui/s3/maze.test.tsx`. Validar regressões e rastreabilidade — S3-FR-043, S3-US3-AC10.
+
+- [X] T026 [US3] Separar Modo e Dificuldade e compartilhar a troca pausada com Próximo nível. Validar o catálogo, a estratégia e o rascunho, a exibição de arquivos e os seletores em replay — `src/ui/App.tsx`, `src/ui/arena/catalog.ts`, `src/ui/arena/session.ts`, `tests/ui/s3/maze.test.tsx` — S3-FR-019, S3-FR-043, S3-FR-044, S3-US3-AC11 e AC12.
+
+- [X] T027 [US3] Exibir o cursor nativo com contraste no conteúdo editável de todos os controladores. Testar o estilo em `tests/ui/s3/us3-controladores.test.tsx` e verificar clique, setas e digitação no navegador nos três editores — `src/ui/arena.css` — S3-FR-023, S3-FR-038, S3-US3-AC13.
+
+- [X] T028 [US2] Integrar largada, exemplos, contagem, resultado e gravação v5 em src/ui e examples/controllers. Verificar pausas, rewind, replays anteriores, regressões e atualizar os artefatos — S3-FR-045, S3-US2-AC17.
+
+- [X] T029 [US2] Exibir “Queimou” junto a cada infrator, preservar operação e replays v1–v6 e verificar pontos, pausa e navegação em `src/ui` e `tests/ui/s3` — S3-FR-045, S3-US2-AC17 e AC18.
+
+- [X] T030 [US3] Integrar Draft.language, Draft.source, SessionView.languages e Recording.languages (data-model.md) a sessão, arquivos, replay e tutorial do editor com testes de navegação e aplicação — S3-FR-046, S3-US3-AC14/15. Depende de S2-T049.

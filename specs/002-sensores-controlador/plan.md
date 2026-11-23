@@ -216,7 +216,7 @@ os IDs recém-desativados. A fachada recria o runner no reset.
    assíncronas e importações do FR-009 antes da avaliação. Avalia o nível superior uma vez
    por carga em um compartimento próprio. Captura `setup` e `loop`, preserva suas variáveis
    e valida os callbacks antes de publicar o tick 0. O perfil abaixo vale desde a carga.
-4. Somente depois da avaliação, vincular no compartimento as sete funções da API. Cada função
+4. Somente depois da avaliação, vincular no compartimento as funções previstas no contrato da API. Cada função
    recebe dados por cópia ou primitivo e opera com o quadro da chamada corrente. Revogar o
    quadro em `finally`. `createInitialState` publica as poses iniciais e o primeiro laser.
 5. `reset()` percorre o mesmo carregamento com as fontes aceitas, ressemeia o PRNG,
@@ -235,7 +235,7 @@ os IDs recém-desativados. A fachada recria o runner no reset.
   `Compartment` para impedir avaliação dinâmica e criação de novos compartimentos pelo
   script. Os bloqueios são propriedades do ambiente do controlador, inclusive no reset.
   Preservar a supressão de `SharedArrayBuffer` e `Atomics` já feita por SES, assim como
-  o bloqueio de hora corrente e de `Math.random`. Expor apenas as sete funções da API durante
+  o bloqueio de hora corrente e de `Math.random`. Expor apenas as funções previstas no contrato da API durante
   as chamadas autorizadas e não passar objetos do host com capacidades de agendamento.
 - A verificação de disponibilidade deve abranger os globais e `Array.fromAsync`.
   Rodar o mesmo mundo, scripts e semente em lote e em passos separados por pontos de
@@ -366,3 +366,73 @@ os IDs recém-desativados. A fachada recria o runner no reset.
 Nenhuma exceção. O plano separa o adaptador de JavaScript para manter o núcleo determinístico
 e reutiliza as interfaces, geometria e automação da S1. A decomposição em tasks pertence à
 etapa seguinte.
+
+## Impasse (ADR-018)
+
+O estado opcional stall guarda prazo, tick de referência e centros. Inicializar junto com o mundo e atualizar somente a partir das poses corrigidas do passo. A política fica em core/match. Avaliar o prazo após as condições ordinárias. O chamador headless decide o que fazer com o resultado terminal.
+
+No giro conjunto (ADR-019), a regra de sumô recebe as poses finais, os raios e o contato robô–robô já resolvido naquele passo. Tangência também inicia o intervalo. Contato com a parede por si só não inicia o giro. O início efetivo do impasse é o mais antigo dos intervalos ativos. Cada avanço produz um snapshot imutável.
+
+## Sensor de borda de quatro lados (ADR-020)
+
+Implementar uma função pura no núcleo, compartilhada pela API e pela inspeção. Usar o raio configurado do próprio robô e o vetor de frente (cos θ, sen θ). Rotacionar esse vetor em +90° para a esquerda. Traseira e direita usam os vetores opostos. Somar cada deslocamento ao centro físico e comparar a distância radial com o raio interno da faixa. Compartilhar o fator 0.975 com o desenho. Derivar no momento da consulta evita memória entre ticks e novos campos no mundo ou nas gravações.
+
+## ADR-021 · S2-FR-039
+
+Os níveis são mundos JSON estáticos. Cada célula mede 0.50 m em ambos os eixos. Nas figuras abaixo cada centro está em linha e coluna ímpares (base zero). Entre centros, espaço indica passagem e # indica parede de 0.50 × 0.0625 m, horizontal ou vertical. A moldura é o limite do mapa. O mapa é centrado na origem, norte é +y. I é o centro inicial e S o centro da saída de 0.25 × 0.25 m. Posição de partida na célula sudoeste, orientação inicial zero, saída a nordeste. Conservar seed 7, dt 0.05 s e os parâmetros do explorador da Sala. O Navegador usa o laser para escolher, nesta ordem, direita, frente, esquerda e retorno. Usa odometria para centralizar a cada célula. As estratégias personalizadas entram pela mesma API.
+
+### Nível 1
+
+```text
+#########
+# #   #S#
+# # ### #
+#     # #
+# # # # #
+#I# #   #
+#########
+```
+
+### Nível 2
+
+```text
+#############
+# #   #    S#
+# ### ### ###
+# #     #   #
+# ### ##### #
+#   #   #   #
+# # # # # ###
+#I#   #     #
+#############
+```
+
+### Nível 3
+
+```text
+#################
+#             #S#
+# # ##### ### # #
+# #   #   # #   #
+# ### ##### #####
+# # #   # #     #
+# # # ### ### ###
+#   #   # #     #
+# ##### # # #####
+#   # #         #
+##### # # ### ###
+#I        #     #
+#################
+```
+
+Avaliar o centro físico após contatos no passo headless. Bordas do retângulo são inclusivas. Publicar `saida_alcancada` e um evento `fim_do_nivel` com id de evento nulo no tick final.
+
+### Largada · S2-FR-040
+Habilitar a regra com a opção de execução `sumoStartDelay` apenas no sumô. Marcar tentativas válidas no frame compartilhado por setup e loop e unir aos comandos constantes. Durante a espera o passo avança tempo, eventos e estado de habilitação dos controladores. Julgar todos os IDs antes da integração. Derivar liberação de tick × dt e usar o tick de liberação como origem mínima dos prazos. Sem dependências novas. Constitution Check aprovado para determinismo, isolamento e independência do renderizador.
+
+### Movimento da queima · ADR-024
+
+Capturar o primeiro par (v,w) não nulo do frame e congelar os comandos efetivos saturados dos infratores no primeiro passo. Dispensar novas chamadas aos scripts durante o desfecho. Reutilizar integração, contatos, laser e odometria, usando no último passo apenas a fração restante de 0.50 s. Manter o relógio por tick e congelar o detector de impasse. Antes de avaliar a arena, comparar o tick ao limite da demonstração. Constitution Check aprovado para determinismo, separação da cena e física própria.
+
+### Adaptador do meuPiá (ADR-025)
+Empacotar Pyodide 0.25.0 pelo lock do npm, wheel do Core 1.4.1 e módulo Maker do commit 1ccbedb63434b46bf8a34a4dc4d21354d4e8e212. Servir recursos locais sob demanda em um contexto separado do SES. A API pública do compilador produz Python. Validar por lista explícita a árvore da parte do aluno antes de compilar esse trecho com globais privados, funções permitidas e orçamento determinístico. O cabeçalho e as importações produzidos pelo gerador nunca são executados como código do aluno. A ponte chama as funções públicas do Maker sobre um pino virtual e delega leituras e movimento ao runner existente.

@@ -2,17 +2,29 @@ import {
   loadWorld,
   prepareSimulation,
   type ControllerEngine,
+  type MatchResult,
+  type StallSeconds,
+  isStallSeconds,
   type SimState,
   type Simulation,
   type World,
 } from '../../core';
 import { initializeControllerEngine } from '../../runtime/controller-engine';
 import {
+  mazeLevelFromText,
+  nextMazeLevel,
+  type MazeLevel,
   controllerPresets,
   worldPresets,
   type ControllerPreset,
   type WorldPreset,
 } from './catalog';
+import {
+  defaultLanguages,
+  makerExample,
+  type Language,
+  type Languages,
+} from './languages';
 import { TickClock, type PlaybackSpeed } from './clock';
 import { decodeRecording, lastRecordedTick, type Recording } from './recording';
 
@@ -26,11 +38,16 @@ export interface SessionError {
 }
 
 export interface Draft {
+  readonly language: Language;
+  readonly alternate?: Pick<Draft, 'source' | 'example'>;
   readonly source: string;
   readonly example: ControllerPreset;
 }
 
 type Drafts = Readonly<Record<string, Draft>>;
+
+// Guarda passos recentes após o limite do arquivo, inclusive em mundos livres.
+const recentTickCount = 512;
 
 function initialDrafts(
   world: World,
@@ -39,7 +56,14 @@ function initialDrafts(
   return Object.fromEntries(
     world.robots.map(({ id }) => {
       const example = Object.hasOwn(defaults, id) ? defaults[id]! : 'parado';
-      return [id, { example, source: controllerPresets[example].source }];
+      return [
+        id,
+        {
+          language: 'javascript',
+          example,
+          source: controllerPresets[example].source,
+        },
+      ];
     }),
   );
 }
@@ -50,10 +74,22 @@ function sourcesFrom(drafts: Drafts): Sources {
   );
 }
 
+interface DrawRecord {
+  readonly round: number;
+  readonly result: MatchResult;
+  readonly time: number;
+  readonly recording: Recording;
+}
+
 export interface SessionView {
+  readonly lastDraw: DrawRecord | null;
+  readonly stallSeconds: StallSeconds;
+  readonly roundStarted: boolean;
   readonly world: World;
   readonly worldText: string;
   readonly controllers: Sources;
+  readonly languages: Languages;
+  readonly loading: string | null;
   readonly snapshot: SimState;
   readonly status: SessionStatus;
   readonly speed: PlaybackSpeed;
@@ -74,10 +110,17 @@ export class ArenaSession {
   #listeners = new Set<() => void>();
   #clock = new TickClock();
   #history: SimState[];
+  #recent: SimState[] = [];
   #replay: Recording | null = null;
   #createdAt = new Date().toISOString();
 
-  constructor(engine: ControllerEngine = initializeControllerEngine()) {
+  #maker?: ControllerEngine;
+  #request = 0;
+  constructor(
+    engine: ControllerEngine = initializeControllerEngine(),
+    private readonly getMaker = async (): Promise<ControllerEngine> =>
+      (await import('../../runtime/portugol/runtime')).loadMaker(),
+  ) {
     this.#engine = engine;
     const worldText = worldPresets.duelo.text;
     const world = loadWorld(worldText);
@@ -87,15 +130,22 @@ export class ArenaSession {
     const prepared = prepareSimulation(world.world, {
       controllers,
       controllerEngine: engine,
+      sumoStartDelay: true,
+      stallSeconds: 10,
     });
     if (!prepared.ok) throw new Error(JSON.stringify(prepared.errors));
     this.#simulation = prepared.simulation;
     this.#view = {
+      stallSeconds: 10,
+      roundStarted: false,
+      lastDraw: null,
       world: world.world,
       worldText,
       controllers,
       snapshot: this.#simulation.getState(),
       status: 'pronta',
+      languages: defaultLanguages(world.world),
+      loading: null,
       speed: 1,
       behind: false,
       limitReached: false,
@@ -132,11 +182,54 @@ export class ArenaSession {
     }
     const defaults = preset ? worldPresets[preset].defaults : {};
     const drafts = initialDrafts(loaded.world, defaults);
-    this.#replace(loaded.world, worldText, sourcesFrom(drafts), drafts, preset);
+    this.#replace(
+      loaded.world,
+      worldText,
+      sourcesFrom(drafts),
+      drafts,
+      preset,
+      {
+        languages: defaultLanguages(loaded.world),
+        ...(preset && loaded.world.match.mode === 'maze'
+          ? { status: 'pausada' as const }
+          : {}),
+      },
+    );
   }
 
   chooseWorld(preset: WorldPreset) {
     this.openWorld(worldPresets[preset].text, preset);
+  }
+
+  nextLevel() {
+    const { preset, snapshot } = this.#view;
+    const next = nextMazeLevel(preset);
+    if (next && snapshot.resultado?.motivo === 'saida_alcancada')
+      this.chooseDifficulty(next);
+  }
+
+  chooseDifficulty(level: MazeLevel) {
+    const { world, preset, controllers, drafts } = this.#view;
+    if (this.#replay || world.match.mode !== 'maze' || preset === level) return;
+    const text = worldPresets[level].text;
+    const parsed = loadWorld(text);
+    if (!parsed.ok) {
+      this.#publish({ errors: parsed.errors });
+      return;
+    }
+    const sourceId = world.robots[0]!.id;
+    const targetId = parsed.world.robots[0]!.id;
+    this.#replace(
+      parsed.world,
+      text,
+      { [targetId]: controllers[sourceId]! },
+      { [targetId]: drafts[sourceId]! },
+      level,
+      {
+        status: 'pausada',
+        languages: { [targetId]: this.#view.languages[sourceId]! },
+      },
+    );
   }
 
   editSource(id: string, source: string) {
@@ -147,11 +240,38 @@ export class ArenaSession {
     });
   }
 
+  chooseLanguage(id: string, language: Language) {
+    const { drafts, world } = this.#view;
+    const draft = drafts[id]!;
+    if (this.#replay || draft.language === language) return;
+    const next = draft.alternate ?? {
+      example: 'parado',
+      source:
+        language === 'portugol'
+          ? makerExample(world.match.mode).source
+          : controllerPresets.parado.source,
+    };
+    this.#publish({
+      drafts: {
+        ...drafts,
+        [id]: {
+          ...next,
+          language,
+          alternate: { example: draft.example, source: draft.source },
+        },
+      },
+    });
+  }
+
   selectExample(id: string, example: ControllerPreset) {
     if (this.#replay) return;
-    const source = controllerPresets[example].source;
+    const draft = this.#view.drafts[id]!;
+    const source =
+      draft.language === 'portugol'
+        ? makerExample(this.#view.world.match.mode).source
+        : controllerPresets[example].source;
     this.#publish({
-      drafts: { ...this.#view.drafts, [id]: { example, source } },
+      drafts: { ...this.#view.drafts, [id]: { ...draft, example, source } },
     });
   }
 
@@ -161,14 +281,50 @@ export class ArenaSession {
 
   apply(id: string) {
     if (this.#replay) return;
-    const { world, worldText, controllers, drafts, preset } = this.#view;
-    this.#replace(
-      world,
-      worldText,
-      { ...controllers, [id]: drafts[id]!.source },
-      drafts,
-      preset,
-    );
+    const draft = this.#view.drafts[id]!;
+    const commit = () => {
+      const { world, worldText, controllers, drafts, preset, languages } =
+        this.#view;
+      this.#replace(
+        world,
+        worldText,
+        { ...controllers, [id]: draft.source },
+        drafts,
+        preset,
+        {
+          languages: { ...languages, [id]: draft.language },
+          ...(draft.language === 'portugol' && { status: 'pausada' as const }),
+        },
+      );
+    };
+    if (draft.language === 'portugol' && !this.#maker)
+      return this.#prepareMaker(
+        id,
+        () => this.#view.drafts[id] === draft,
+        commit,
+      );
+    commit();
+  }
+
+  async #prepareMaker(id: string, valid: () => boolean, apply: () => void) {
+    const request = ++this.#request,
+      revision = this.#revision;
+    const current = () =>
+      request === this.#request && revision === this.#revision;
+    this.#publish({ loading: id });
+    try {
+      this.#maker = await this.getMaker();
+      if (current() && valid()) apply();
+    } catch (error) {
+      if (current() && valid())
+        this.reportError({
+          code: 'CONTROLADOR_INVALIDO',
+          path: 'controllers.' + id,
+          message: error instanceof Error ? error.message : String(error),
+        });
+    } finally {
+      if (current()) this.#publish({ loading: null });
+    }
   }
 
   #replace(
@@ -177,10 +333,21 @@ export class ArenaSession {
     controllers: Sources,
     drafts: Drafts,
     preset: WorldPreset | '',
+    patch: Partial<SessionView> = {},
   ) {
+    const languages = patch.languages ?? this.#view.languages;
+    // O identificador encaminha a carga ao motor do respectivo robô, mesmo com fontes iguais.
     const prepared = prepareSimulation(world, {
-      controllers,
-      controllerEngine: this.#engine,
+      controllers: Object.fromEntries(world.robots.map(({ id }) => [id, id])),
+      controllerEngine: {
+        load: (id, api) =>
+          (languages[id] === 'portugol' ? this.#maker! : this.#engine).load(
+            controllers[id]!,
+            api,
+          ),
+      },
+      sumoStartDelay: true,
+      stallSeconds: patch.stallSeconds ?? this.#view.stallSeconds,
     });
     if (!prepared.ok) {
       this.#publish({ errors: prepared.errors });
@@ -193,6 +360,7 @@ export class ArenaSession {
       controllers,
       drafts,
       preset,
+      ...patch,
     });
   }
 
@@ -200,36 +368,64 @@ export class ArenaSession {
     this.#revision += 1;
     this.#clock.clear();
     this.#history = [snapshot];
+    this.#recent = [];
     this.#replay = null;
     this.#createdAt = new Date().toISOString();
     this.#publish({
-      ...patch,
       mode: 'live',
+      loading: null,
+      roundStarted: false,
+      lastDraw: null,
       replayLast: null,
       status: 'pronta',
       snapshot,
       behind: false,
       limitReached: false,
       errors: [],
+      ...patch,
     });
   }
 
   recording(): Recording {
-    if (this.#replay) return this.#replay;
+    return this.#replay ?? this.#liveRecording(this.#view.snapshot.tick);
+  }
+
+  #liveRecording(tick: number): Recording {
+    const multilingual = Object.values(this.#view.languages).includes(
+      'portugol',
+    );
     return {
+      ...(multilingual && { languages: this.#view.languages }),
+      version: multilingual
+        ? 7
+        : this.#view.world.match.mode === 'maze'
+          ? 4
+          : this.#view.world.match.mode === 'sumo'
+            ? 6
+            : 1,
+      ...(this.#view.world.match.mode === 'sumo' && {
+        stallSeconds: this.#view.stallSeconds,
+      }),
       world: this.#view.worldText,
       controllers: this.#view.controllers,
       createdAt: this.#createdAt,
-      states: this.history(),
+      states: this.#history.slice(0, tick + 1),
     };
   }
 
   history(): readonly SimState[] {
-    return (this.#replay?.states ?? this.#history).slice();
+    if (this.#replay) return this.#replay.states.slice();
+    return this.#history.slice(0, this.#view.snapshot.tick + 1);
   }
 
   enterReplay() {
     this.#showReplay(this.#view.world, this.recording());
+  }
+
+  replayLastDraw() {
+    const draw = this.#view.lastDraw;
+    if (draw && !this.#replay)
+      this.#showReplay(this.#view.world, draw.recording);
   }
 
   openRecording(text: string) {
@@ -244,6 +440,7 @@ export class ArenaSession {
   #showReplay(world: World, recording: Recording) {
     this.#replay = recording;
     this.#history = [];
+    this.#recent = [];
     this.#revision += 1;
     this.#clock.clear();
     const drafts = Object.fromEntries(
@@ -252,14 +449,25 @@ export class ArenaSession {
         const example =
           names.find((key) => controllerPresets[key].source === source) ??
           'parado';
-        return [id, { example, source }];
+        return [
+          id,
+          {
+            example,
+            source,
+            language: recording.languages?.[id] ?? ('javascript' as const),
+          },
+        ];
       }),
     );
     this.#publish({
       mode: 'replay',
+      lastDraw: null,
+      stallSeconds: recording.stallSeconds ?? this.#view.stallSeconds,
       world,
       worldText: recording.world,
       controllers: recording.controllers,
+      languages: recording.languages ?? defaultLanguages(world),
+      loading: null,
       drafts,
       preset: '',
       snapshot: recording.states[0]!,
@@ -274,7 +482,15 @@ export class ArenaSession {
   exitReplay() {
     if (!this.#replay) return;
     const { world, worldText, controllers, drafts } = this.#view;
-    this.#replace(world, worldText, controllers, drafts, '');
+    const preset = mazeLevelFromText(worldText);
+    const resume = () =>
+      this.#replace(world, worldText, controllers, drafts, preset ?? '');
+    if (
+      !this.#maker &&
+      Object.values(this.#view.languages).includes('portugol')
+    )
+      return this.#prepareMaker('replay', () => this.#replay !== null, resume);
+    resume();
   }
 
   seek(tick: number) {
@@ -292,9 +508,20 @@ export class ArenaSession {
   }
 
   back() {
-    if (this.#view.status !== 'executando' && this.#view.snapshot.tick > 0) {
-      this.seek(this.#view.snapshot.tick - 1);
+    const { status, snapshot } = this.#view;
+    if (status === 'executando' || snapshot.tick === 0) return;
+    const target = snapshot.tick - 1;
+    if (this.#replay) {
+      this.seek(target);
+      return;
     }
+    this.#clock.clear();
+    this.#publish({
+      snapshot: this.#liveStateAt(target),
+      status: 'pausada',
+      behind: false,
+      limitReached: target >= lastRecordedTick,
+    });
   }
 
   #publish(patch: Partial<SessionView>) {
@@ -304,6 +531,7 @@ export class ArenaSession {
 
   play() {
     if (
+      this.#view.snapshot.status === 'finalizada' ||
       this.#view.status === 'finalizada' ||
       this.#view.status === 'executando' ||
       this.#view.replayLast === this.#view.snapshot.tick
@@ -319,6 +547,27 @@ export class ArenaSession {
     this.#publish({ status: 'pausada', behind: false });
   }
 
+  setStallSeconds(seconds: number) {
+    const view = this.#view;
+    if (
+      !isStallSeconds(seconds) ||
+      this.#replay ||
+      view.world.match.mode !== 'sumo' ||
+      view.roundStarted ||
+      view.status === 'executando' ||
+      seconds === view.stallSeconds
+    )
+      return;
+    this.#replace(
+      view.world,
+      view.worldText,
+      view.controllers,
+      view.drafts,
+      view.preset,
+      { stallSeconds: seconds, lastDraw: view.lastDraw, status: view.status },
+    );
+  }
+
   setSpeed(speed: PlaybackSpeed) {
     this.#publish({ speed });
   }
@@ -326,6 +575,7 @@ export class ArenaSession {
   step() {
     if (
       this.#view.status === 'executando' ||
+      this.#view.snapshot.status === 'finalizada' ||
       this.#view.status === 'finalizada' ||
       this.#view.replayLast === this.#view.snapshot.tick
     )
@@ -370,14 +620,51 @@ export class ArenaSession {
       index < ticks && snapshot.status !== 'finalizada';
       index += 1
     ) {
-      snapshot = this.#simulation.step();
-      if (snapshot.tick <= lastRecordedTick) this.#history.push(snapshot);
+      snapshot = this.#liveStateAt(snapshot.tick + 1);
+    }
+    if (snapshot.resultado?.motivo === 'falta_de_progresso') {
+      const draw: DrawRecord = {
+        round: (this.#view.lastDraw?.round ?? 0) + 1,
+        result: snapshot.resultado,
+        time: snapshot.time,
+        recording: this.#liveRecording(snapshot.tick),
+      };
+      this.#startNewRun(this.#simulation.reset(), {
+        status: 'pausada',
+        lastDraw: draw,
+      });
+      return;
     }
     this.#publish({
+      roundStarted: this.#view.roundStarted || snapshot.tick > 0,
       snapshot,
-      status: snapshot.status === 'finalizada' ? 'finalizada' : status,
+      status:
+        snapshot.resultado?.motivo === 'saida_alcancada' ||
+        (snapshot.falseStarters && snapshot.status === 'finalizada')
+          ? 'pausada'
+          : snapshot.status === 'finalizada'
+            ? 'finalizada'
+            : status,
       behind: snapshot.status !== 'finalizada' && behind,
       limitReached: snapshot.tick >= lastRecordedTick,
     });
+  }
+
+  #liveStateAt(tick: number): SimState {
+    const cached = this.#history[tick] ?? this.#recent[tick % recentTickCount];
+    if (cached?.tick === tick) return cached;
+
+    // O cursor pode estar atrás das closures e do PRNG preservados no motor.
+    // Só recalculamos o passado se o tick já saiu da janela e da gravação.
+    let state = this.#simulation.getState();
+    if (tick < state.tick) state = this.#simulation.reset();
+    const skip = tick - recentTickCount - state.tick;
+    if (skip > 0) state = this.#simulation.stepN(skip);
+    while (state.tick < tick && state.status !== 'finalizada') {
+      state = this.#simulation.step();
+      if (state.tick <= lastRecordedTick) this.#history[state.tick] = state;
+      else this.#recent[state.tick % recentTickCount] = state;
+    }
+    return state;
   }
 }

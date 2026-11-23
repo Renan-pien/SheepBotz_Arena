@@ -11,7 +11,7 @@ export interface Command {
   readonly w: number; // rad/s
 }
 
-export type MatchMode = 'free' | 'sumo';
+export type MatchMode = 'free' | 'sumo' | 'maze';
 
 export interface World {
   readonly name: string;
@@ -19,7 +19,11 @@ export interface World {
   readonly dt: number; // segundos
   readonly map: { readonly width: number; readonly height: number };
   readonly arena: { readonly radius: number } | null;
-  readonly match: { readonly mode: MatchMode; readonly maxTicks: number };
+  readonly match: {
+    readonly mode: MatchMode;
+    readonly maxTicks: number;
+    readonly exit?: Pick<Obstacle, 'x' | 'y' | 'width' | 'height'>;
+  };
   readonly obstacles: readonly Obstacle[];
   readonly robots: readonly RobotConfig[];
 }
@@ -58,20 +62,50 @@ export interface RobotState {
   readonly situacao: 'ativo' | 'desativado';
 }
 
+export type StallSeconds = 5 | 10 | 30;
+
+export interface StallState {
+  readonly pair?: {
+    readonly center: Pick<Pose, 'x' | 'y'>;
+    readonly sinceTick: number;
+  };
+  readonly pairContact?: true;
+  readonly limitSeconds: StallSeconds;
+  readonly sinceTick: number;
+  readonly centers: readonly Pick<Pose, 'x' | 'y'>[];
+}
+
 export interface MatchResult {
   readonly vencedor: string | null;
-  readonly motivo: 'saida_da_arena' | 'ambos_sairam' | 'tempo_esgotado';
+  readonly motivo:
+    | 'saida_da_arena'
+    | 'ambos_sairam'
+    | 'tempo_esgotado'
+    | 'falta_de_progresso'
+    | 'queima_da_largada'
+    | 'queima_dupla'
+    | 'saida_alcancada';
+  readonly pontos?: Readonly<Record<string, number>>;
   readonly tick: number;
 }
 
 export interface SimEvent {
-  readonly type: 'log' | 'erro_controlador' | 'limite_de_logs' | 'fim_da_luta';
+  readonly type:
+    | 'log'
+    | 'erro_controlador'
+    | 'limite_de_logs'
+    | 'fim_da_luta'
+    | 'fim_do_nivel';
   readonly tick: number;
   readonly robotId: string | null;
   readonly message: string;
 }
 
 export interface SimState {
+  readonly sumoStartDelay?: true;
+  readonly falseStartTick?: number;
+  readonly falseStarters?: readonly string[];
+  readonly stall?: StallState;
   readonly tick: number; // 0 no estado inicial
   readonly time: number; // tick × dt
   readonly robots: readonly RobotState[]; // mesma ordem de world.robots
@@ -115,6 +149,8 @@ export type ControllerOptions =
     };
 
 export type HeadlessInput = ControllerOptions & {
+  readonly sumoStartDelay?: boolean;
+  readonly stallSeconds?: StallSeconds;
   readonly world: string; // texto do arquivo de mundo
   readonly commands?: Readonly<Record<string, Command>>; // comando constante por id
   readonly ticks: number; // inteiro ≥ 0

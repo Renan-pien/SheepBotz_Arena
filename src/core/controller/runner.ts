@@ -1,4 +1,5 @@
 import type { Command, SimEvent, SimState, World } from '../types';
+import { SUMO_START_SECONDS } from '../match/sumo';
 import { createControllerScope, type ControllerFrame } from './api';
 import type { LoadedController } from './runtime';
 
@@ -24,6 +25,7 @@ export function createControllerRunner(world: World) {
     ) {
       const events: SimEvent[] = [];
       const disabled = new Set<string>();
+      const attempts = new Map<string, Command>();
       const requested = Object.entries(commands);
       for (const [index, { id }] of world.robots.entries()) {
         const script = scripts.get(id);
@@ -34,12 +36,16 @@ export function createControllerRunner(world: World) {
           robot,
           tick: state.tick + 1,
           observedTime: state.time,
+          ...(state.sumoStartDelay && {
+            startReleased: state.time >= SUMO_START_SECONDS,
+          }),
           events,
         };
         const controller = scope(id);
         if (state.tick === 0 && script.setup)
           controller.invoke(frame, script.setup);
         if (frame.failure === undefined) controller.invoke(frame, script.loop);
+        if (frame.firstMotion) attempts.set(id, frame.firstMotion);
         if (frame.failure !== undefined) {
           disabled.add(id);
           requested.push([id, { v: 0, w: 0 }]);
@@ -53,7 +59,12 @@ export function createControllerRunner(world: World) {
           requested.push([id, frame.command]);
         }
       }
-      return { commands: Object.fromEntries(requested), events, disabled };
+      return {
+        commands: Object.fromEntries(requested),
+        events,
+        disabled,
+        attempts,
+      };
     },
   };
 }

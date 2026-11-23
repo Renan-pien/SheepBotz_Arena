@@ -21,7 +21,7 @@ A S2 estende o [modelo da S1](../001-nucleo-simulacao/data-model.md). `World` co
 | `SimState` | `resultado` | Campo obrigatório `MatchResult \| null`. Vale `null` no tick 0, enquanto `em_andamento` e no modo `free`. Contém o objeto de resultado quando `finalizada`. |
 | `SimState` | `events` | `readonly SimEvent[]`. Sequência acumulada até o tick do snapshot. Vazia no estado inicial. |
 | `MatchResult` | `vencedor` | `string \| null`. ID do robô vencedor ou nulo em empate. |
-| `MatchResult` | `motivo` | `'saida_da_arena' \| 'ambos_sairam' \| 'tempo_esgotado'`. Conforme ordem de avaliação da S2. |
+| `MatchResult` | `motivo` | `'saida_da_arena' \| 'ambos_sairam' \| 'tempo_esgotado' \| 'falta_de_progresso' \| 'saida_alcancada'`. Conforme a modalidade. |
 | `MatchResult` | `tick` | Inteiro positivo, igual ao tick em que o estado foi finalizado. |
 | `SimEvent` | `type`, `tick`, `robotId`, `message` | Tipo, tick inteiramente executado, ID do emissor ou `null`, texto. `fim_da_luta` é sempre da partida. |
 | Histórico | `readonly SimState[]` | Quando habilitado, vai de 0 até o tick atual, em ordem, com comprimento `state.tick + 1`. O reset substitui a gravação anterior. |
@@ -55,7 +55,7 @@ eventos, concatenar o lote uma vez na publicação e manter intactos os snapshot
 | Mundo válido | Entrada ou carregamento falha | Lista conjunta de erros, sem estado inicial publicado. |
 | Mundo válido | Entradas e carregamentos válidos | Tick 0, todos ativos, eventos vazios, resultado nulo e laser das poses iniciais. |
 | Robô ativo | `setup()` ou `loop()` falha | Desativado no tick em curso, com comando zero e um evento `erro_controlador`. |
-| Luta em andamento | Saída de um robô, saída dos dois ou limite de ticks, nessa prioridade | Finalizada com resultado e um único `fim_da_luta`. |
+| Luta em andamento | Saída de um robô, saída dos dois, limite de ticks ou impasse habilitado, nessa prioridade | Finalizada com resultado e um único `fim_da_luta`. |
 | Luta finalizada | Avanço ou consulta | Mesmo snapshot e lista de histórico intacta. |
 | Sessão iniciada | `reset()` | Novas instâncias e sementes, tick 0, sem eventos e histórico reiniciado. `setup()` ocorre no próximo passo. |
 
@@ -65,3 +65,22 @@ eventos, concatenar o lote uma vez na publicação e manter intactos os snapshot
 - Condição de saída usa apenas o centro e `distância > arena.radius`. Tolerâncias de aceitação da S1 se aplicam a valores de distância e ângulo, sem alterar a comparação da regra.
 - Código, caminho e categoria de erros são dados estruturados. Um erro de execução vira evento no tick, e uma falha de carga vira erro de validação antes do tick 0.
 - O armazenamento é em memória. A S2 já fornece snapshots para replay, e a S3 define o arquivo de gravação e seus limites.
+
+## Monitor opcional de progresso
+
+`StallState` acompanha o snapshot do sumô. Guarda o prazo em segundos, o tick do último deslocamento e os dois centros que iniciam o intervalo. Poses são reais, em metros. Durante imobilidade, os snapshots compartilham a referência imutável do monitor.
+
+No detector da ADR-019, `StallState.pair` é opcional. Guarda `center` (ponto médio de referência em metros) e `sinceTick` (início do intervalo conjunto). `StallState.sinceTick` continua sendo a referência individual. `StallState.pairContact` vale `true` apenas quando o resolvedor detecta colisão entre os robôs naquele passo. Ausência indica falso.
+
+## Leitura derivada de borda
+
+`EdgeReading.front`, `EdgeReading.rear`, `EdgeReading.left` e `EdgeReading.right` são booleanos independentes. A leitura inteira vale `null` em modo livre. Suas entradas são `World.match.mode`, `World.arena.radius`, `RobotConfig.radius` e `RobotState.pose` do tick observado. Nenhuma posição física é exposta ao controlador por essa função.
+
+## Resultado de navegação
+
+A chegada usa `MatchResult.motivo = "saida_alcancada"` e `SimEvent.type = "fim_do_nivel"` no tick terminal do explorador (ADR-021).
+
+A presença de `SimState.sumoStartDelay` identifica uma execução com a largada fixa. `falseStarters` e `falseStartTick` pertencem a todos os estados da demonstração, inclusive ao terminal. Os comandos de movimento são os efetivos de `RobotState.command`. `MatchResult.pontos` pertence à queima e tem as duas chaves do duelo. O tempo absoluto continua igual a tick × dt.
+
+### Instância de estratégia em Portugol
+Cada carga associa o programa compilado a um conjunto privado de variáveis e aos vínculos do próprio robô. Apenas o código validado é reutilizável entre instâncias. Reset cria instâncias novas e volta a observar a semente inicial; o replay consulta os estados gravados.

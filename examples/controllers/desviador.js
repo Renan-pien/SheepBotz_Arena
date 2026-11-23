@@ -1,4 +1,5 @@
 function loop() {
+  if (getInfo().startReleased === false) return;
   const l = readLaser();
   const frente = Math.min(l[3], l[4], l[5]);
   if (readBumper() || frente < 0.4) {

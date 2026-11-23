@@ -271,3 +271,79 @@
   A CLI e a S3 compartilham a mesma validação de controladores. Os testes conferem rejeição
   antes do tick 0, disponibilidade de recursos e paridade entre as formas de avanço.
 - **Aprovação.** Correções de C01 e C02 autorizadas pelo usuário.
+
+## ADR-017 — Retrocesso de um tick na execução ao vivo
+
+- **Data:** 2026-11-21
+- **Status:** aceita
+- **Contexto:** a equipe quer examinar uma batalha passo a passo nos dois sentidos.
+- **Opções consideradas:** navegação exclusiva no replay ou retrocesso também na sessão ao vivo.
+- **Decisão:** oferecer “Voltar 1 Tick” ao lado de “Avançar 1 tick” na sessão ao vivo parada, inclusive após o resultado. A continuação deve reproduzir a trajetória original.
+- **Motivo:** a análise de uma colisão ou do fim da luta precisa preservar o estado da estratégia, seus sorteios e os eventos de cada passo.
+- **Consequências:** revisão de S3-FR-012 e do contrato de operação da S3. O limite do arquivo de gravação e a API das estratégias continuam os definidos nas specs.
+- **Aprovado por:** solicitante, no pedido de implementação do retrocesso ao vivo.
+
+## ADR-018 — Empate por falta de progresso no sumô
+
+- **Data** 2026-11-21. **Status** aceita pelo administrador na aprovação da funcionalidade.
+- **Contexto** Um robô pode continuar acionando os motores contra outro corpo ou girando no lugar.
+- **Opções consideradas** Comparar a odometria, comparar poses entre ticks adjacentes ou acompanhar os centros físicos desde o último progresso.
+- **Decisão** Usar o deslocamento dos centros físicos após os contatos. A margem de 0.001 m corresponde à tolerância de aceitação S1-FR-040 e a 1% do diâmetro no Duelo padrão. O prazo fixo por rodada é 5, 10 ou 30 s de simulação. A interface inicia com 10 s. O administrador determinou reset automático com espera por ação explícita no tick zero.
+- **Consequências** A S2 aceita o detector opcional. A S3 o ativa no sumô ao vivo, conserva o último empate e lê gravações anteriores. A biblioteca e a CLI mantêm o cenário histórico S2-SC-003 quando a opção é omitida.
+
+- **Motivo** Comparar com o último centro de referência detecta movimento lento acumulado e conta o deslocamento provocado por empurrão.
+- **Aprovado por** Wesley, administrador do projeto, em 2026-11-21.
+
+## ADR-019 — Impasse durante o giro conjunto
+
+- **Data e aprovação** 2026-11-21, Wesley. Decisão aceita como extensão da ADR-018.
+- **Contexto** No Duelo padrão, dois Caçadores se encontram no tick 8. Enquanto giram, cada centro percorre um arco, o ponto médio fica estável e a folga entre os corpos chega a 1.92 mm.
+- **Decisão** Contar também o tempo desde o contato físico dos dois robôs enquanto a folga for de até 2 mm e o ponto médio ficar a até 1 mm da referência. Um empurrão que ultrapasse a margem do ponto médio reinicia esse intervalo. Separação maior descarta o intervalo até novo contato. O critério individual da ADR-018 continua independente.
+- **Alternativas** Medir apenas os dois centros perdeu o giro observado. Exigir contato em todos os ticks interromperia a contagem nos pequenos afastamentos. Contar desde a aproximação anteciparia o início do prazo.
+- **Consequências** S2-FR-037 e S3-FR-040/041 passam a contemplar o giro. O seletor se chama “Regra de Tempo”. A versão 3 da gravação identifica a nova regra e permite reproduzir o contato observado. A versão 2 conserva a regra original.
+
+## ADR-020 — Sensor de borda nos quatro lados do robô
+
+- **Data e aprovação** 2026-11-21, Wesley. Decisão aceita. Substitui a decisão C23 da ADR-007.
+- **Contexto** Na Q-007, o time deixou a detecção de borda no backlog. A odometria pode divergir da pose física durante um empurrão.
+- **Opções consideradas** Estimar a aproximação por odometria ou oferecer a leitura do chão em pontos do próprio robô.
+- **Decisão** Todo controlador de sumô pode consultar `readEdge()` dentro de `setup()` e `loop()`. Quatro pontos no perímetro acompanham frente, traseira, esquerda e direita. Cada ponto sinaliza a partir de 97.5% do raio da arena, inclusive para além da faixa branca. Em modo livre a leitura é nula.
+- **Motivo** Os lados distinguem uma aproximação de frente de um empurrão lateral. A faixa já desenhada dá uma referência visível e a pose física mantém a leitura coerente com colisões.
+- **Consequências** O contrato da API do controlador ganha uma revisão aditiva. O painel de inspeção deriva a mesma leitura do tick observado, inclusive em replays antigos. A decisão de reagir cabe a cada estratégia. Origem de S2-FR-038 e S3-FR-042.
+
+## ADR-021 — Labirinto com progressão manual
+
+- **Data** 2026-11-22
+- **Status** Aceita por Wesley.
+- **Contexto e opções** O cenário livre demonstra colisão e sensores. Para oferecer navegação com chegada, avaliamos alterar o comportamento do modo livre ou acrescentar uma modalidade de exploração.
+- **Decisão** Acrescentar três mapas fixos, com 2, 4 e pelo menos 6 bifurcações na rota mais curta, respectivamente. Usar um robô idêntico nos três níveis. O centro físico determina a chegada. O usuário inspeciona o tick final e escolhe se avança com sua estratégia aplicada.
+- **Consequências** A Sala permanece como mundo livre de arquivo. O sumô continua como demonstração definida pela ADR-003. A modalidade adicional usa os contratos S1-FR-041, S2-FR-039 e S3-FR-043.
+
+## ADR-022 — Escolher modo e dificuldade em listas distintas
+
+- **Data** 2026-11-22
+- **Status** Aceita por Wesley.
+- **Contexto e opções** O seletor enumerava o Duelo e os três mapas de labirinto no mesmo nível. A escolha aprovada agrupa os mapas por modalidade.
+- **Decisão** Oferecer Sumô e Labirinto em Modo. Mostrar Dificuldade ao lado apenas no Labirinto, com Fácil, Médio e Difícil. A entrada no Labirinto abre o Fácil pausado. A troca direta de dificuldade preserva a estratégia e abre o mapa pausado no tick 0, como Próximo nível.
+- **Consequências** Revisão da operação da S3 (FR-019, FR-043, FR-044). A interface reflete a modalidade do mundo carregado e identifica arquivos fora do catálogo pelo nome.
+
+## ADR-023 — Largada de cinco segundos no sumô
+
+- **Data** 2026-11-22. **Status** Aceita por Wesley.
+- **Contexto e opções** Verificar o deslocamento físico deixaria passar uma tentativa contra um obstáculo ou um comando sobrescrito. A equipe escolheu julgar a intenção declarada no tick.
+- **Decisão** Todo sumô ao vivo aguarda 5 s de tempo simulado. Um infrator concede um ponto da rodada ao adversário. Dois infratores no mesmo tick empatam, ambos com zero. A rodada encerrada aguarda ação do operador.
+- **Consequências** S2-FR-040 e S3-FR-045. A duração é fixa. Geometria, sensores e demais modalidades conservam seus contratos. O placar desta decisão pertence à rodada. Acumulação entre lutas continua fora do escopo.
+
+## ADR-024 — Mostrar a queima de largada durante meio segundo
+
+- **Data** 2026-11-22. **Status** Aceita por Wesley.
+- **Contexto e opções** O encerramento imediato impedia observar o robô infringindo a regra. Uma animação independente da simulação não apareceria nos sensores e no histórico.
+- **Decisão** Fixar os infratores no primeiro tick da tentativa. Cada um executa seu primeiro comando válido de movimento por 0.50 s simulados com a indicação “Queimou”. Depois pausar e publicar uma só pontuação. O intervalo inclui o passo da infração e respeita os controles de tempo.
+- **Consequências** Revisão de S2-FR-040 e S3-FR-045. O adversário sem infração pode ser empurrado. O replay v5 conserva o encerramento imediato das gravações anteriores.
+
+## ADR-025 — Portugol no editor dos robôs
+
+- **Data** 2026-11-22. **Status** Aceita por Wesley após a prova no Chrome e o fechamento das três specs.
+- **Decisão** Admitir o bônus B-001 nas specs existentes. Cada robô escolhe JavaScript ou Portugol, com decidir() a cada tick e tutorial por linguagem e modalidade. Usar o Core oficial e o módulo público Maker íntegros, empacotados pela Arena.
+- **Alternativas** A instalação padrão do Maker 0.1.0 omite o módulo. Alterar o repositório externo violaria RB-18. Executar livremente o Python produzido concederia recursos além dos sensores e motores. A Arena valida o programa antes de carregar uma instância privada por robô.
+- **Impacto** RB-18 e RB-41, S2-FR-041 e S3-FR-046.

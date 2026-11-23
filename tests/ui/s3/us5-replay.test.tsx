@@ -11,7 +11,7 @@ import type { ControllerEngine } from '../../../src/core';
 import { App } from '../../../src/ui/App';
 import { encodeRecording } from '../../../src/ui/arena/recording';
 import { ArenaSession } from '../../../src/ui/arena/session';
-import { testEngine } from './support';
+import { testEngine, runDefaultDuel } from './support';
 
 afterEach(() => {
   cleanup();
@@ -22,7 +22,7 @@ afterEach(() => {
 function duel(engine: ControllerEngine = testEngine) {
   const session = new ArenaSession(engine);
   session.play();
-  session.pulse(800);
+  runDefaultDuel(session);
   return session;
 }
 function button(name: string) {
@@ -38,8 +38,8 @@ it('S3-US5-AC2: resultado abre a linha do tempo pausada no tick zero e bloqueia 
   expect(
     screen.getByRole<HTMLInputElement>('slider', { name: 'Linha do tempo' })
       .max,
-  ).toBe('34');
-  expect(screen.getByLabelText<HTMLSelectElement>('Mundo').disabled).toBe(true);
+  ).toBe('284');
+  expect(screen.getByLabelText<HTMLSelectElement>('Modo').disabled).toBe(true);
   expect(button('Aplicar vermelho').disabled).toBe(true);
   expect(
     screen
@@ -180,11 +180,11 @@ it('S3-US5-AC11: respeita extremidades e para quando a reprodução completa', (
   session.enterReplay();
   session.back();
   expect(session.getSnapshot().snapshot.tick).toBe(0);
-  session.seek(33);
+  session.seek(283);
   session.play();
   session.pulse(100);
-  expect(session.getSnapshot().snapshot.tick).toBe(34);
+  expect(session.getSnapshot().snapshot.tick).toBe(284);
   expect(session.getSnapshot().status).toBe('finalizada');
   session.step();
-  expect(session.getSnapshot().snapshot.tick).toBe(34);
+  expect(session.getSnapshot().snapshot.tick).toBe(284);
 });

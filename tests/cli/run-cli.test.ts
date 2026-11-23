@@ -201,3 +201,42 @@ it.each(
   expect(run.stdout).toBe('');
   expect(run.stderr).toMatch(/Uso:|Não foi possível ler/);
 });
+
+it('S2-US3-AC13: CLI ativa impasse por opção e rejeita prazo inválido', () => {
+  const args = [
+    '--world',
+    'exemplo.json',
+    '--ticks',
+    '3000',
+    '--stall-seconds',
+  ];
+  expect(
+    JSON.parse(invoke([...args, '5'], duel).stdout).state.resultado,
+  ).toEqual({ motivo: 'falta_de_progresso', vencedor: null, tick: 250 });
+  expect(invoke([...args, '7'], duel).code).toBe(2);
+});
+
+it('S2-US3-AC16: comando constante queima somente com a largada de sumô habilitada', () => {
+  const args = [
+    '--world',
+    'exemplo.json',
+    '--ticks',
+    '25',
+    '--command',
+    'azul=0,-1',
+  ];
+  expect(JSON.parse(invoke(args, duel).stdout).state.resultado).toBeNull();
+  const run = invoke([...args, '--sumo-start-delay'], duel);
+  expect(run.code).toBe(0);
+  expect(JSON.parse(run.stdout).state.resultado).toEqual({
+    tick: 25,
+    motivo: 'queima_da_largada',
+    vencedor: 'vermelho',
+    pontos: { vermelho: 1, azul: 0 },
+  });
+  expect(
+    JSON.parse(
+      invoke([...base, '--sumo-start-delay', '--command', 'a=0.1,0']).stdout,
+    ).state.sumoStartDelay,
+  ).toBeUndefined();
+});

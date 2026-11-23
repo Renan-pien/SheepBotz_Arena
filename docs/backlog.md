@@ -4,8 +4,12 @@
 
 | ID | Item | Origem | Prioridade | Observações |
 |---|---|---|---|---|
-| B-001 | Controladores escritos em Portugol, usando o meuPiá Maker | RB-41 (bônus) | Alta | Só pelas interfaces públicas do meuPiá (RB-18) |
 | B-002 | Controlador remoto via WebSocket, no estilo Player/ROS | RB-42 (bônus) | Alta | |
-| B-003 | Sensor de borda para o sumô | Q-007 | Média | Só se Q-007 for respondida com "não ter no escopo" |
 | B-004 | Segunda modalidade apenas como configuração (novo mundo e nova condição de vitória) | AGENTS.md §6 | Baixa | Serve para demonstrar no pitch que o núcleo é genérico |
 | B-005 | Épico novo conduzido com o BMAD Method | RB-14 (bônus) | Baixa | Depende da aula sobre BMAD |
+
+## Itens incorporados
+
+B-003 passou às Specs 002 e 003 pela ADR-020, após a aprovação da Q-007.
+
+B-001 passou às Specs 002 e 003 pela ADR-025 (RB-18 e RB-41).

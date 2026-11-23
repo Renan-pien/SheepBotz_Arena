@@ -12,3 +12,5 @@ docs/cobertura/
 
 # Fixture propositalmente inválida.
 tests/fixtures/worlds/invalido-json.json
+
+public/meupia/

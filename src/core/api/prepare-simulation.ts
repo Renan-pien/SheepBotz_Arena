@@ -26,7 +26,8 @@ function prepareTick(world: World, options: PrepareOptions) {
   const { commands, controllers } = inputs;
 
   function advance(state: SimState): SimState {
-    if (controllers.size === 0) return step(world, state, commands);
+    if (state.falseStartTick !== undefined || controllers.size === 0)
+      return step(world, state, commands);
     const tick = runner.run(state, commands, controllers);
     const robots = tick.disabled.size
       ? state.robots.map((robot) =>
@@ -38,7 +39,7 @@ function prepareTick(world: World, options: PrepareOptions) {
     const observed = tick.events.length
       ? { ...state, robots, events: [...state.events, ...tick.events] }
       : state;
-    return step(world, observed, tick.commands);
+    return step(world, observed, tick.commands, tick.attempts);
   }
 
   return { ok: true as const, advance, commands };
@@ -58,19 +59,14 @@ export function prepareSimulation(
       }
     : { commands: first.commands };
 
-  const simulation = assembleSimulation(
-    world,
-    options.history,
-    first.advance,
-    () => {
-      const next = prepareTick(world, inputs);
-      if (!next.ok) {
-        throw new Error(
-          `Falha ao recarregar a simulação: ${next.errors.map((error) => error.message).join(' ')}`,
-        );
-      }
-      return next.advance;
-    },
-  );
+  const simulation = assembleSimulation(world, options, first.advance, () => {
+    const next = prepareTick(world, inputs);
+    if (!next.ok) {
+      throw new Error(
+        `Falha ao recarregar a simulação: ${next.errors.map((error) => error.message).join(' ')}`,
+      );
+    }
+    return next.advance;
+  });
   return { ok: true, simulation };
 }

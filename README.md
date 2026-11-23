@@ -1,12 +1,18 @@
 # SheepBotz Arena
 
-**320 testes · 88% de cobertura**
+**418 testes · 89% de cobertura**
 
 Métricas geradas a partir dos relatórios com `npm run stats`.
 
 Simulador de robôs móveis para a equipe **Univille SheepBotz**. O navegador mostra a
 simulação em 3D e permite editar estratégias, inspecionar sensores e salvar replays.
-O núcleo 2D aceita mundos JSON e controladores JavaScript.
+O núcleo 2D aceita mundos JSON. Na IDE, cada robô pode usar JavaScript ou Portugol com o meuPiá Maker.
+
+### Escrever uma estratégia em Portugol
+
+Na aba **Controladores**, escolha o robô e selecione **Linguagem → Portugol (meuPiá Maker)**. Escreva a decisão de cada tick em `decidir()` ou comece pelo exemplo do modo. Clique em **Aplicar** e depois em **Avançar 1 tick** ou **Executar**. O botão **? Comandos** mostra a API e um exemplo para o modo e a linguagem selecionados.
+
+A IDE abre e salva arquivos `.por`. Cada equipe pode escolher sua linguagem. No Labirinto, trocar a dificuldade conserva o controlador aplicado e o rascunho. O primeiro uso do Portugol carrega o compilador a partir dos arquivos do próprio site. A instalação para quem clona o projeto continua usando `npm ci`. [Exemplo do Sumô](examples/controllers/borda.por) · [Exemplo do Labirinto](examples/controllers/parede.por)
 
 ## Status
 
@@ -14,7 +20,7 @@ O núcleo 2D aceita mundos JSON e controladores JavaScript.
 |---|---|---|
 | [001](specs/001-nucleo-simulacao/spec.md) | Mundo e núcleo de simulação | Spec oficial, [checklist](specs/001-nucleo-simulacao/checklists/requirements.md), [plan](specs/001-nucleo-simulacao/plan.md), contratos, [tasks](specs/001-nucleo-simulacao/tasks.md) e anexos |
 | [002](specs/002-sensores-controlador/spec.md) | Laser, controladores e sumô pela biblioteca e pela CLI | [Plano](specs/002-sensores-controlador/plan.md), [contratos](specs/002-sensores-controlador/contracts/core-api.md), [tasks](specs/002-sensores-controlador/tasks.md) e [quickstart](specs/002-sensores-controlador/quickstart.md) |
-| [003](specs/003-visualizacao-operacao/spec.md) | Visualização 3D, operação e replay | [Plano](specs/003-visualizacao-operacao/plan.md), [gravação v1](specs/003-visualizacao-operacao/contracts/gravacao.md), [tarefas](specs/003-visualizacao-operacao/tasks.md) e [quickstart](specs/003-visualizacao-operacao/quickstart.md) |
+| [003](specs/003-visualizacao-operacao/spec.md) | Visualização 3D, operação e replay | [Plano](specs/003-visualizacao-operacao/plan.md), [gravações v1 a v6](specs/003-visualizacao-operacao/contracts/gravacao.md), [tarefas](specs/003-visualizacao-operacao/tasks.md) e [quickstart](specs/003-visualizacao-operacao/quickstart.md) |
 
 ## Como rodar
 
@@ -29,6 +35,28 @@ npm run dev
 A tela abre o **Duelo padrão** com Caçador e Girador. Clique em **Executar**
 para ver a luta. Use **Inspeção** para consultar os sensores e **Ver replay**
 para voltar a um tick. Os controles de gravação usam arquivos JSON locais.
+
+Em **Modo**, escolha **Sumô** ou **Labirinto**. O Labirinto abre pausado no **Fácil**. Na lista **Dificuldade**, você pode escolher **Fácil**, **Médio** ou **Difícil**. Cada troca abre o mapa no tick 0 com sua estratégia aplicada. Clique em **Executar** para acompanhar o Navegador ou aplique sua própria estratégia ao `explorador`. A chegada é a área quadriculada. A simulação pausa ao alcançá-la. **Próximo nível** leva a estratégia aplicada ao tick 0 do novo mapa. Também é possível voltar um tick ou rever a chegada no replay. Para explorar a sala livre original, use **Abrir mundo** com [Sala com obstáculos](examples/worlds/sala-com-obstaculos.json).
+
+No **Sumô**, cada rodada começa com **5 segundos de espera** no relógio da simulação. Os sensores já podem ser lidos. Qualquer tentativa de andar ou girar antes da liberação dá **1 ponto da rodada ao adversário**. Se os dois tentarem no mesmo tick, há empate sem pontos. O texto **Queimou** aparece junto a cada infrator, que mantém o movimento por **0,5 s simulados**. A rodada pausa na posição final. No Duelo padrão, uma queima no primeiro passo aparece no tick 1 e a rodada pausa no tick 25.
+
+Após a largada, **Regra de Tempo** permite escolher 5, 10 ou 30 s antes do
+primeiro passo. A rodada empata se os dois robôs ficarem parados ou se, após
+se tocarem, continuarem girando juntos com folga de até 2 mm entre eles e
+deslocamento de até 1 mm do ponto médio durante todo o prazo. A próxima fica pausada no tick 0, com as estratégias e
+o prazo preservados. **Ver replay do empate** abre a gravação da última rodada.
+
+No sumô, qualquer estratégia pode consultar `readEdge()` em `setup()` ou `loop()`. O retorno tem quatro lados relativos ao próprio robô: `front`, `rear`, `left` e `right`. Cada lado vale `true` a partir da borda interna da faixa branca. Em modo livre, a função retorna `null`. A aba **Inspeção** mostra as quatro leituras do tick exibido.
+
+Exemplo de estratégia que avança e recua ao detectar a borda à frente:
+
+```js
+function loop() {
+  if (getInfo().startReleased === false) return;
+  const borda = readEdge();
+  setSpeed(borda?.front ? -0.3 : 0.3, 0);
+}
+```
 
 Para usar o núcleo pelo terminal, execute:
 
