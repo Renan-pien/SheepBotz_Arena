@@ -3,6 +3,12 @@ import { modelIds, robotModels, type RobotModel } from '../../core';
 import type { ArenaSession, SessionView } from '../arena/session';
 import { teamFor, teams, type Team } from '../arena/teams';
 
+const categories = {
+  light: 'Peso leve',
+  medium: 'Peso médio',
+  heavy: 'Peso pesado',
+} as const;
+
 type Picks = Partial<Record<Team, RobotModel>>;
 const number = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 });
 
@@ -112,59 +118,76 @@ export function Roster({
             <p className="roster-prompt" aria-live="polite">
               Escolha para a equipe <strong>{teams[active].name}</strong>
             </p>
-            <div className="roster-grid">
-              {modelIds.map((id) => {
-                const model = robotModels[id];
-                const owner =
-                  picks.red === id
-                    ? 'red'
-                    : picks.blue === id
-                      ? 'blue'
-                      : undefined;
-                return (
-                  <button
-                    type="button"
-                    key={id}
-                    className={'roster-card ' + (owner ?? '')}
-                    disabled={owner === other}
-                    aria-pressed={picks[active] === id}
-                    aria-describedby={title + '-' + id}
-                    aria-label={
-                      model.name +
-                      (owner ? ' · Equipe ' + teams[owner].name : '')
-                    }
-                    onClick={() => pick(id)}
-                  >
-                    <span className="roster-portrait">
-                      <img
-                        alt=""
-                        src={import.meta.env.BASE_URL + 'robots/' + id + '.png'}
-                      />
-                      {owner && (
-                        <span className={'roster-reserved ' + owner}>
-                          {teams[owner].name}
-                        </span>
-                      )}
-                    </span>
-                    <strong className="roster-name">{model.name}</strong>
-                    <span className="roster-stats" id={title + '-' + id}>
-                      <span>
-                        Raio <b>{number.format(model.radius * 100)} cm</b>
-                      </span>
-                      <span>
-                        Peso <b>{number.format(model.massKg * 1000)} g</b>
-                      </span>
-                      <span>
-                        Força <b>{model.force}/6</b>
-                      </span>
-                      <span>
-                        Tração <b>{model.traction}/6</b>
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+            {Object.entries(categories).map(([weightClass, label]) => (
+              <section
+                key={weightClass}
+                className="roster-class"
+                role="group"
+                aria-labelledby={title + '-' + weightClass}
+              >
+                <h3 id={title + '-' + weightClass}>{label}</h3>
+                <div className="roster-grid">
+                  {modelIds
+                    .filter((id) => robotModels[id].weightClass === weightClass)
+                    .map((id) => {
+                      const model = robotModels[id];
+                      const owner =
+                        picks.red === id
+                          ? 'red'
+                          : picks.blue === id
+                            ? 'blue'
+                            : undefined;
+                      return (
+                        <button
+                          type="button"
+                          key={id}
+                          className={'roster-card ' + (owner ?? '')}
+                          disabled={owner === other}
+                          aria-pressed={picks[active] === id}
+                          aria-describedby={title + '-' + id}
+                          aria-label={
+                            model.name +
+                            (owner ? ' · Equipe ' + teams[owner].name : '')
+                          }
+                          onClick={() => pick(id)}
+                        >
+                          <span className="roster-portrait">
+                            <img
+                              alt=""
+                              src={
+                                import.meta.env.BASE_URL +
+                                'robots/' +
+                                id +
+                                '.png'
+                              }
+                            />
+                            {owner && (
+                              <span className={'roster-reserved ' + owner}>
+                                {teams[owner].name}
+                              </span>
+                            )}
+                          </span>
+                          <strong className="roster-name">{model.name}</strong>
+                          <span className="roster-stats" id={title + '-' + id}>
+                            <span>
+                              Raio <b>{number.format(model.radius * 100)} cm</b>
+                            </span>
+                            <span>
+                              Peso <b>{number.format(model.massKg * 1000)} g</b>
+                            </span>
+                            <span>
+                              Força <b>{number.format(model.force)}/6</b>
+                            </span>
+                            <span>
+                              Tração <b>{number.format(model.traction)}/6</b>
+                            </span>
+                          </span>
+                        </button>
+                      );
+                    })}
+                </div>
+              </section>
+            ))}
             {view.errors.length > 0 && (
               <p role="alert">
                 {view.errors.map((error) => error.message).join(' ')}

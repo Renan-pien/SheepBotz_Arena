@@ -33,7 +33,14 @@ it('S3-US3-AC16: a seleção reserva cada modelo para uma equipe e libera a esco
     within(dialog)
       .getAllByRole('button')
       .filter((b) => b.className.includes('roster-card')),
-  ).toHaveLength(6);
+  ).toHaveLength(9);
+  for (const name of ['Peso leve', 'Peso médio', 'Peso pesado']) {
+    expect(
+      within(within(dialog).getByRole('group', { name })).getAllByRole(
+        'button',
+      ),
+    ).toHaveLength(3);
+  }
   expect(get('Confirmar duelo').disabled).toBe(true);
   fireEvent.click(get('Nimbo'));
   expect(get('Nimbo · Equipe Vermelha').disabled).toBe(true);
@@ -60,7 +67,7 @@ it('S3-US3-AC16: a seleção reserva cada modelo para uma equipe e libera a esco
   expect(view.snapshot.tick).toBe(0);
 });
 
-it('S3-US3-AC17: os seis perfis têm carrocerias distintas e viajam com o mundo gravado', () => {
+it('S3-US3-AC17: os nove perfis têm carrocerias distintas e viajam com o mundo gravado', () => {
   const session = new ArenaSession(testEngine);
   const legacy = encodeRecording(session.recording());
   const shapes = new Set<string>();
@@ -97,7 +104,7 @@ it('S3-US3-AC17: os seis perfis têm carrocerias distintas e viajam com o mundo 
     graphics.dispose();
     session.exitReplay();
   }
-  expect(shapes.size).toBe(6);
+  expect(shapes.size).toBe(9);
   session.openRecording(legacy);
   expect(
     session.getSnapshot().world.robots.every((r) => r.model === undefined),

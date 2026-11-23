@@ -105,4 +105,4 @@ navegador. A seguir entram inspeção e replay. A apresentação vem por
 - [X] T033 [US3] Desenhar os seis modelos e retratos, montar a grade e exibir equipes na cena e no placar em `src/ui/{App.tsx,arena.css,scene/,panels/Roster.tsx}`, com testes em `tests/ui/s3/escalacao.test.tsx` — S3-FR-006/048, S3-US3-AC16/17. Depende de S3-T032.
 
 - [X] T034 [US3] Integrar sorteio e repetição do mesmo mapa à sessão, ao seletor e ao replay em `src/ui/{App.tsx,arena/}` e `tests/ui/s3/maze.test.tsx` — S3-FR-043/044, S3-US3-AC18. Depende de S2-T050.
-- [ ] T035 [US3] Agrupar nove escolhas, desenhar as três novas carrocerias e seus retratos e validar reserva e reprodução em `src/ui/{panels,scene,arena.css}`, `public/robots/` e `tests/ui/s3/escalacao.test.tsx` — S3-FR-006/048, S3-US3-AC16/17. Depende de S1-T054.
+- [X] T035 [US3] Agrupar nove escolhas, desenhar as três novas carrocerias e seus retratos e validar reserva e reprodução em `src/ui/{panels,scene,arena.css}`, `public/robots/` e `tests/ui/s3/escalacao.test.tsx` — S3-FR-006/048, S3-US3-AC16/17. Depende de S1-T054.

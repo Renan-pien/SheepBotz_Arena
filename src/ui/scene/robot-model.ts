@@ -6,6 +6,7 @@ import {
   Mesh,
   MeshLambertMaterial,
   Shape,
+  TorusGeometry,
   type BufferGeometry,
 } from 'three';
 import type { RobotModel } from '../../core';
@@ -14,10 +15,13 @@ import type { Team } from '../arena/teams';
 type Point = readonly [x: number, z: number];
 const accents = {
   nimbo: '#67dfc3',
+  pulga: '#9ae278',
   zarpa: '#f0b24d',
   quimera: '#ab92ee',
+  arraia: '#69dfeb',
   torvelim: '#e67c58',
   brontes: '#9bb783',
+  monolito: '#f1bf72',
   baluarte: '#bfc9e1',
 } as const;
 
@@ -95,9 +99,72 @@ export function buildRobotModel(id: RobotModel, paint: string, team?: Team) {
     [0.55, 0.51],
     [0.82, 0.23],
   ];
-  deck(hull, -0.31, 0.28, rubber);
+  if (id !== 'pulga' && id !== 'arraia') deck(hull, -0.31, 0.28, rubber);
   let top = 0.2;
   switch (id) {
+    case 'pulga': {
+      const delta: Point[] = [
+        [0.89, 0],
+        [0.48, -0.2],
+        [-0.48, -0.63],
+        [-0.68, -0.35],
+        [-0.68, 0.35],
+        [-0.48, 0.63],
+        [0.48, 0.2],
+      ];
+      deck(delta, -0.26, 0.22, panel);
+      const arch = new TorusGeometry(1, 0.09, 8, 18, Math.PI);
+      for (const side of [-1, 1]) {
+        wheel(-0.46, side * 0.61, 0.28);
+        part(arch, trim, -0.07, -0.04, side * 0.24, 0.5, 0.54, 0.5);
+      }
+      part(box, steel, -0.07, 0.49, 0, 0.1, 0.06, 0.52);
+      const roller = part(round, rubber, 0.59, -0.3, 0, 0.18, 0.23, 0.18);
+      roller.rotation.x = Math.PI / 2;
+      top = -0.035;
+      break;
+    }
+    case 'arraia': {
+      for (const side of [-1, 1]) {
+        const wing: Point[] = [
+          [0.88, 0],
+          [0.33, side * 0.52],
+          [-0.39, side * 0.9],
+          [-0.57, side * 0.79],
+          [-0.31, side * 0.24],
+          [-0.72, side * 0.14],
+          [-0.82, 0],
+        ];
+        deck(wing, -0.18, 0.25, panel);
+        deck(
+          [
+            [0.43, side * 0.33],
+            [-0.4, side * 0.82],
+            [-0.27, side * 0.57],
+          ],
+          0.075,
+          0.032,
+          trim,
+        );
+        wheel(-0.28, side * 0.35, 0.24);
+      }
+      part(round, steel, 0.08, 0.13, 0, 0.47, 0.14, 0.18);
+      top = 0.2;
+      break;
+    }
+    case 'monolito': {
+      const plinth = new CylinderGeometry(0.8, 1, 1, 6);
+      part(plinth, steel, 0, -0.18, 0, 0.96, 0.36, 0.96);
+      part(plinth, panel, -0.03, 0.13, 0, 0.78, 0.41, 0.76);
+      part(plinth, trim, -0.06, 0.37, 0, 0.58, 0.09, 0.55);
+      part(plinth, panel, -0.08, 0.51, 0, 0.49, 0.24, 0.47);
+      for (const side of [-1, 1]) {
+        wheel(-0.36, side * 0.59, 0.22);
+        wheel(0.36, side * 0.59, 0.22);
+      }
+      top = 0.63;
+      break;
+    }
     case 'nimbo':
       part(round, panel, -0.05, 0.04, 0, 0.76, 0.24, 0.61);
       part(round, steel, -0.2, 0.17, 0, 0.36, 0.08, 0.34);
