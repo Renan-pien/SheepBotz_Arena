@@ -237,4 +237,4 @@ Setup T001–T002 → Fundação T003–T008 → US1 T009–T016 → US2 T017–
 
 - [X] T049 [US2] Testar pacote, funções públicas, isolamento, persistência e limites antes da IDE; implementar adaptador em src/runtime/portugol e dependências locais — S2-FR-041, S2-US2-AC15/16.
 
-- [ ] T050 [US5] Testar variedade por semente, geometria por dificuldade e chegada do Navegador antes de implementar o gerador em `src/worlds/maze.ts` e `tests/core/acceptance/s2/maze.test.ts` — S2-FR-039, S2-US5-AC4/5/6.
+- [X] T050 [US5] Testar variedade por semente, geometria por dificuldade e chegada do Navegador antes de implementar o gerador em `src/worlds/maze.ts` e `tests/core/acceptance/s2/maze.test.ts` — S2-FR-039, S2-US5-AC4/5/6.

@@ -3,6 +3,8 @@ import { expect, it } from 'vitest';
 import { loadWorld, runHeadless } from '../../../../src/core';
 import { initializeControllerEngine } from '../../../../src/runtime/controller-engine';
 
+import { generateMaze, type MazeLevel } from '../../../../src/worlds/maze';
+
 const levels = [
   ['facil', 7, 2, 2, 0],
   ['medio', 14, 4, 3, 0],
@@ -13,67 +15,75 @@ function readLevel(name: string) {
   return readFileSync('examples/worlds/labirinto-' + name + '.json', 'utf8');
 }
 
-it.each(levels)(
-  'S2-US5-AC4: topologia do nível %s',
-  (name, length, branches, depth, cycles) => {
-    const parsed = loadWorld(readLevel(name));
-    if (!parsed.ok) throw Error(JSON.stringify(parsed.errors));
-    const { map, obstacles, robots, match } = parsed.world;
-    const pitch = 0.5;
-    const cols = map.width / pitch;
-    const rows = map.height / pitch;
-    const cells = Array.from({ length: cols * rows }, (_, i) => ({
-      x: ((i % cols) + 0.5) * pitch - map.width / 2,
-      y: (Math.floor(i / cols) + 0.5) * pitch - map.height / 2,
-    }));
-    expect(robots[0]!.initialPose).toMatchObject(cells[0]!);
-    expect(match.exit).toMatchObject(cells.at(-1)!);
-    const graph = cells.map((a) =>
-      cells.flatMap((b, j) => {
-        if (Math.abs(a.x - b.x) + Math.abs(a.y - b.y) !== pitch) return [];
-        const blocked = obstacles.some(
-          (wall) =>
-            Math.abs((a.x + b.x) / 2 - wall.x) <= wall.width / 2 &&
-            Math.abs((a.y + b.y) / 2 - wall.y) <= wall.height / 2,
-        );
-        return blocked ? [] : [j];
-      }),
-    );
-    const queue = [0];
-    const previous = new Map([[0, -1]]);
-    for (const a of queue)
-      for (const b of graph[a]!) {
-        if (previous.has(b)) continue;
-        queue.push(b);
-        previous.set(b, a);
-      }
-    expect(queue).toHaveLength(cells.length);
-    const route: number[] = [];
-    for (let cell = cells.length - 1; cell >= 0; cell = previous.get(cell)!)
-      route.push(cell);
-    expect(route.length - 1).toBe(length);
-    expect(route.filter((i) => graph[i]!.length >= 3)).toHaveLength(branches);
+function verifyTopology(
+  text: string,
+  [name, length, branches, depth, cycles]: readonly [
+    MazeLevel,
+    number,
+    number,
+    number,
+    number,
+  ],
+) {
+  const parsed = loadWorld(text);
+  if (!parsed.ok) throw Error(JSON.stringify(parsed.errors));
+  const { map, obstacles, robots, match } = parsed.world;
+  const pitch = 0.5;
+  const cols = map.width / pitch;
+  const rows = map.height / pitch;
+  const cells = Array.from({ length: cols * rows }, (_, i) => ({
+    x: ((i % cols) + 0.5) * pitch - map.width / 2,
+    y: (Math.floor(i / cols) + 0.5) * pitch - map.height / 2,
+  }));
+  expect(robots[0]!.initialPose).toMatchObject(cells[0]!);
+  expect(match.exit).toMatchObject(cells.at(-1)!);
+  const graph = cells.map((a) =>
+    cells.flatMap((b, j) => {
+      if (Math.abs(a.x - b.x) + Math.abs(a.y - b.y) !== pitch) return [];
+      const blocked = obstacles.some(
+        (wall) =>
+          Math.abs((a.x + b.x) / 2 - wall.x) <= wall.width / 2 &&
+          Math.abs((a.y + b.y) / 2 - wall.y) <= wall.height / 2,
+      );
+      return blocked ? [] : [j];
+    }),
+  );
+  const queue = [0];
+  const previous = new Map([[0, -1]]);
+  for (const a of queue)
+    for (const b of graph[a]!) {
+      if (previous.has(b)) continue;
+      queue.push(b);
+      previous.set(b, a);
+    }
+  expect(queue).toHaveLength(cells.length);
+  const route: number[] = [];
+  for (let cell = cells.length - 1; cell >= 0; cell = previous.get(cell)!)
+    route.push(cell);
+  expect(route.length - 1).toBe(length);
+  expect(route.filter((i) => graph[i]!.length >= 3)).toHaveLength(branches);
+  expect(
+    graph.reduce((count, neighbors) => count + neighbors.length, 0) / 2 -
+      cells.length +
+      1,
+  ).toBe(cycles);
+  const frontier = [...route];
+  const distances = new Map(route.map((i) => [i, 0]));
+  for (const a of frontier)
+    for (const b of graph[a]!) {
+      if (distances.has(b)) continue;
+      distances.set(b, distances.get(a)! + 1);
+      frontier.push(b);
+    }
+  expect(Math.max(...distances.values())).toBe(depth);
+  if (name === 'medio')
     expect(
-      graph.reduce((count, neighbors) => count + neighbors.length, 0) / 2 -
-        cells.length +
-        1,
-    ).toBe(cycles);
-    const frontier = [...route];
-    const distances = new Map(route.map((i) => [i, 0]));
-    for (const a of frontier)
-      for (const b of graph[a]!) {
-        if (distances.has(b)) continue;
-        distances.set(b, distances.get(a)! + 1);
-        frontier.push(b);
-      }
-    expect(Math.max(...distances.values())).toBe(depth);
-    if (name === 'medio')
-      expect(
-        graph.some(
-          (neighbors, i) => !route.includes(i) && neighbors.length >= 3,
-        ),
-      ).toBe(true);
-  },
+      graph.some((neighbors, i) => !route.includes(i) && neighbors.length >= 3),
+    ).toBe(true);
+}
+
+it.each(levels)('S2-US5-AC4: topologia do nível %s', (...level) =>
+  verifyTopology(readLevel(level[0]), level),
 );
 
 it.each(levels)('S2-US5-AC5: Navegador completa %s pelos sensores', (name) => {
@@ -136,3 +146,34 @@ it('S2-US5-AC5: centro sobre o limite encerra uma vez no primeiro tick de chegad
     ['fim_do_nivel', 2],
   ]);
 });
+
+it.each(levels)(
+  'S2-US5-AC6: sorteios de %s variam paredes, conservam a dificuldade e reproduzem a semente',
+  (...level) => {
+    const reference = readLevel(level[0]);
+    const layouts = new Set<string>();
+    for (const seed of [0, 1, 2, 3, 4, 5, 8, 13, 21, 34, 55, 4294967295]) {
+      const text = generateMaze(level[0], seed, reference);
+      expect(generateMaze(level[0], seed, reference)).toBe(text);
+      verifyTopology(text, level);
+      layouts.add(JSON.stringify(JSON.parse(text).obstacles));
+    }
+    expect(layouts.size).toBeGreaterThan(4);
+  },
+);
+
+it.each(levels)(
+  'S2-US5-AC6: Navegador chega ao fim do mundo sorteado no %s',
+  (level) => {
+    const result = runHeadless({
+      world: generateMaze(level, 87501, readLevel(level)),
+      controllers: {
+        explorador: readFileSync('examples/controllers/navegador.js', 'utf8'),
+      },
+      controllerEngine: initializeControllerEngine(),
+      ticks: 6000,
+    });
+    if (!result.ok) throw Error(JSON.stringify(result.errors));
+    expect(result.state.resultado?.motivo).toBe('saida_alcancada');
+  },
+);
