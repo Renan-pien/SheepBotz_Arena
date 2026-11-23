@@ -28,7 +28,7 @@ const engine: ControllerEngine = {
 afterEach(cleanup);
 
 it('S3-US3-AC10: chegada pausada, retrocesso, replay e progressão por clique', () => {
-  const session = new ArenaSession(engine);
+  const session = new ArenaSession(engine, undefined, () => 87501);
   render(<App session={session} />);
   fireEvent.change(screen.getByLabelText('Modo'), {
     target: { value: 'maze' },
@@ -171,4 +171,62 @@ it('S3-US3-AC12: mundo livre e labirinto de arquivo mantêm sua identificação'
   expect(select('Modo').disabled).toBe(true);
   expect(select('Dificuldade').disabled).toBe(true);
   expect(select('Dificuldade').value).toBe('medio');
+});
+
+it('S3-US3-AC18: novo traçado, estratégia preservada, reinício e replay do mesmo mundo', () => {
+  const session = new ArenaSession(engine, undefined, () => 42);
+  render(<App session={session} />);
+  choose('Modo', 'maze');
+  act(() => session.editSource('explorador', '// rascunho preservado'));
+  const another = screen.getByRole<HTMLButtonElement>('button', {
+    name: 'Gerar outro labirinto',
+  });
+  for (const level of ['facil', 'medio', 'dificil']) {
+    choose('Dificuldade', level);
+    const initial = session.getSnapshot();
+    fireEvent.click(another);
+    const next = session.getSnapshot();
+    expect(next.world.obstacles).not.toEqual(initial.world.obstacles);
+    expect(next.status).toBe('pausada');
+    expect(next.snapshot.tick).toBe(0);
+    expect(next.drafts).toEqual(initial.drafts);
+    expect(next.controllers).toEqual(initial.controllers);
+    expect(next.languages).toEqual(initial.languages);
+    act(() => {
+      session.step();
+      session.reset();
+    });
+    expect(session.getSnapshot().worldText).toBe(next.worldText);
+    act(() => session.openRecording(encodeRecording(session.recording())));
+    expect(another.disabled).toBe(true);
+    expect(select('Dificuldade').value).toBe(level);
+    expect(session.getSnapshot().worldText).toBe(next.worldText);
+    act(() => session.exitReplay());
+    expect(session.getSnapshot().worldText).toBe(next.worldText);
+  }
+});
+
+it('S3-US3-AC18: importar o mapa sorteado reconhece a dificuldade pela geometria e conserva o arquivo', () => {
+  const session = new ArenaSession(engine, undefined, () => 7);
+  session.chooseWorld('medio');
+  const world = JSON.parse(session.getSnapshot().worldText);
+  const imported = JSON.stringify(
+    Object.fromEntries(Object.entries(world).reverse()),
+    null,
+    2,
+  );
+  session.openWorld(imported);
+  render(<App session={session} />);
+  expect(select('Dificuldade').value).toBe('medio');
+  expect(screen.getByText(world.name)).toBeTruthy();
+  expect(session.getSnapshot().controllers.explorador).toBe(
+    controllerPresets.parado.source,
+  );
+  expect(session.getSnapshot().worldText).toBe(imported);
+  world.obstacles = [];
+  act(() => session.openWorld(JSON.stringify(world)));
+  expect(select('Dificuldade').selectedIndex).toBe(-1);
+  const before = session.getSnapshot();
+  session.regenerateMaze();
+  expect(session.getSnapshot()).toBe(before);
 });

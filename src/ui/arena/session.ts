@@ -14,7 +14,8 @@ import {
 import { initializeControllerEngine } from '../../runtime/controller-engine';
 import { teamFor, teams } from './teams';
 import {
-  mazeLevelFromText,
+  drawMaze,
+  mazeLevelForWorld,
   nextMazeLevel,
   type MazeLevel,
   controllerPresets,
@@ -123,6 +124,8 @@ export class ArenaSession {
     engine: ControllerEngine = initializeControllerEngine(),
     private readonly getMaker = async (): Promise<ControllerEngine> =>
       (await import('../../runtime/portugol/runtime')).loadMaker(),
+    private readonly nextMazeSeed = () =>
+      crypto.getRandomValues(new Uint32Array(1))[0]!,
   ) {
     this.#engine = engine;
     const worldText = worldPresets.duelo.text;
@@ -201,7 +204,11 @@ export class ArenaSession {
   }
 
   chooseWorld(preset: WorldPreset) {
-    this.openWorld(worldPresets[preset].text, preset);
+    if (this.#replay) return;
+    this.openWorld(
+      preset === 'duelo' ? worldPresets.duelo.text : this.#drawMaze(preset),
+      preset,
+    );
   }
 
   selectModels(red: RobotModel, blue: RobotModel): boolean {
@@ -249,9 +256,42 @@ export class ArenaSession {
   }
 
   chooseDifficulty(level: MazeLevel) {
-    const { world, preset, controllers, drafts } = this.#view;
-    if (this.#replay || world.match.mode !== 'maze' || preset === level) return;
-    const text = worldPresets[level].text;
+    if (this.#view.preset !== level) this.#startMaze(level);
+  }
+
+  regenerateMaze() {
+    const { preset, world } = this.#view;
+    if (this.#replay || world.match.mode !== 'maze') return;
+    const level = preset || mazeLevelForWorld(world);
+    if (level && level !== 'duelo') this.#startMaze(level);
+  }
+
+  #drawMaze(level: MazeLevel) {
+    const seed = this.nextMazeSeed();
+    const text = drawMaze(level, seed);
+    if (this.#view.world.match.mode !== 'maze') return text;
+    const next: Pick<World, 'map' | 'obstacles'> = JSON.parse(text);
+    const previous = this.#view.world;
+    if (
+      next.map.width === previous.map.width &&
+      next.map.height === previous.map.height &&
+      next.obstacles.length === previous.obstacles.length &&
+      next.obstacles.every((wall) =>
+        previous.obstacles.some(
+          (other) => other.x === wall.x && other.y === wall.y,
+        ),
+      )
+    ) {
+      // A paridade troca os eixos da grade retangular, mesmo se a fonte repetir a semente.
+      return drawMaze(level, (seed ^ 1) >>> 0);
+    }
+    return text;
+  }
+
+  #startMaze(level: MazeLevel) {
+    const { world, controllers, drafts } = this.#view;
+    if (this.#replay || world.match.mode !== 'maze') return;
+    const text = this.#drawMaze(level);
     const parsed = loadWorld(text);
     if (!parsed.ok) {
       this.#publish({ errors: parsed.errors });
@@ -522,7 +562,7 @@ export class ArenaSession {
   exitReplay() {
     if (!this.#replay) return;
     const { world, worldText, controllers, drafts } = this.#view;
-    const preset = mazeLevelFromText(worldText);
+    const preset = mazeLevelForWorld(world);
     const resume = () =>
       this.#replace(world, worldText, controllers, drafts, preset ?? '');
     if (

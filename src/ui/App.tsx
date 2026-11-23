@@ -1,9 +1,9 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { releaseTick, SUMO_START_SECONDS, stallStartTick } from '../core';
 import { speeds, startTicker, type PlaybackSpeed } from './arena/clock';
 import { ArenaSession } from './arena/session';
 import {
-  mazeLevelFromText,
+  mazeLevelForWorld,
   mazeLevels,
   nextMazeLevel,
   worldPresets,
@@ -41,8 +41,11 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
     status === 'finalizada' ||
     view.replayLast === snapshot.tick;
   const mode = world.match.mode;
-  const difficulty =
-    mode === 'maze' ? mazeLevelFromText(view.worldText) : undefined;
+  const difficulty = useMemo(() => {
+    if (mode !== 'maze') return undefined;
+    if (view.preset && view.preset !== 'duelo') return view.preset;
+    return mazeLevelForWorld(world);
+  }, [mode, view.preset, world]);
   const startTick = snapshot.sumoStartDelay ? releaseTick(world.dt) : 0;
   const waitingForStart = snapshot.tick < startTick;
   const result = resultLabel(snapshot, difficulty === 'dificil');
@@ -166,6 +169,15 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
                 ))}
               </select>
             </label>
+          )}
+          {difficulty && (
+            <button
+              type="button"
+              onClick={() => session.regenerateMaze()}
+              disabled={replay}
+            >
+              Gerar outro labirinto
+            </button>
           )}
           {view.preset === '' && <span>{world.name}</span>}
           <label className="file-control">
