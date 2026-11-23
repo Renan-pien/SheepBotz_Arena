@@ -494,3 +494,5 @@ Com um mundo válido, o resultado sem interface reúne as ocorrências desta tab
 **S2-US2-AC15.** Dados dois controladores com o mesmo contador inicialmente zero, quando avançam dois ticks ambos observam 1 e 2. Reset repete a sequência. Um arquivo que pede outro módulo ou comando fora do contrato é recusado antes da rodada. Uma falha em execução desativa apenas seu robô.
 
 **S2-US2-AC16.** Dado um programa com usar "maker", quando aciona o pino virtual 2, então avança a 0.20 m/s; ao desligá-lo para. Os comandos de velocidade assinada, sensores, tempo, sorteio e registro também seguem a rodada e a modalidade.
+
+**S2-US5-AC6** (FR-039, ADR-027). **Dada** uma dificuldade, **quando** se sorteiam novos labirintos, **então** as paredes e as passagens variam. Todos os espaços são acessíveis e cada mapa satisfaz AC4 e AC5. Para o fácil, médio e difícil, a profundidade máxima fora da menor rota é respectivamente 2, 3 e 7 casas. Repetir a dificuldade e a semente reproduz o mesmo mapa.

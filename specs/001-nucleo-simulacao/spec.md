@@ -405,15 +405,18 @@ definem os resultados esperados.
 
 ## Extensão de US5 — Perfis físicos reproduzíveis
 
-**FR-042** (ADR-026, RB-27, RB-31, RB-38). O campo opcional `robots[i].model` escolhe um perfil fixo. O raio vem do perfil quando omitido. Se o mundo declarar o raio, deve coincidir com a tabela. Validar geometria, laser e deslocamento máximo com o raio físico efetivo. Modelo desconhecido ou raio divergente gera `FORMATO_INVALIDO` no campo. No sumô, repetir o mesmo modelo nos dois robôs gera `REGRA_DA_MODALIDADE` no modelo da segunda ocorrência. Robôs sem modelo continuam com o raio configurado e, em contato misto, usam peso 0.30 kg e índices de força e tração 1.
+**FR-042** (ADR-026, ADR-027, RB-27, RB-31, RB-38). O campo opcional `robots[i].model` escolhe um perfil fixo. O raio vem do perfil quando omitido. Se o mundo declarar o raio, deve coincidir com a tabela. Validar geometria, laser e deslocamento máximo com o raio físico efetivo. Modelo desconhecido ou raio divergente gera `FORMATO_INVALIDO` no campo. No sumô, repetir o mesmo modelo nos dois robôs gera `REGRA_DA_MODALIDADE` no modelo da segunda ocorrência. Robôs sem modelo continuam com o raio configurado e, em contato misto, usam peso 0.30 kg e índices de força e tração 1.
 
 | Modelo | Nome | Raio (m) | Peso (kg) | Força (1–6) | Tração (1–6) |
 |---|---|---:|---:|---:|---:|
 | nimbo | Nimbo | 0.040 | 0.20 | 1 | 6 |
+| pulga | Pulga | 0.042 | 0.21 | 1.5 | 5.6 |
 | zarpa | Zarpa | 0.044 | 0.23 | 2 | 5 |
 | quimera | Quimera | 0.048 | 0.28 | 3 | 4 |
+| arraia | Arraia | 0.050 | 0.30 | 3.5 | 3.5 |
 | torvelim | Torvelim | 0.052 | 0.32 | 4 | 3 |
 | brontes | Brontes | 0.056 | 0.36 | 5 | 2 |
+| monolito | Monólito | 0.058 | 0.38 | 5.5 | 1.5 |
 | baluarte | Baluarte | 0.060 | 0.40 | 6 | 1 |
 
 Para cada contato do FR-025, o peso multiplica um índice para determinar a resistência D. Se o comando efetivo for (0, 0), usar tração. Se o deslocamento livre deste tick apontar para o outro centro inicial (projeção estritamente positiva na normal voltada ao oponente), usar força. Nos demais casos usar 1. Para a penetração p, o centro i recua p × Dⱼ/(Dᵢ+Dⱼ) e j avança p × Dᵢ/(Dᵢ+Dⱼ) na normal n. A orientação e a odometria seguem os contratos anteriores.
@@ -423,3 +426,5 @@ Para cada contato do FR-025, o peso multiplica um índice para determinar a resi
 **S1-US5-AC7.** **Dado** o mesmo par, **quando** apenas Baluarte avança e Nimbo está parado, **então** Nimbo termina em x = 0.046667 m. Se Nimbo gira a 1 rad/s sem avanço, termina em x = 0.049231 m. Tolerância das posições ±0.001 m.
 
 **S1-US1-AC13.** **Dado** um arquivo com modelo válido e raio omitido, **quando** é carregado, **então** adota o raio da tabela inclusive na verificação de sobreposição. Um modelo desconhecido, um raio divergente e uma dupla repetida no sumô retornam os erros de FR-042. Um mundo sem modelos mantém os resultados de S1-US5-AC1 a AC5.
+
+**S1-US1-AC14** (ADR-027). **Dados** os nove modelos na ordem de peso da tabela, **quando** o operador escolhe um deles, **então** os três primeiros são peso leve, os três seguintes peso médio e os três últimos peso pesado. Cada um tem raio, peso, força e tração próprios e conserva esses valores em qualquer equipe.

@@ -38,3 +38,5 @@
   de campos nas tarefas e as checagens de CI em push e pull request. [Registro de consolidação](../../../docs/registro-de-consolidacao.md)
 
 - [x] FR-042 e S1-US5-AC6/7 fixam o caso de dois avanços e o de parada contra giro. S1-US1-AC13 distingue omissão, erro e compatibilidade.
+
+- [x] ADR-027 revisada quanto à origem, compatibilidade de mundos e critérios mensuráveis em S1-US1-AC14.

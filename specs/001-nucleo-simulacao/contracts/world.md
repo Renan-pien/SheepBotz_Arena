@@ -45,4 +45,4 @@ Em `match.mode = "maze"` o campo `match.exit = { x, y, width, height }` é obrig
 
 ### Perfil físico opcional · ADR-026
 
-`robots[i].model` admite os seis IDs de S1-FR-042. O raio efetivo é o do perfil. Uma declaração explícita divergente gera FORMATO_INVALIDO em `robots[i].radius`. Sem modelo vale a validação anterior. Um modelo repetido no sumô gera REGRA_DA_MODALIDADE em `robots[i].model` na segunda ocorrência.
+`robots[i].model` admite os nove IDs de S1-FR-042. O raio efetivo é o do perfil. Uma declaração explícita divergente gera FORMATO_INVALIDO em `robots[i].radius`. Sem modelo vale a validação anterior. Um modelo repetido no sumô gera REGRA_DA_MODALIDADE em `robots[i].model` na segunda ocorrência.

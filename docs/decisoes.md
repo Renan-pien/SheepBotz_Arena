@@ -354,3 +354,9 @@
 - **Alternativas** A tração poderia melhorar a recuperação depois do contato ou aumentar a resistência ao empurrão durante a parada.
 - **Decisão** Adotar a segunda opção. Usar quatro características por modelo, nomes fixos e reserva por equipe. Os dados dos modelos selecionados determinam as colisões também na execução sem tela. Os dois ambientes adicionais são decorativos.
 - **Consequências** Revisão aditiva de C21 e da ADR-007 para pares com perfil. O Duelo padrão de referência conserva suas dimensões e os mundos antigos conservam a física simétrica. O catálogo e as grandezas estão em S1-FR-042, a escolha e a cena em S3-FR-047/048.
+
+## ADR-027 — Labirintos sorteados e categorias de peso
+
+- **Data e origem** 2026-11-23. O solicitante pediu geração aleatória nas três dificuldades e nove robôs de sumô com aparências e características distintas, divididos em peso leve, médio e pesado.
+- **Aplicação** Cada nível mantém as medidas de dificuldade de ADR-021. O mundo sorteado acompanha a gravação. Há três modelos por categoria e as equipes podem competir entre categorias. Os seis IDs da ADR-026 conservam seus atributos.
+- **Consequências** Evolução das três specs existentes na branch 005-selecao-sumo. As regras de exclusividade e de contato continuam aplicáveis às nove escolhas.

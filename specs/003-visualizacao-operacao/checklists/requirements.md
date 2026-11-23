@@ -26,3 +26,5 @@
 - [x] Critérios de resultado independente de frequência, exportação fiel e foco por teclado conferíveis.
 - [x] Valores do Duelo confirmados no núcleo, com resultado no tick 34 em 0,68 s.
 - [x] A convenção de formato da gravação fica no contrato da S3 e os campos públicos do núcleo seguem a S2.
+
+- [x] ADR-027 revisada quanto à origem, compatibilidade de mundos e critérios mensuráveis em S3-US3-AC16 a AC18.

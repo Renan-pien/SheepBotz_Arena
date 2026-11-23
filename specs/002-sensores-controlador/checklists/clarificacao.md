@@ -60,3 +60,5 @@ A revisão inicial de 36 requisitos e 44 cenários de aceite encontrou 7 verific
 - Os marcadores pertencem à pessoa revisora. `[x]` representa a qualidade aprovada do requisito.
 - `$speckit-implement` consulta os marcadores como parte do portão e preserva o estado registrado pela pessoa revisora.
 - A checagem de pré-requisitos com `--template checklist-template` exige `plan.md`. Para respeitar a ordem do AGENTS.md §4, a revisão usou a identificação da feature em `--paths-only` e a resolução do template pelo próprio Spec Kit.
+
+- [x] ADR-027 revisada quanto à origem, compatibilidade de mundos e critérios mensuráveis em S2-US5-AC6.
