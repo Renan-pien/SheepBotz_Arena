@@ -77,3 +77,5 @@ histórico da luta.
 
 ### Distribuição e isolamento do Maker
 A distribuição instalada do plugin 0.1.0 contém metadados e omite plugin_iot.py. A Arena inclui o arquivo oficial com licença e hash no caminho de importação esperado pelo Core. A instalação de Pyodide pelo npm e os insumos locais permitem compilar e rodar depois do build sem CDN. A ponte restringe a linguagem do aluno às operações de estratégia e evita acesso ao Python do hospedeiro.
+
+A geração por árvore aleatória sem restrições pode violar a dificuldade de referência. Trocas de arestas no grafo do exemplo partem de uma configuração válida e têm custo limitado. A transposição dá uma alternativa garantidamente diferente nos três mapas retangulares.

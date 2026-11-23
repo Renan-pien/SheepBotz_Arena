@@ -92,3 +92,5 @@ No Sumô, escolha Portugol no vermelho e mantenha JavaScript no azul. Abra **? C
 ### Escalar um combate
 
 Em Sumô, abra Selecionar robôs. Escolha Nimbo na Vermelha, confira a reserva ao selecionar a Azul e escolha Baluarte. Confirme, confira os dois modelos identificados na cena e avance a luta. Salve e abra a gravação e confira novamente os modelos. Em um arquivo sem perfis o duelo usa os robôs clássicos.
+
+Abra Labirinto e use **Gerar outro labirinto** nas três dificuldades. Compare as paredes antes e depois de **Reiniciar** e do replay. Em Sumô abra **Selecionar robôs**, confirme uma luta Pulga × Monólito e confira a identificação e as carrocerias em cena.

@@ -556,3 +556,7 @@ Na revisão de consistência, S1-FR-042 alimenta o mesmo raio para colisões, se
 No Chrome com WebGL 2, conferimos os seis retratos, a reserva entre equipes e a troca dos três fundos com as mesmas poses. O placar de apresentação identificou Nimbo e Baluarte. Em uma janela de 390 px de largura, a grade abriu em duas colunas e Escape devolveu o foco ao seletor.
 
 Com Node 24.22.3, passaram os 428 testes com 90.45% de cobertura de linhas. Lint, verificação de tipos e build estático passaram. A execução completa isolada usou dois workers e os limites de tempo originais. [Relatório](cobertura/resumo.md)
+
+### Análise de consistência · ADR-027
+
+S1-T054 cobre os quatro atributos e as três classes. S2-T050 cobre as propriedades do mapa e a navegação. S3-T034/T035 cobrem sorteio, repetição, seleção e representação visual. Os exemplos legados permanecem oráculos de dificuldade. A ampliação substitui a contagem anterior em FR-048 e preserva os seis IDs legados. Nenhum conflito crítico ou alto identificado entre esses critérios e os contratos.

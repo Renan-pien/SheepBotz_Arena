@@ -18,3 +18,5 @@ O valor `maxTicks` em `free` não encerra a simulação. Nomes, geometria e lase
 validador de mundo existente.
 
 Os três mundos de labirinto usam `match.mode = "maze"` e `match.exit`. O Anexo da ADR-021 no [plano](../plan.md) fixa a geometria. `maxTicks` aplica-se somente ao sumô.
+
+Cada sorteio materializa um mundo maze comum com seed, map, match.exit, obstacles e robots. A semente é um inteiro de 0 a 4294967295. A gravação guarda o documento completo e o usa para reproduzir o nível.

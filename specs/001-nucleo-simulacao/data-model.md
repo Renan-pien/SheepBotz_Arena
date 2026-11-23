@@ -163,3 +163,5 @@ SimState 1 ── * RobotState   (RobotState.id = RobotConfig.id, mesma ordem)
 ### Perfil físico
 
 RobotConfig admite o ID de modelo opcional. O catálogo de S1-FR-042 fixa raio, peso e índices de força e tração. RobotState conserva somente os dados que mudam a cada tick.
+
+O perfil passa a informar a classe leve, média ou pesada. O campo model do mundo continua sendo a única chave para resolver o perfil físico.

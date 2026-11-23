@@ -334,3 +334,7 @@ S3-FR-046 usa o cartão existente e rascunhos independentes por linguagem. Prepa
 Oferecer uma grade no diálogo de escalação do sumô ao vivo. Manter escolhas locais até a confirmação. O ID vermelho identifica a equipe vermelha, ou a equipe oposta ao ID azul; nos demais arquivos, a primeira entrada é vermelha. Preservar a ordem e IDs do arquivo e atribuir as cores das equipes. Validar o novo texto do mundo e preparar a simulação antes de publicar a troca. Reaproveitar a substituição de sessão que preserva controladores aplicados, linguagens e rascunhos. Ler os modelos dos robôs do mundo para gerar retratos e carrocerias 3D, para as legendas e o placar. Replays carregam os modelos pelo mundo original.
 
 **Constitution Check I–IX.** O renderizador só consome o catálogo e os snapshots. A física vem de S1-FR-042. Grade, foco e rótulos distinguem equipes também por texto. S3-US3-AC16/17 verificam contrato, exclusividade, estado e compatibilidade com as três modalidades.
+
+### Sorteio e nove modelos · ADR-027
+
+A sessão fornece entropia somente nos comandos de geração. Reconhecer o arquivo de referência e os documentos gerados no catálogo. Reinício e replay usam o documento armazenado. Exibir um grupo nomeado por classe e usar a mesma carroceria Three.js para o retrato e o duelo. Constitution Check aprovado para reprodução e sentido de dependências.

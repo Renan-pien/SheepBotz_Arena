@@ -436,3 +436,7 @@ Capturar o primeiro par (v,w) não nulo do frame e congelar os comandos efetivos
 
 ### Adaptador do meuPiá (ADR-025)
 Empacotar Pyodide 0.25.0 pelo lock do npm, wheel do Core 1.4.1 e módulo Maker do commit 1ccbedb63434b46bf8a34a4dc4d21354d4e8e212. Servir recursos locais sob demanda em um contexto separado do SES. A API pública do compilador produz Python. Validar por lista explícita a árvore da parte do aluno antes de compilar esse trecho com globais privados, funções permitidas e orçamento determinístico. O cabeçalho e as importações produzidos pelo gerador nunca são executados como código do aluno. A ponte chama as funções públicas do Maker sobre um pino virtual e delega leituras e movimento ao runner existente.
+
+### Gerador de labirintos · S2-FR-039
+
+Fora do loop, ler as passagens da grade do exemplo correspondente (casas de 0.50 m). Uma semente uint32 governa a transposição dos eixos e trocas entre uma parede e uma passagem. A busca em largura só aceita candidatos conectados com o comprimento, a quantidade de bifurcações e a profundidade de AC4/AC6. O médio exige bifurcação externa. A troca conserva o número de ciclos. No difícil, verificar que o seguidor da parede direita alcança a saída antes de repetir (casa, rumo). Numerar as paredes na ordem das casas, da esquerda para a direita e de baixo para cima, testando leste antes de norte. Gerar o documento antes de carregar o mundo. Constitution Check aprovado para passo fixo, ausência de motor físico e isolamento do núcleo.
