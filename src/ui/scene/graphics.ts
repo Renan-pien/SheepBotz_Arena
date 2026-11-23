@@ -3,6 +3,7 @@ import {
   BoxGeometry,
   BufferGeometry,
   CylinderGeometry,
+  Color,
   DirectionalLight,
   Float32BufferAttribute,
   Group,
@@ -18,6 +19,7 @@ import {
 } from 'three';
 import { ARENA_EDGE_INNER_RATIO, type World } from '../../core';
 import type { SceneFrame } from './projection';
+import { buildScenery, releaseScenery, type Scenery } from './scenery';
 
 const groundLevel = -0.012;
 const gridStep = 0.1;
@@ -115,13 +117,15 @@ function buildMap(world: World, scene: Scene) {
     scene.add(box);
   }
   if (world.obstacles.length === 0) crateMaterial.dispose();
+  return ground.material;
 }
 
 export function buildScene(world: World) {
   const scene = new Scene();
   const robotLayer = new Group();
   const rayLayer = new Group();
-  buildMap(world, scene);
+  const ground = buildMap(world, scene);
+  let scenery: Group | undefined;
   const sun = new DirectionalLight('#f1f3ff', 2.2);
   sun.position.set(-2, 5, 4);
   scene.add(new AmbientLight('#d1e5ff', 1.7), sun, robotLayer, rayLayer);
@@ -169,6 +173,18 @@ export function buildScene(world: World) {
 
   return {
     scene,
+    setScenery(theme: Scenery) {
+      if (scenery) releaseScenery(scenery);
+      scenery = undefined;
+      ground.color.set('#263950');
+      scene.background = null;
+      if (theme === 'classic' || world.match.mode !== 'sumo' || !world.arena)
+        return;
+      scenery = buildScenery(theme, world.arena.radius);
+      ground.color.set(theme === 'dojo' ? '#78603c' : '#243446');
+      scene.background = new Color(theme === 'dojo' ? '#253e35' : '#081329');
+      scene.add(scenery);
+    },
     update(frame: SceneFrame, raysVisible: boolean) {
       rayLayer.visible = raysVisible;
       for (const [i, robot] of frame.entries()) {
@@ -190,6 +206,7 @@ export function buildScene(world: World) {
       }
     },
     dispose() {
+      if (scenery) releaseScenery(scenery);
       const resources = new Set<{ dispose(): void }>([
         free,
         hit,

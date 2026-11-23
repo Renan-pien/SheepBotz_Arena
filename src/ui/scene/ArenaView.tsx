@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { SimState, World } from '../../core';
 import { configureCamera, orbitSettings, type CameraView } from './camera';
 import { buildScene } from './graphics';
+import { sceneryNames, type Scenery } from './scenery';
 import { projectFrame, type SceneFrame } from './projection';
 
 function attachViewport(host: HTMLElement, labels: HTMLElement, world: World) {
@@ -74,6 +75,7 @@ function attachViewport(host: HTMLElement, labels: HTMLElement, world: World) {
   host.dataset.graphics = 'ativa';
 
   return {
+    setScenery: contents.setScenery,
     update(next: SceneFrame, rays: boolean, withLabels: boolean) {
       frame = next;
       showLabels = withLabels;
@@ -157,6 +159,8 @@ export function ArenaView({
   const [view, setView] = useState<CameraView>('3d');
   const [rays, setRays] = useState(true);
   const [labels, setLabels] = useState(true);
+  const [scenery, setScenery] = useState<Scenery>('classic');
+  const activeScenery = world.match.mode === 'sumo' ? scenery : 'classic';
   const host = useRef<HTMLDivElement>(null);
   const overlay = useRef<HTMLDivElement>(null);
   const graphics = useRef<ReturnType<typeof attachViewport> | null>(null);
@@ -180,6 +184,10 @@ export function ArenaView({
   }, [world]);
 
   useEffect(() => {
+    graphics.current?.setScenery(activeScenery);
+  }, [activeScenery, world]);
+
+  useEffect(() => {
     graphics.current?.setView(view);
   }, [view, world]);
 
@@ -199,6 +207,7 @@ export function ArenaView({
       data-rays={rays}
       data-labels={labels}
       data-view={view}
+      data-scenery={activeScenery}
       data-tick={snapshot.tick}
     >
       <div
@@ -241,6 +250,22 @@ export function ArenaView({
           </button>
         </div>
         <div className="scene-options">
+          {world.match.mode === 'sumo' && (
+            <label>
+              Cenário{' '}
+              <select
+                aria-label="Cenário"
+                value={scenery}
+                onChange={(event) => setScenery(event.target.value as Scenery)}
+              >
+                {Object.entries(sceneryNames).map(([key, name]) => (
+                  <option key={key} value={key}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <label>
             <input
               type="checkbox"
