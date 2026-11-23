@@ -31,6 +31,7 @@ function resolveContacts(robots: readonly TickRobot[]): readonly TickRobot[] {
     robots.map(({ previous }) => previous.pose),
     robots.map(({ pose }) => pose),
     robots.map(({ config }) => config.radius),
+    robots,
   );
   return robots.map((robot, index) => ({ ...robot, ...contacts[index]! }));
 }
