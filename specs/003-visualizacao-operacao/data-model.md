@@ -52,3 +52,11 @@ Em v6, `falseStartTick` guarda o primeiro quadro de movimento e `falseStarters` 
 
 ### Linguagem por robô
 Draft.language seleciona javascript ou portugol. Draft.source conserva o texto visível, com rascunho alternativo para a outra linguagem. SessionView.languages associa as linguagens aplicadas aos IDs dos robôs. Recording.languages registra o mesmo mapa no formato v7.
+
+### Cenário da apresentação
+
+A preferência visual de sumô tem três valores fechados: `classic`, `dojo` e `orbital`. Inicia em `classic`. O componente da vista conserva a preferência enquanto a página está aberta. Em outras modalidades a cena efetiva é clássica. O cenário não integra o mundo, o snapshot ou o arquivo de gravação.
+
+### Escalação
+
+Cada equipe reserva no máximo um RobotModel. O diálogo edita as duas escolhas localmente e a confirmação grava `robots[i].model` no JSON da rodada. Os IDs de equipe, as fontes aplicadas e os rascunhos acompanham os mesmos pilotos.

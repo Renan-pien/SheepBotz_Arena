@@ -101,3 +101,11 @@ Com a ADR-024, “Queimou” acompanha o robô desde a primeira pose de infraç�
 
 ### Editor por linguagem
 Lista Linguagem independente em cada cartão. Abrir .por ou .js seleciona a linguagem correspondente sem aplicar. Salvar usa a extensão do rascunho. O botão ? tem nome acessível e abre tutorial da linguagem e modalidade, também disponível no replay. Preservar o rascunho, o foco ao fechar e o estado da simulação.
+
+### Cenário do sumô
+
+O seletor nativo Cenário permite escolher Clássico, Dojô de Bambu ou Hangar Orbital no sumô ao vivo ou em replay. Trocar a preferência só redesenha o entorno. A troca pode ocorrer com a simulação pausada ou em execução. A apresentação usa o fundo selecionado.
+
+### Selecionar robôs
+
+A escalação pertence ao sumô ao vivo. O modelo ocupado por uma equipe fica indisponível à outra. Cancelar descarta o rascunho da seleção. Confirmar substitui a rodada no tick 0 após validação completa do mundo. Uma falha preserva a sessão e informa os erros.

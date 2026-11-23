@@ -322,3 +322,15 @@ Projetar o texto no mesmo ponto do robô usado pelos rótulos da câmera. No arq
 
 ### Editor de linguagens e ajuda
 S3-FR-046 usa o cartão existente e rascunhos independentes por linguagem. Preparar o interpretador uma vez sob demanda. Associar a linguagem por ID ao criar a simulação. Descartar uma aplicação assíncrona ultrapassada por edição ou troca de sessão. Exibir o tutorial contextual em diálogo com retorno de foco e Escape. Gravação v7 carrega os metadados das linguagens e conserva as regras físicas do formato anterior de cada modalidade.
+
+### Cenários de sumô · S3-FR-047
+
+`ArenaView` mantém a preferência visual. Ao mudar a escolha, atualiza somente os materiais do entorno e um grupo de decoração de `graphics.ts`. `scenery.ts` constrói pisos e motivos dos dois cenários em escala do raio da arena. Liberar os recursos do grupo anterior ao substituí-lo e ao desmontar a cena. A câmera, controles, objetos do disco e robôs preservam sua identidade.
+
+**Constitution Check I–IX.** AC11/12 cobrem o efeito observável e a operação por teclado (I, V, VI, VIII). A mudança só usa a camada de apresentação com a stack existente (II, III, IV, VII, IX). A Q-016 trata do contato físico em outra fatia.
+
+### Seleção por equipe · S3-FR-048
+
+Oferecer uma grade no diálogo de escalação do sumô ao vivo. Manter escolhas locais até a confirmação. O ID vermelho identifica a equipe vermelha, ou a equipe oposta ao ID azul; nos demais arquivos, a primeira entrada é vermelha. Preservar a ordem e IDs do arquivo e atribuir as cores das equipes. Validar o novo texto do mundo e preparar a simulação antes de publicar a troca. Reaproveitar a substituição de sessão que preserva controladores aplicados, linguagens e rascunhos. Ler os modelos dos robôs do mundo para gerar retratos e carrocerias 3D, para as legendas e o placar. Replays carregam os modelos pelo mundo original.
+
+**Constitution Check I–IX.** O renderizador só consome o catálogo e os snapshots. A física vem de S1-FR-042. Grade, foco e rótulos distinguem equipes também por texto. S3-US3-AC16/17 verificam contrato, exclusividade, estado e compatibilidade com as três modalidades.
