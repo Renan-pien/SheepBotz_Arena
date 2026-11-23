@@ -20,6 +20,8 @@ import {
 import { ARENA_EDGE_INNER_RATIO, type World } from '../../core';
 import type { SceneFrame } from './projection';
 import { buildScenery, releaseScenery, type Scenery } from './scenery';
+import { buildRobotModel } from './robot-model';
+import { teamFor } from '../arena/teams';
 
 const groundLevel = -0.012;
 const gridStep = 0.1;
@@ -138,18 +140,31 @@ export function buildScene(world: World) {
   const hit = new LineBasicMaterial({ color: '#ffc500' });
   const point = new MeshBasicMaterial({ color: '#ffc500' });
   const markers = new SphereGeometry(0.006, 8, 6);
-  const robots = world.robots.map(({ radius, color, laser }) => {
-    const body = new Mesh(
-      new CylinderGeometry(radius, radius, radius, 24),
-      new MeshLambertMaterial({ color }),
-    );
-    const nose = new Mesh(
-      new BoxGeometry(radius * 0.8, 0.006, radius * 0.2),
-      new MeshBasicMaterial({ color: '#f2f7fc' }),
-    );
-    nose.position.set(radius * 0.48, radius * 0.51, 0);
+  const robots = world.robots.map(({ id, model, radius, color, laser }) => {
     const group = new Group();
-    group.add(body, nose);
+    let paint: MeshLambertMaterial;
+    if (model) {
+      const chassis = buildRobotModel(
+        model,
+        color,
+        world.match.mode === 'sumo' ? teamFor(world, id) : undefined,
+      );
+      chassis.group.scale.setScalar(radius);
+      group.add(chassis.group);
+      paint = chassis.paint;
+    } else {
+      paint = new MeshLambertMaterial({ color });
+      const body = new Mesh(
+        new CylinderGeometry(radius, radius, radius, 24),
+        paint,
+      );
+      const nose = new Mesh(
+        new BoxGeometry(radius * 0.8, 0.006, radius * 0.2),
+        new MeshBasicMaterial({ color: '#f2f7fc' }),
+      );
+      nose.position.set(radius * 0.48, radius * 0.51, 0);
+      group.add(body, nose);
+    }
     robotLayer.add(group);
     const outline = new Mesh(
       new RingGeometry(radius * 1.08, radius * 1.23, 32),
@@ -168,7 +183,7 @@ export function buildScene(world: World) {
       rayLayer.add(line, end);
       return { line, position, end };
     });
-    return { group, body, outline, rays };
+    return { group, paint, outline, rays };
   });
 
   return {
@@ -191,7 +206,7 @@ export function buildScene(world: World) {
         const objects = robots[i]!;
         objects.group.position.set(...robot.center);
         objects.group.rotation.y = robot.theta;
-        objects.body.material.color.set(robot.color);
+        objects.paint.color.set(robot.color);
         objects.outline.position.set(robot.center[0], 0.001, robot.center[2]);
         objects.outline.visible = robot.outside;
         for (const [j, ray] of robot.rays.entries()) {

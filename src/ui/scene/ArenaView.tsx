@@ -5,6 +5,7 @@ import type { SimState, World } from '../../core';
 import { configureCamera, orbitSettings, type CameraView } from './camera';
 import { buildScene } from './graphics';
 import { sceneryNames, type Scenery } from './scenery';
+import { robotLabel } from '../arena/teams';
 import { projectFrame, type SceneFrame } from './projection';
 
 function attachViewport(host: HTMLElement, labels: HTMLElement, world: World) {
@@ -84,9 +85,10 @@ function attachViewport(host: HTMLElement, labels: HTMLElement, world: World) {
         const element = labelNodes[i]!;
         element.hidden = !showLabels && !robot.disabled && !robot.falseStart;
         element.classList.toggle('false-start', robot.falseStart);
-        const name = robot.disabled ? '⚠ ' + robot.id : robot.id;
+        const label = robotLabel(world, world.robots[i]!);
+        const name = robot.disabled ? '⚠ ' + label : label;
         element.textContent = robot.falseStart ? name + ' · Queimou' : name;
-        element.title = robot.disabled ? robot.id + ' · desativado' : robot.id;
+        element.title = robot.disabled ? label + ' · desativado' : label;
       });
     },
     setView(next: CameraView) {

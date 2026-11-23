@@ -15,6 +15,8 @@ import { Controllers } from './panels/Controllers';
 import { Events } from './panels/Events';
 import { formatNumber, Inspection, resultLabel } from './panels/Inspection';
 import { ArenaView } from './scene/ArenaView';
+import { robotLabel } from './arena/teams';
+import { Roster } from './panels/Roster';
 import './arena.css';
 
 const tabs = ['Controladores', 'Inspeção', 'Eventos'] as const;
@@ -145,6 +147,7 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
               <option value="maze">Labirinto</option>
             </select>
           </label>
+          {mode === 'sumo' && <Roster session={session} view={view} />}
           {mode === 'maze' && (
             <label>
               Dificuldade{' '}
@@ -258,14 +261,14 @@ export function App({ session: supplied }: { session?: ArenaSession } = {}) {
       {presenting && (
         <section className="scoreboard" aria-label="Placar">
           <div className="scoreboard-robots">
-            {world.robots.map(({ id, color }) => (
-              <span key={id}>
+            {world.robots.map((robot) => (
+              <span key={robot.id}>
                 <i
                   aria-hidden="true"
                   className="robot-dot"
-                  style={{ background: color }}
+                  style={{ background: robot.color }}
                 />
-                {id}
+                {robotLabel(world, robot)}
               </span>
             ))}
           </div>
