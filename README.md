@@ -22,6 +22,14 @@ A IDE abre e salva arquivos `.por`. Cada equipe pode escolher sua linguagem. No 
 | [002](specs/002-sensores-controlador/spec.md) | Laser, controladores e sumô pela biblioteca e pela CLI | [Plano](specs/002-sensores-controlador/plan.md), [contratos](specs/002-sensores-controlador/contracts/core-api.md), [tasks](specs/002-sensores-controlador/tasks.md) e [quickstart](specs/002-sensores-controlador/quickstart.md) |
 | [003](specs/003-visualizacao-operacao/spec.md) | Visualização 3D, operação e replay | [Plano](specs/003-visualizacao-operacao/plan.md), [gravações v1 a v6](specs/003-visualizacao-operacao/contracts/gravacao.md), [tarefas](specs/003-visualizacao-operacao/tasks.md) e [quickstart](specs/003-visualizacao-operacao/quickstart.md) |
 
+### Contribuições da branch `004-labirintos`
+
+- **Labirinto** — Três níveis com bifurcações e dificuldade crescente. Ao chegar à saída quadriculada, o robô pausa. O usuário escolhe quando avançar para o próximo nível.
+- **Sumô** — Sensor de borda nos quatro lados do robô, Regra de Tempo para empates por impasse e largada de 5 segundos. A indicação **Queimou** acompanha o infrator por 0,5 s. O adversário recebe 1 ponto se apenas um robô queimar a largada. Se ambos queimarem no mesmo tick, há empate sem pontos.
+- **IDE e simulação** — Retrocesso de um tick, cursor visível nos editores e estratégias em Portugol com o meuPiá Maker. O botão **? Comandos** mostra exemplos para a modalidade e a linguagem selecionadas.
+
+As entregas da branch integram as Specs 001, 002 e 003. A [matriz de rastreabilidade](docs/rastreabilidade.md) relaciona os requisitos às tarefas e aos testes, e o [registro de decisões](docs/decisoes.md) documenta as ADR-017 a ADR-025.
+
 ## Como rodar
 
 Use Node 24 na raiz do repositório e abra a URL mostrada pelo Vite em um
