@@ -32,13 +32,40 @@ As entregas da branch integram as Specs 001, 002 e 003. A [matriz de rastreabili
 
 ## Como rodar
 
-Use Node 24 na raiz do repositório e abra a URL mostrada pelo Vite em um
-navegador desktop com WebGL 2.
+### Primeira instalação no Windows
 
-```bash
-npm ci
-npm run dev
+Instale o Git e o **Node.js 24.x**. O npm acompanha o Node.js. Abra o PowerShell na pasta onde deseja guardar o projeto e execute os comandos abaixo. [Baixar Git](https://git-scm.com/downloads) · [Baixar Node.js](https://nodejs.org/en/download)
+
+```powershell
+git clone --branch main https://github.com/Renan-pien/SheepBotz_Arena.git
+cd SheepBotz_Arena
+npm.cmd ci
+npm.cmd run dev
 ```
+
+Abra o endereço indicado na linha **Local** do terminal em um navegador desktop com WebGL 2. Mantenha o terminal aberto enquanto usa o simulador. Para encerrar, pressione `Ctrl+C`.
+
+### Da segunda vez em diante
+
+Abra o PowerShell na pasta `SheepBotz_Arena` e execute apenas:
+
+```powershell
+npm.cmd run dev
+```
+
+Use `npm.cmd ci` na primeira instalação. Repita esse comando se uma atualização alterar o `package-lock.json` ou se precisar reinstalar as dependências. Ele recria a pasta `node_modules`. No Linux e no macOS, use `npm` no lugar de `npm.cmd`. [Documentação do npm ci](https://docs.npmjs.com/cli/v11/commands/npm-ci/)
+
+### Se o VS Code continuar mostrando erros de TypeScript
+
+Após a instalação, confira os tipos do projeto pelo terminal:
+
+```powershell
+npm.cmd run typecheck
+```
+
+Se a verificação passar e o editor ainda mostrar erros, abra um arquivo `.ts` ou `.tsx` no VS Code, pressione `Ctrl+Shift+P` e selecione **TypeScript: Restart TS Server** na paleta de comandos. Se a verificação também apontar um erro no terminal, consulte o arquivo e a linha indicados na mensagem.
+
+### Primeiro teste no simulador
 
 A tela abre o **Duelo padrão** com Caçador e Girador. Clique em **Executar**
 para ver a luta. Use **Inspeção** para consultar os sensores e **Ver replay**
