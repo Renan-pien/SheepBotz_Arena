@@ -157,6 +157,7 @@ it('S3-US5-AC9: sair prepara mundo e fontes no tick zero ou conserva replay na f
   fireEvent.click(button('Sair do replay'));
   expect(session.getSnapshot().mode).toBe('live');
   expect(session.getSnapshot().snapshot.tick).toBe(0);
+  expect(screen.getByText('pausada')).toBeTruthy();
   expect(session.getSnapshot().controllers).toEqual(recording.controllers);
   act(() => {
     session.openRecording(

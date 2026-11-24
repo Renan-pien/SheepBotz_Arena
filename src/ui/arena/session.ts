@@ -524,7 +524,9 @@ export class ArenaSession {
     const { world, worldText, controllers, drafts } = this.#view;
     const preset = mazeLevelFromText(worldText);
     const resume = () =>
-      this.#replace(world, worldText, controllers, drafts, preset ?? '');
+      this.#replace(world, worldText, controllers, drafts, preset ?? '', {
+        status: 'pausada',
+      });
     if (
       !this.#maker &&
       Object.values(this.#view.languages).includes('portugol')
